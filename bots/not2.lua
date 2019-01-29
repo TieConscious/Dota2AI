@@ -1,0 +1,72 @@
+--local utility = require( GetScriptDirectory().."/utility" )
+--
+--local ItemsToBuy =
+--{
+--	"item_quelling_blade",
+--	"item_branches",
+--	"item_branches",
+--
+--	"item_magic_stick",
+--	"item_recipe_magic_wand",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_recipe_bfury"
+--	"item_bfury",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_quelling_blade"
+--	"item_recipe_bfury"
+--	"item_bfury",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_quelling_blade"
+--	"item_recipe_bfury"
+--	"item_bfury",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_quelling_blade"
+--	"item_recipe_bfury"
+--	"item_bfury",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_quelling_blade"
+--	"item_recipe_bfury"
+--	"item_bfury",
+--
+--	"item_ring_of_health",
+--	"item_void_stone",
+--	"item_perseverance",
+--
+--	"item_demon_edge",
+--	"item_quelling_blade"
+--	"item_recipe_bfury"
+--	"item_bfury",
+--}
+--
+--utility.checkItemBuild(ItemsToBuy)
+--
+--function ItemPurchaseThink()
+--	print("buttholes juggernaut")
+--	utility.ItemPurchase(ItemsToBuy)
+--end
+
