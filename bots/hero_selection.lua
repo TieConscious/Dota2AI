@@ -1,24 +1,21 @@
 
 local BotPicks = {
-		'npc_dota_hero_tidehunter',
-		'npc_dota_hero_medusa',
-		--'npc_dota_hero_pugna',
-		'npc_dota_hero_axe',
-		'npc_dota_hero_bane',
-		'npc_dota_hero_earthshaker',
-		'npc_dota_hero_skeleton_king',
-		'npc_dota_hero_abyssal_underlord',
-		--'npc_dota_hero_life_stealer',
-		'npc_dota_hero_lina',
-		'npc_dota_hero_chaos_knight',
-	--'npc_dota_hero_axe',
-	'npc_dota_hero_juggernaut'
-	--'npc_dota_hero_furion',
-	--'npc_dota_hero_bloodseeker',
-	--'npc_dota_hero_crystal_maiden',
-	--'npc_dota_hero_sniper',
-	--'npc_dota_hero_phoenix',
-	--'npc_dota_hero_phantom_assassin'
+	'npc_dota_hero_tidehunter',
+	'npc_dota_hero_medusa',
+	'npc_dota_hero_pugna',
+	'npc_dota_hero_axe',
+	'npc_dota_hero_bane',
+	'npc_dota_hero_earthshaker',
+	'npc_dota_hero_skeleton_king',
+	'npc_dota_hero_abyssal_underlord',
+	'npc_dota_hero_chaos_knight',
+	'npc_dota_hero_juggernaut',
+	'npc_dota_hero_furion',
+	'npc_dota_hero_bloodseeker',
+	'npc_dota_hero_crystal_maiden',
+	'npc_dota_hero_sniper',
+	'npc_dota_hero_phoenix',
+	'npc_dota_hero_phantom_assassin'
 };
 
 local BotBans = {
@@ -26,14 +23,14 @@ local BotBans = {
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_undying',
 	'npc_dota_hero_ursa',
-        'npc_dota_hero_vengefulspirit',
+    'npc_dota_hero_vengefulspirit',
 	'npc_dota_hero_venomancer',
-        'npc_dota_hero_warlock',
-        'npc_dota_hero_windrunner',
-        'npc_dota_hero_witch_doctor',
-'npc_dota_hero_zuus',
-'npc_dota_hero_slark',
-'npc_dota_hero_sniper'
+    'npc_dota_hero_warlock',
+    'npc_dota_hero_windrunner',
+    'npc_dota_hero_witch_doctor',
+	'npc_dota_hero_zuus',
+	'npc_dota_hero_slark',
+	'npc_dota_hero_sniper'
 };
 
 local picks = {};
