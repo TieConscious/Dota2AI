@@ -1,307 +1,464 @@
-----Gives various utilities for bots (i.e. general item purchase instructions, etc.)
+-- utility.lua (Version 1.0)
+-- Author: Eroica
+-- Release Date: 2017/5/8
 
-local utilityModule={}
+local utility = {}
 
---------------------------------------------------------------------------	ItemPurchase
+utility.AncientCreepNameList = {
+    "npc_dota_neutral_black_drake",
+    "npc_dota_neutral_black_dragon",
+    "npc_dota_neutral_blue_dragonspawn_sorcerer",
+    "npc_dota_neutral_blue_dragonspawn_overseer",
+    "npc_dota_neutral_granite_golem",
+    "npc_dota_neutral_elder_jungle_stalker",
+    "npc_dota_neutral_prowler_acolyte",
+    "npc_dota_neutral_prowler_shaman",
+    "npc_dota_neutral_rock_golem",
+    "npc_dota_neutral_small_thunder_lizard",
+    "npc_dota_neutral_jungle_stalker",
+    "npc_dota_neutral_big_thunder_lizard",
+    "npc_dota_roshan"
+}
 
---Sell Items
-function utilityModule.SellExtraItem(ItemsToBuy)
-	local npcBot=GetBot()
-	local level=npcBot:GetLevel()
+-- return best position to cast certain spells
+-- eg. axe's call, void's chrono, enigma's black hole
+-- input  : unitsAround, radius
+-- return : positon (a vector)
+function utility.BestPosition(unitsAround, radius)
+    if not unitsAround or #unitsAround <= 0 then return nil end
+    local enemyNum = #unitsAround
 
-	if (utilityModule.IsItemSlotsFull())
-	then
-		if(GameTime()>6*60 or level>=6)
-		then
-			utilityModule.SellSpecifiedItem("item_faerie_fire")
-			utilityModule.SellSpecifiedItem("item_tango")
-			utilityModule.SellSpecifiedItem("item_clarity")
-			utilityModule.SellSpecifiedItem("item_flask")
-		end
-		if(GameTime()>25*60 or level>=10)
-		then
-			utilityModule.SellSpecifiedItem("item_stout_shield")
-			utilityModule.SellSpecifiedItem("item_orb_of_venom")
-			utilityModule.SellSpecifiedItem("item_enchanted_mango")
-			--utilityModule.SellSpecifiedItem("item_poor_mans_shield")
-		end
-		if(GameTime()>35*60 or level>=15) then
-			utilityModule.SellSpecifiedItem("item_branches")
-			utilityModule.SellSpecifiedItem("item_bottle")
-			utilityModule.SellSpecifiedItem("item_magic_wand")
-			utilityModule.SellSpecifiedItem("item_magic_stick")
-			utilityModule.SellSpecifiedItem("item_ancient_janggo")
-			utilityModule.SellSpecifiedItem("item_ring_of_basilius")
-			utilityModule.SellSpecifiedItem("item_ring_of_aquila")
-			--utilityModule.SellSpecifiedItem("item_quelling_blade")
-			utilityModule.SellSpecifiedItem("item_soul_ring")
+	if enemyNum == 1 then return Entity.GetAbsOrigin(unitsAround[1]) end
 
-		end
-		if(GameTime()>40*60 or level>=20) then
-			utilityModule.SellSpecifiedItem("item_vladmir")
-			utilityModule.SellSpecifiedItem("item_urn_of_shadows")
-			utilityModule.SellSpecifiedItem("item_drums_of_endurance")
-			utilityModule.SellSpecifiedItem("item_hand_of_midas")
-			utilityModule.SellSpecifiedItem("item_dust")
-		end
-	end
-end
+	-- find all mid points of every two enemy heroes,
+	-- then find out the best position among these.
+	-- O(n^3) complexity
+	local maxNum = 1
+	local bestPos = Entity.GetAbsOrigin(unitsAround[1])
+	for i = 1, enemyNum-1 do
+		for j = i+1, enemyNum do
+			if unitsAround[i] and unitsAround[j] then
+				local pos1 = Entity.GetAbsOrigin(unitsAround[i])
+				local pos2 = Entity.GetAbsOrigin(unitsAround[j])
+				local mid = pos1:__add(pos2):Scaled(0.5)
 
-function utilityModule.ItemPurchase(ItemsToBuy)
-
-	local npcBot = GetBot();
-
-	if (DotaTime()<-80) then
-		return;
-	end
-
-	if ( #ItemsToBuy == 0 ) then
-		npcBot:SetNextItemPurchaseValue( 0 );
-		return;
-	end
-
-	local sNextItem = ItemsToBuy[1];
-
-	npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
-
-	utilityModule.SellExtraItem(ItemsToBuy)
-
-	if(npcBot:DistanceFromFountain()<=2500 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.35) then
-		npcBot.secretShopMode = false;
-		npcBot.sideShopMode = false;
-	end
-
-	if (IsItemPurchasedFromSideShop( sNextItem )==false and IsItemPurchasedFromSecretShop( sNextItem )==false) then
-		npcBot.secretShopMode = false;
-		npcBot.sideShopMode = false;
-	end
-
-	if ( npcBot:GetGold() >= GetItemCost( sNextItem ) ) then
-		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true) then
-			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 1800) then
-				npcBot.sideShopMode = true;
-				npcBot.secretShopMode = false;
-			end
-			if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle") then
-				npcBot.secretShopMode = true;
-				npcBot.sideShopMode = false;
-			end
-		end
-
-		local PurchaseResult=-2		--???????????????????
-
-		if(npcBot.sideShopMode == true) then
-			if(npcBot:DistanceFromSideShop() <= 250) then
-				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
-			end
-
-		elseif(npcBot.secretShopMode == true) then
-			if(npcBot:DistanceFromSecretShop() <= 250) then
-				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
-			end
-
-		else
-			PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
-		end
-
-		if(PurchaseResult==PURCHASE_ITEM_SUCCESS) then
-			npcBot.secretShopMode = false;
-			npcBot.sideShopMode = false;
-			table.remove( ItemsToBuy, 1 )
-		end
-		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK) then
-			utilityModule.SellSpecifiedItem("item_dust")
-			utilityModule.SellSpecifiedItem("item_faerie_fire")
-			utilityModule.SellSpecifiedItem("item_tango")
-			utilityModule.SellSpecifiedItem("item_clarity")
-			utilityModule.SellSpecifiedItem("item_flask")
-		end
-		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM) then
-			table.remove( ItemsToBuy, 1 )
-		end
-		if(PurchaseResult==PURCHASE_ITEM_INSUFFICIENT_GOLD ) then
-			npcBot.secretShopMode = false;
-			npcBot.sideShopMode = false;
-		end
-		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SECRET_SHOP) then
-			npcBot.secretShopMode = true
-			npcBot.sideShopMode = false;
-		end
-		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SIDE_SHOP) then
-			npcBot.sideShopMode = true
-			npcBot.secretShopMode = false;
-		end
-		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_HOME_SHOP) then
-			npcBot.secretShopMode = false;
-			npcBot.sideShopMode = false;
-		end
-		if(PurchaseResult>=-1) then
-			print(npcBot:GetPlayerID().."[ItemPurchase] purchaseResult is"..PurchaseResult)
-		end
-	else
-		npcBot.secretShopMode = false;
-		npcBot.sideShopMode = false;
-	end
-
-end
-
-function utilityModule.SellSpecifiedItem( item_name )
-
-	local npcBot = GetBot();
-
-	local itemCount = 0;
-	local item = nil;
-
-	for i = 0, 14
-	do
-		local sCurItem = npcBot:GetItemInSlot(i);
-		if ( sCurItem ~= nil )
-		then
-			itemCount = itemCount + 1;
-			if ( sCurItem:GetName() == item_name )
-			then
-				item = sCurItem;
-			end
-		end
-	end
-
-	if ( item ~= nil and itemCount > 5 and (npcBot:DistanceFromFountain() <= 600 or npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromSecretShop() <= 200) ) then
-		npcBot:ActionImmediate_SellItem( item );
-	end
-
-end
-
-function utilityModule.GetItemSlotsCount()
-	local npcBot = GetBot();
-
-	local itemCount = 0;
-
-	for i = 0, 8
-	do
-		local sCurItem = npcBot:GetItemInSlot(i);
-		if ( sCurItem ~= nil )
-		then
-			itemCount = itemCount + 1;
-		end
-	end
-
-	return itemCount
-end
-
-function utilityModule.IsItemSlotsFull()
-	local itemCount = utilityModule.GetItemSlotsCount();
-	if(itemCount>=8)
-	then
-		return true
-	else
-		return false
-	end
-end
-
-function utilityModule.checkItemBuild(ItemsToBuy)
-	local ItemTableA=
-	{
-		"item_tango",
-		"item_clarity",
-		"item_faerie_fire",
-		"item_enchanted_mango",
-		"item_flask",
-	}
-
-	if(DotaTime()>0)
-	then
-		for _,item in pairs (ItemTableA)
-		do
-			for _1,item2 in pairs (ItemsToBuy)
-			do
-				if(item==item2)
-				then
-					table.remove(ItemsToBuy,_1)
+				local heroesNum = 0
+				for k = 1, enemyNum do
+					if NPC.IsPositionInRange(unitsAround[k], mid, radius, 0) then
+						heroesNum = heroesNum + 1
+					end
 				end
-			end
-		end
 
-		local npcBot=GetBot()
-		for _1,item2 in pairs (ItemsToBuy)
-		do
-			if(npcBot:FindItemSlot(item2)>0)
-			then
-				table.remove(ItemsToBuy,_1)
+				if heroesNum > maxNum then
+					maxNum = heroesNum
+					bestPos = mid
+				end
+
 			end
 		end
 	end
+
+	return bestPos
 end
 
--- function utilityModule.GetItemIncludeBackpack( item_name )
+-- return predicted position
+function utility.GetPredictedPosition(npc, delay)
+    local pos = Entity.GetAbsOrigin(npc)
+    if utility.CantMove(npc) then return pos end
+    if not NPC.IsRunning(npc) or not delay then return pos end
 
-	-- local npcBot = GetBot();
-	-- local item = nil;
-	-- local i=-1
-	-- i = npcBot:FindItemSlot(item_name)
-	-- item = npcBot:GetItemInSlot(i)
+    local dir = Entity.GetRotation(npc):GetForward():Normalized()
+    local speed = utility.GetMoveSpeed(npc)
 
-	-- return item;
--- end
+    return pos + dir:Scaled(speed * delay)
+end
 
-function utilityModule.GetItemIncludeBackpack(item_name)
-	local npcBot=GetBot()
-    for i = 0, 16 do
-        local item = npcBot:GetItemInSlot(i);
-		if (item~=nil) then
-			if(item:GetName() == item_name) then
-				return item;
-			end
-		end
+function utility.GetMoveSpeed(npc)
+    local base_speed = NPC.GetBaseSpeed(npc)
+    local bonus_speed = NPC.GetMoveSpeed(npc) - NPC.GetBaseSpeed(npc)
+
+    -- when affected by ice wall, assume move speed as 100 for convenience
+    if NPC.HasModifier(npc, "modifier_invoker_ice_wall_slow_debuff") then return 100 end
+
+    -- when get hexed,  move speed = 140/100 + bonus_speed
+    if utility.GetHexTimeLeft(npc) > 0 then return 140 + bonus_speed end
+
+    return base_speed + bonus_speed
+end
+
+-- return true if is protected by lotus orb or AM's aghs
+function utility.IsLotusProtected(npc)
+	if NPC.HasModifier(npc, "modifier_item_lotus_orb_active") then return true end
+
+	local shield = NPC.GetAbility(npc, "antimage_spell_shield")
+	if shield and Ability.IsReady(shield) and NPC.HasItem(npc, "item_ultimate_scepter", true) then
+		return true
+	end
+
+	return false
+end
+
+-- extend NPC.IsLinkensProtected(), check AM's aghs case
+function utility.IsLinkensProtected(npc)
+    local shield = NPC.GetAbility(npc, "antimage_spell_shield")
+	if shield and Ability.IsReady(shield) and NPC.HasItem(npc, "item_ultimate_scepter", true) then
+		return true
+	end
+
+    return NPC.IsLinkensProtected(npc)
+end
+
+-- return true if this npc is disabled, return false otherwise
+function utility.IsDisabled(npc)
+	if not Entity.IsAlive(npc) then return true end
+	if NPC.IsStunned(npc) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_HEXED) then return true end
+
+    return false
+end
+
+-- return true if can cast spell on this npc, return false otherwise
+function utility.CanCastSpellOn(npc)
+	if Entity.IsDormant(npc) or not Entity.IsAlive(npc) then return false end
+	if NPC.IsStructure(npc) or not NPC.IsKillable(npc) then return false end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_MAGIC_IMMUNE) then return false end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_INVULNERABLE) then return false end
+
+	return true
+end
+
+-- check if it is safe to cast spell or item on enemy
+-- in case enemy has blademail or lotus.
+-- Caster will take double damage if target has both lotus and blademail
+function utility.IsSafeToCast(myHero, enemy, magic_damage)
+    if not myHero or not enemy or not magic_damage then return true end
+    if magic_damage <= 0 then return true end
+
+    local counter = 0
+    if NPC.HasModifier(enemy, "modifier_item_lotus_orb_active") then counter = counter + 1 end
+    if NPC.HasModifier(enemy, "modifier_item_blade_mail_reflect") then counter = counter + 1 end
+
+    local reflect_damage = counter * magic_damage * NPC.GetMagicalArmorDamageMultiplier(myHero)
+    return Entity.GetHealth(myHero) > reflect_damage
+end
+
+-- situations that ally need to be saved
+function utility.NeedToBeSaved(npc)
+	if not npc or NPC.IsIllusion(npc) or not Entity.IsAlive(npc) then return false end
+
+	if NPC.IsStunned(npc) or NPC.IsSilenced(npc) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_ROOTED) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_DISARMED) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_HEXED) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_PASSIVES_DISABLED) then return true end
+	if NPC.HasState(npc, Enum.ModifierState.MODIFIER_STATE_BLIND) then return true end
+
+	if Entity.GetHealth(npc) <= 0.2 * Entity.GetMaxHealth(npc) then return true end
+
+	return false
+end
+
+-- pop all defensive items
+function utility.PopDefensiveItems(myHero)
+	if not myHero then return end
+
+    -- blade mail
+    if NPC.HasItem(myHero, "item_blade_mail", true) then
+    	local item = NPC.GetItem(myHero, "item_blade_mail", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
     end
-    return nil;
-end
 
-function utilityModule.IsItemAvailable(item_name)
-    local npcBot = GetBot();
-
-    for i = 0, 5, 1 do
-        local item = npcBot:GetItemInSlot(i);
-		if (item~=nil) then
-			if(item:GetName() == item_name) then
-				return item;
-			end
-		end
+    -- buckler
+    if NPC.HasItem(myHero, "item_buckler", true) then
+    	local item = NPC.GetItem(myHero, "item_buckler", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
     end
-    return nil;
+
+    -- hood of defiance
+    if NPC.HasItem(myHero, "item_hood_of_defiance", true) then
+    	local item = NPC.GetItem(myHero, "item_hood_of_defiance", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
+    end
+
+    -- pipe of insight
+    if NPC.HasItem(myHero, "item_pipe", true) then
+    	local item = NPC.GetItem(myHero, "item_pipe", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
+    end
+
+    -- crimson guard
+    if NPC.HasItem(myHero, "item_crimson_guard", true) then
+    	local item = NPC.GetItem(myHero, "item_crimson_guard", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
+    end
+
+    -- shiva's guard
+    if NPC.HasItem(myHero, "item_shivas_guard", true) then
+    	local item = NPC.GetItem(myHero, "item_shivas_guard", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastNoTarget(item)
+    	end
+    end
+
+    -- lotus orb
+    if NPC.HasItem(myHero, "item_lotus_orb", true) then
+    	local item = NPC.GetItem(myHero, "item_lotus_orb", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastTarget(item, myHero)
+    	end
+    end
+
+    -- mjollnir
+    if NPC.HasItem(myHero, "item_mjollnir", true) then
+    	local item = NPC.GetItem(myHero, "item_mjollnir", true)
+    	if Ability.IsCastable(item, NPC.GetMana(myHero)) then
+    		Ability.CastTarget(item, myHero)
+    	end
+    end
+
 end
 
-function utilityModule.CheckAbilityBuild(AbilityToLevelUp)
-	local npcBot=GetBot()
-	if #AbilityToLevelUp > 26-npcBot:GetLevel() then
-		for i=1, npcBot:GetLevel() do
-			print("remove"..AbilityToLevelUp[1])
-			table.remove(AbilityToLevelUp, 1)
-		end
-	end
+function utility.IsAncientCreep(npc)
+    if not npc then return false end
+
+    for i, name in ipairs(utility.AncientCreepNameList) do
+        if name and NPC.GetUnitName(npc) == name then return true end
+    end
+
+    return false
 end
 
-function utilityModule.DebugTalk(message)
-	local debug_mode = false
-	if(debug_mode==true)
-	then
-		local npcBot=GetBot()
-		npcBot:ActionImmediate_Chat(message,true)
-	end
+function utility.CantMove(npc)
+    if not npc then return false end
+
+    if NPC.IsRooted(npc) or utility.GetStunTimeLeft(npc) >= 1 then return true end
+    if NPC.HasModifier(npc, "modifier_axe_berserkers_call") then return true end
+    if NPC.HasModifier(npc, "modifier_legion_commander_duel") then return true end
+
+    return false
 end
 
-function utilityModule.DebugTalk_Delay(message)
+-- Reference: https://dota2.gamepedia.com/Stun
+-- black items on the list seems are not included in "modifier_stunned"
+utility.StunModifiers = {
+    "modifier_stunned",
+    "modifier_bashed",
+    "modifier_bane_fiends_grip",
+    "modifier_rattletrap_hookshot",
+    "modifier_winter_wyvern_winters_curse_aura",
+    "modifier_necrolyte_reapers_scythe"
+}
 
-	local npcBot=GetBot()
-	if(npcBot.LastSpeaktime==nil)
-	then
-		npcBot.LastSpeaktime=0
-	end
-	if(GameTime()-npcBot.LastSpeaktime>1)
-	then
-		npcBot:ActionImmediate_Chat(message,true)
-		npcBot.LastSpeaktime=GameTime()
-	end
+-- Reference: https://dota2.gamepedia.com/Sleep
+utility.SleepModifiers = {
+    "modifier_bane_nightmare",
+    "modifier_elder_titan_echo_stomp",
+    "modifier_naga_siren_song_of_the_siren"
+}
+
+-- Reference: https://dota2.gamepedia.com/Root
+utility.RootModifiers = {
+    "modifier_crystal_maiden_frostbite",
+    "modifier_dark_troll_warlord_ensnare",
+    "modifier_ember_spirit_searing_chains",
+    "modifier_meepo_earthbind",
+    "modifier_naga_siren_ensnare",
+    "modifier_oracle_fortunes_end_purge",
+    "modifier_rod_of_atos_debuff",
+    "modifier_lone_druid_spirit_bear_entangle_effect",
+    "modifier_techies_stasis_trap_stunned",
+    "modifier_treant_natures_guise_root",
+    "modifier_treant_overgrowth",
+    "modifier_abyssal_underlord_pit_of_malice_ensare"
+}
+
+-- Reference: https://dota2.gamepedia.com/Taunt
+utility.TauntModifiers = {
+    "modifier_axe_berserkers_call",
+    "modifier_legion_commander_duel",
+    "modifier_winter_wyvern_winters_curse"
+}
+
+-- only able to get stun modifier. no specific modifier for root or hex.
+function utility.GetStunTimeLeft(npc)
+    local mod = NPC.GetModifier(npc, "modifier_stunned")
+    if not mod then return 0 end
+    return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0)
 end
 
----------------------------------------------------------------------------------------------------
-return utilityModule;
+-- time left to be fixed in a position (stunned, sleeped, rooted, or taunted)
+function utility.GetFixTimeLeft(npc)
+    for i, val in ipairs(utility.StunModifiers) do
+        local mod = NPC.GetModifier(npc, val)
+        if mod then return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0) end
+    end
+
+    for i, val in ipairs(utility.SleepModifiers) do
+        local mod = NPC.GetModifier(npc, val)
+        if mod then return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0) end
+    end
+
+    for i, val in ipairs(utility.RootModifiers) do
+        local mod = NPC.GetModifier(npc, val)
+        if mod then return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0) end
+    end
+
+    for i, val in ipairs(utility.TauntModifiers) do
+        local mod = NPC.GetModifier(npc, val)
+        if mod then return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0) end
+    end
+
+    return 0
+end
+
+-- hex only has three types: sheepstick, lion's hex, shadow shaman's hex
+function utility.GetHexTimeLeft(npc)
+    local mod
+    local mod1 = NPC.GetModifier(npc, "modifier_sheepstick_debuff")
+    local mod2 = NPC.GetModifier(npc, "modifier_lion_voodoo")
+    local mod3 = NPC.GetModifier(npc, "modifier_shadow_shaman_voodoo")
+
+    if mod1 then mod = mod1 end
+    if mod2 then mod = mod2 end
+    if mod3 then mod = mod3 end
+
+    if not mod then return 0 end
+    return math.max(Modifier.GetDieTime(mod) - GameRules.GetGameTime(), 0)
+end
+
+-- return false for conditions that are not suitable to cast spell (like TPing, being invisible)
+-- return true otherwise
+function utility.IsSuitableToCastSpell(myHero)
+    if NPC.IsSilenced(myHero) or NPC.IsStunned(myHero) or not Entity.IsAlive(myHero) then return false end
+    if NPC.HasState(myHero, Enum.ModifierState.MODIFIER_STATE_INVISIBLE) then return false end
+    if NPC.HasModifier(myHero, "modifier_teleporting") then return false end
+    if NPC.IsChannellingAbility(myHero) then return false end
+
+    return true
+end
+
+function utility.IsSuitableToUseItem(myHero)
+    if NPC.IsStunned(myHero) or not Entity.IsAlive(myHero) then return false end
+    if NPC.HasState(myHero, Enum.ModifierState.MODIFIER_STATE_INVISIBLE) then return false end
+    if NPC.HasModifier(myHero, "modifier_teleporting") then return false end
+    if NPC.IsChannellingAbility(myHero) then return false end
+
+    return true
+end
+
+-- return true if: (1) channeling ability; (2) TPing
+function utility.IsChannellingAbility(npc)
+    if NPC.HasModifier(npc, "modifier_teleporting") then return true end
+    if NPC.IsChannellingAbility(npc) then return true end
+
+    return false
+end
+
+function utility.IsAffectedByDoT(npc)
+    if not npc then return false end
+
+    if NPC.HasModifier(npc, "modifier_item_radiance_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_item_urn_damage") then return true end
+    if NPC.HasModifier(npc, "modifier_alchemist_acid_spray") then return true end
+    if NPC.HasModifier(npc, "modifier_cold_feet") then return true end
+    if NPC.HasModifier(npc, "modifier_ice_blast") then return true end
+    if NPC.HasModifier(npc, "modifier_axe_battle_hunger") then return true end
+    if NPC.HasModifier(npc, "modifier_bane_fiends_grip") then return true end
+    if NPC.HasModifier(npc, "modifier_batrider_firefly") then return true end
+    if NPC.HasModifier(npc, "modifier_rattletrap_battery_assault") then return true end
+    if NPC.HasModifier(npc, "modifier_crystal_maiden_frostbite") then return true end
+    if NPC.HasModifier(npc, "modifier_crystal_maiden_freezing_field") then return true end
+    if NPC.HasModifier(npc, "modifier_dazzle_poison_touch") then return true end
+    if NPC.HasModifier(npc, "modifier_disruptor_static_storm") then return true end
+    if NPC.HasModifier(npc, "modifier_disruptor_thunder_strike") then return true end
+    if NPC.HasModifier(npc, "modifier_doom_bringer_doom") then return true end
+    if NPC.HasModifier(npc, "modifier_doom_bringer_scorched_earth_effect") then return true end
+    if NPC.HasModifier(npc, "modifier_dragon_knight_corrosive_breath_dot") then return true end
+    if NPC.HasModifier(npc, "modifier_earth_spirit_magnetize") then return true end
+    if NPC.HasModifier(npc, "modifier_ember_spirit_flame_guard") then return true end
+    if NPC.HasModifier(npc, "modifier_enigma_malefice") then return true end
+    if NPC.HasModifier(npc, "modifier_brewmaster_fire_permanent_immolation") then return true end
+    if NPC.HasModifier(npc, "modifier_gyrocopter_rocket_barrage") then return true end
+    if NPC.HasModifier(npc, "modifier_huskar_burning_spear_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_invoker_ice_wall_slow_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_invoker_chaos_meteor_burn") then return true end
+    if NPC.HasModifier(npc, "modifier_jakiro_dual_breath_burn") then return true end
+    if NPC.HasModifier(npc, "modifier_jakiro_macropyre") then return true end
+    if NPC.HasModifier(npc, "modifier_juggernaut_blade_fury") then return true end
+    if NPC.HasModifier(npc, "modifier_leshrac_diabolic_edict") then return true end
+    if NPC.HasModifier(npc, "modifier_leshrac_pulse_nova") then return true end
+    if NPC.HasModifier(npc, "modifier_ogre_magi_ignite") then return true end
+    if NPC.HasModifier(npc, "modifier_phoenix_fire_spirit_burn") then return true end
+    if NPC.HasModifier(npc, "modifier_phoenix_icarus_dive_burn") then return true end
+    if NPC.HasModifier(npc, "modifier_phoenix_sun_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_pudge_rot") then return true end
+    if NPC.HasModifier(npc, "modifier_pugna_life_drain") then return true end
+    if NPC.HasModifier(npc, "modifier_queenofpain_shadow_strike") then return true end
+    if NPC.HasModifier(npc, "modifier_razor_eye_of_the_storm") then return true end
+    if NPC.HasModifier(npc, "modifier_sandking_sand_storm") then return true end
+    if NPC.HasModifier(npc, "modifier_silencer_curse_of_the_silent") then return true end
+    if NPC.HasModifier(npc, "modifier_sniper_shrapnel_slow") then return true end
+    if NPC.HasModifier(npc, "modifier_shredder_chakram_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_treant_leech_seed") then return true end
+    if NPC.HasModifier(npc, "modifier_abyssal_underlord_firestorm_burn") then return true end
+    if NPC.HasModifier(npc, "modifier_venomancer_venomous_gale") then return true end
+    if NPC.HasModifier(npc, "modifier_venomancer_poison_nova") then return true end
+    if NPC.HasModifier(npc, "modifier_viper_viper_strike") then return true end
+    if NPC.HasModifier(npc, "modifier_warlock_shadow_word") then return true end
+    if NPC.HasModifier(npc, "modifier_warlock_golem_permanent_immolation_debuff") then return true end
+    if NPC.HasModifier(npc, "modifier_maledict") then return true end
+
+    return false
+end
+
+-- standard APIs have fixed this issue
+function utility.GetCastRange(myHero, ability)
+    return Ability.GetCastRange(ability)
+    -- if not myHero or not ability then return 0 end
+    --
+    -- local range = Ability.GetCastRange(ability)
+    --
+    -- if NPC.HasItem(myHero, "item_aether_lens", true) then
+    --     range = range + 250
+    -- end
+    --
+    -- for i = 0, 24 do
+    --     local ability = NPC.GetAbilityByIndex(myHero, i)
+    --     if ability and Ability.GetLevel(ability) > 0 then
+    --         local bonus_name = Ability.GetName(ability)
+    --         if string.find(bonus_name, "special_bonus_cast_range") then
+    --             local diff = tonumber(string.match(bonus_name, "[0-9]+"))
+    --             range = range + diff
+    --         end
+    --     end
+    -- end
+    --
+    -- return range
+end
+
+function utility.GetSafeDirection(myHero)
+    local mid = Vector()
+    local pos = Entity.GetAbsOrigin(myHero)
+
+    for i = 1, Heroes.Count() do
+        local enemy = Heroes.Get(i)
+        if enemy and not Entity.IsSameTeam(myHero, enemy) then
+            mid = mid + Entity.GetAbsOrigin(enemy)
+        end
+	end
+
+    mid:Set(mid:GetX()/Heroes.Count(), mid:GetY()/Heroes.Count(), mid:GetZ()/Heroes.Count())
+    return (pos + pos - mid):Normalized()
+end
+
+return utility
