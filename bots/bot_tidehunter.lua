@@ -48,20 +48,15 @@ function IsBotCasting(npcBot)
 		  or npcBot:IsCastingAbility()
 end
 
-function ConsiderItem(npcBot, item)
-	if (FindItemSlot("item_blink") == nil) then
+function ConsiderItem(npcBot, Item)
+	if (Item == nil or not Item:IsFullyCastable()) then
 		return 0
-	else
-		if (not ability:IsFullyCastable()) then
-			return 0
-		end
+	end
 
 		return 1
-	end
 end
 
 function ConsiderCast(npcBot, ability)
-	npcBot:ActionImmediate_Chat("ConsiderCast Cast", true)
 	if (not ability:IsFullyCastable()) then
 		return 0
 	end
@@ -69,49 +64,51 @@ function ConsiderCast(npcBot, ability)
 	return 1
 end
 
+--if(blink~=nil and blink:IsFullyCastable())
+--	then
+--		CastRange=CastRange+1200
+--		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+--		then
+--			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+--			if ( locationAoE.count >= 2 )
+--			then
+--				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+--				return 0
+--			end
+--		end
+
 function castOrder(PowUnit, npcBot)
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local blink = "item_blink"
+	local blink = module.ItemSlot(npcBot, "item_blink")
+
+	local Mana = npcBot:GetMana()
+	local MaxMana = npcBot:GetMaxMana()
+	local manaPer = Mana/MaxMana
 
 	if (IsBotCasting(npcBot)) then
 		return
 	end
 
-	--if (ConsiderItem(npcBot, blink) and ConsiderCast(npcBot, abilityR)) then
-	--	if (GetUnitToUnitDistance(npcBot,PowUnit) <= blink:GetCastRange()) then
-	--		npcBot:ActionImmediate_Chat("Wombo", true)
-	--		npcBot:ActionPush_UseAbility(abilityR)
-	--		npcBot:ActionPush_UseAbilityOnLocation(blink, PowUnit:GetLocation())
-	--		return
-	--	end
-	--elseif (ConsiderCast(npcBot, abilityR)) then
-	--	if (GetUnitToUnitDistance(npcBot,PowUnit) <= 600) then
-	--		npcBot:ActionImmediate_Chat("eh", true)
-	--		npcBot:Action_UseAbility(abilityR)
-	--		return
-	--	end
-	--else
-	--	return
-	--end
-
-	if (ConsiderCast(npcBot, abilityR)) then
-		npcBot:ActionImmediate_Chat("eh", true)
-		npcBot:Action_UseAbility(abilityR)
+	if (ConsiderItem(npcBot, blink) == 1 and ConsiderCast(npcBot, abilityR) == 1) then
+		if (GetUnitToUnitDistance(npcBot,PowUnit) <= 1500) then
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbilityOnLocation(blink, PowUnit:GetLocation())
+		end
+	elseif (ConsiderCast(npcBot, abilityR) == 1) then
+		if (GetUnitToUnitDistance(npcBot,PowUnit) <= 600) then
+			npcBot:ActionPush_UseAbility(abilityR)
+		end
+	else
 		return
 	end
-
-	--if (ConsiderCast(npcBot, abilityR) == 1 and PowUnit ~= nil and GetUnitToUnitDistance(npcBot,PowUnit) <= abilityR:GetCastRange()) then
-	--	npcBot:Action_UseAbilityOnEntity(abilityR, PowUnit)
-	--end
-
 
 end
 
 function Think()
 	local npcBot = GetBot()
-	local EHERO = npcBot:GetNearbyHeroes(600, true, BOT_MODE_NONE)
+	local EHERO = npcBot:GetNearbyHeroes(2000, true, BOT_MODE_NONE)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
 	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 

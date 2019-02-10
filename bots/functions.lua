@@ -24,16 +24,11 @@ function module.ItemPurchase(Items)
 	if (npcBot:GetGold() >= GetItemCost(list)) then
 		if (IsItemPurchasedFromSecretShop(list) == true and npcBot:DistanceFromSecretShop() < 50000) then
 			--Finds which Secret Shop is closer and goes towards the nearest
+			npcBot:ActionImmediate_Chat("Secret Shop", true)
 			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
-				if (npcBot:GetGold() % 50) then
-					npcBot:ActionImmediate_Chat("Wanna go to the Secret Shop 1", true)
-				end
-				npcBot:Action_MoveDirectly(SS1)
+				npcBot:ActionQueue_MoveDirectly(SS1)
 			else
-				if (npcBot:GetGold() % 50) then
-					npcBot:ActionImmediate_Chat("Wanna go to the Secret Shop 1", true)
-				end
-				npcBot:Action_MoveDirectly(SS2)
+				npcBot:ActionQueue_MoveDirectly(SS2)
 			end
 		end
 
@@ -79,7 +74,18 @@ function module.AbilityLevelUp(Ability)
 	end
 end
 
+----Assign castable item so it can be used----
+function module.ItemSlot(npcBot, ItemName)
+	local Slot = npcBot:FindItemSlot(ItemName)
 
+	if (Slot >= 0 and Slot <= 5) then
+		local Item = npcBot:GetItemInSlot(Slot)
+		Slot = nil
+		return Item
+	end
+
+	return nil
+end
 
 ----Find weakest enemy unit (Creep or Hero) and their health----
 function module.GetWeakestUnit(Enemy)

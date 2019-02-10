@@ -1,40 +1,40 @@
 local module = require(GetScriptDirectory().."/functions")
 local bot_generic = require(GetScriptDirectory().."/bot_generic")
 
-local SKILL_Q = "bane_enfeeble"
-local SKILL_W = "bane_brain_sap"
-local SKILL_E = "bane_nightmare"
-local SKILL_R = "bane_fiends_grip"
-local TALENT1 = "special_bonus_armor_7"
-local TALENT2 = "special_bonus_cast_range_100"
-local TALENT3 = "special_bonus_unique_bane_4"
-local TALENT4 = "special_bonus_exp_boost_40"
-local TALENT5 = "special_bonus_unique_bane_1"
-local TALENT6 = "special_bonus_movement_speed_50"
-local TALENT7 = "special_bonus_unique_bane_2"
-local TALENT8 = "special_bonus_unique_bane_3"
+local SKILL_Q = "juggernaut_blade_fury"
+local SKILL_W = "juggernaut_healing_ward"
+local SKILL_E = "juggernaut_blade_dance"
+local SKILL_R = "juggernaut_omni_slash"
+local TALENT1 = "special_bonus_all_stats_5"
+local TALENT2 = "special_bonus_movement_speed_20"
+local TALENT3 = "special_bonus_unique_juggernaut_4"
+local TALENT4 = "special_bonus_attack_speed_20"
+local TALENT5 = "special_bonus_armor_10"
+local TALENT6 = "special_bonus_unique_juggernaut_3"
+local TALENT7 = "special_bonus_hp_600"
+local TALENT8 = "special_bonus_unique_juggernaut_2"
 
 local Ability = {
-	SKILL_W,
+	SKILL_Q,
 	SKILL_E,
-	SKILL_W,
 	SKILL_Q,
 	SKILL_W,
-	SKILL_R,
-	SKILL_W,
-	SKILL_E,
-	SKILL_E,
-	TALENT2,
-	SKILL_E,
+	SKILL_Q,
 	SKILL_R,
 	SKILL_Q,
-	SKILL_Q,
+	SKILL_W,
+	SKILL_W,
+	TALENT1,
+	SKILL_W,
+	SKILL_R,
+	SKILL_E,
+	SKILL_E,
 	TALENT4,
-	SKILL_Q,
+	SKILL_E,
 	"nil",
 	SKILL_R,
 	"nil",
-	TALENT6,
+	TALENT5,
 	"nil",
 	"nil",
 	"nil",
@@ -64,7 +64,7 @@ function ConsiderCast(npcBot, ability)
 	return 1
 end
 
-function castOrder(PowUnit, npcBot)
+function castOrder(PowUnit, PowHealth, npcBot)
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
@@ -78,19 +78,13 @@ function castOrder(PowUnit, npcBot)
 		return
 	end
 
-	if (ConsiderCast(npcBot, abilityR) == 1 and ConsiderCast(npcBot, abilityW) == 1) then
-		if (GetUnitToUnitDistance(npcBot,PowUnit) <= abilityW:GetCastRange()) then
-			npcBot:ActionPush_UseAbilityOnEntity(abilityW, PowUnit)
+	if (ConsiderCast(npcBot, abilityR) == 1) then
+		if (PowUnit:IsStunned()) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityR, PowUnit)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityW, PowUnit)
 		end
 	end
 
-	if (ConsiderCast(npcBot, abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,PowUnit) <= abilityW:GetCastRange()) then
-		npcBot:Action_UseAbilityOnEntity(abilityW, PowUnit)
-	end
-
-	if (ConsiderCast(npcBot, abilityR) == 1 and GetUnitToUnitDistance(npcBot,PowUnit) <= abilityR:GetCastRange()) then
+	if (ConsiderCast(npcBot, abilityR) == 1 and abilityR:GetAbilityDamage() >= PowHealth) then
 		npcBot:Action_UseAbilityOnEntity(abilityR, PowUnit)
 	end
 
@@ -105,7 +99,7 @@ function Think()
 
 	module.AbilityLevelUp(Ability)
 	if (npcBot:GetLevel() >= 1 and PowUnit ~= nil) then
-		castOrder(PowUnit, npcBot)
+		castOrder(PowUnit, PowHealth, npcBot)
 	end
 
 	bot_generic.Think()
