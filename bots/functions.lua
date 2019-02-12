@@ -26,9 +26,9 @@ function module.ItemPurchase(Items)
 			--Finds which Secret Shop is closer and goes towards the nearest
 			npcBot:ActionImmediate_Chat("Secret Shop", true)
 			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
-				npcBot:ActionQueue_MoveDirectly(SS1)
+				npcBot:Action_MoveDirectly(SS1)
 			else
-				npcBot:ActionQueue_MoveDirectly(SS2)
+				npcBot:Action_MoveDirectly(SS2)
 			end
 		end
 

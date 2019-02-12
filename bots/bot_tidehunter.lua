@@ -97,7 +97,7 @@ function castOrder(PowUnit, npcBot)
 			npcBot:ActionPush_UseAbilityOnLocation(blink, PowUnit:GetLocation())
 		end
 	elseif (ConsiderCast(npcBot, abilityR) == 1) then
-		if (GetUnitToUnitDistance(npcBot,PowUnit) <= 600) then
+		if (GetUnitToUnitDistance(npcBot,PowUnit) <= 1000) then
 			npcBot:ActionPush_UseAbility(abilityR)
 		end
 	else
@@ -108,7 +108,7 @@ end
 
 function Think()
 	local npcBot = GetBot()
-	local EHERO = npcBot:GetNearbyHeroes(2000, true, BOT_MODE_NONE)
+	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
 	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 
