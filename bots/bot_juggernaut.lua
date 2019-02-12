@@ -97,10 +97,10 @@ function Think()
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
 	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 
-	module.AbilityLevelUp(Ability)
-	if (npcBot:GetLevel() >= 1 and PowUnit ~= nil) then
-		castOrder(PowUnit, PowHealth, npcBot)
-	end
+	--module.AbilityLevelUp(Ability)
+	--if (npcBot:GetLevel() >= 1 and PowUnit ~= nil) then
+	--	castOrder(PowUnit, PowHealth, npcBot)
+	--end
 
 	bot_generic.Think()
 end

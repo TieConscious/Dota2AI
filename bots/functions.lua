@@ -22,7 +22,7 @@ function module.ItemPurchase(Items)
 	local list = Items[1]
 
 	if (npcBot:GetGold() >= GetItemCost(list)) then
-		if (IsItemPurchasedFromSecretShop(list) == true and npcBot:DistanceFromSecretShop() < 50000) then
+		if (IsItemPurchasedFromSecretShop(list) == true) then
 			--Finds which Secret Shop is closer and goes towards the nearest
 			npcBot:ActionImmediate_Chat("Secret Shop", true)
 			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then

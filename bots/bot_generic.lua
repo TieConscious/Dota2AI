@@ -62,54 +62,73 @@ NP = Vector(-3500, 3500, 0)
 NN = Vector(-3500, -3500, 0)
 PN = Vector(3500, -3500, 0)
 
+----Game Constants----
+local npcBot = GetBot()
+local pID = npcBot:GetPlayerID()
+local team = npcBot:GetTeam()
+
+----Function Pointers----
+local GetLocation = npcBot.GetLocation
+local MoveTo = npcBot.Action_MoveToLocation
+local MoveDirectly = npcBot.Action_MoveDirectly
+local AttackMove = npcBot.Action_AttackMove
+local AttackUnit = npcBot.Action_AttackUnit
+
+local AP_AttackUnit = npcBot.ActionPush_AttackUnit
+local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
+
+local WRDByTower = npcBot.WasRecentlyDamagedByTower
+local WRDByCreep = npcBot.WasRecentlyDamagedByCreep
+local WRDByHero = npcBot.WasRecentlyDamagedByAnyHero
+
 ----Retreating function using 4 points on map to see where you are (imperfect if team fight)----
-function Retreat(npcBot)
-	if (npcBot:GetTeam() == 3) then
-		if (npcBot:GetPlayerID() == 7 or npcBot:GetPlayerID() == 8) then
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() + Vector(0, 100, 0))
-		elseif (npcBot:GetPlayerID() == 9 or npcBot:GetPlayerID() == 10) then
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() + Vector(0, 100, 0))
+function Retreat(RetreatSpace)
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(0, RetreatSpace, 0))
+		elseif (pID == 9 or pID == 10) then
+			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(0, RetreatSpace, 0))
 		else
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() + Vector(100, 100, 0))
+			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(RetreatSpace, RetreatSpace, 0))
 		end
 	else
-		if (npcBot:GetPlayerID() == 2 or npcBot:GetPlayerID() == 3) then
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() - Vector(0, 100, 0))
-		elseif (npcBot:GetPlayerID() == 5 or npcBot:GetPlayerID() == 6) then
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() - Vector(0, 100, 0))
+		if (pID == 2 or pID == 3) then
+			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(0, RetreatSpace, 0))
+		elseif (pID == 5 or pID == 6) then
+			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(0, RetreatSpace, 0))
 		else
-			npcBot:Action_MoveDirectly(npcBot:GetLocation() - Vector(100, 100, 0))
+			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(RetreatSpace, RetreatSpace, 0))
 		end
 	end
 end
 
 ----Move to lane at start of game----
-function MoveToLane_Start(npcBot)
+function MoveToLane_Start()
 	--if Dire--
-	if (npcBot:GetTeam() == 3) then
-		if (npcBot:GetPlayerID() == 7 or npcBot:GetPlayerID() == 8) then
-			npcBot:Action_AttackMove(DIRE_TTOWER1)
-		elseif (npcBot:GetPlayerID() == 9 or npcBot:GetPlayerID() == 10) then
-			npcBot:Action_AttackMove(DIRE_BTOWER1)
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+			AttackMove(npcBot, DIRE_TTOWER1)
+		elseif (pID == 9 or pID == 10) then
+			AttackMove(npcBot, DIRE_BTOWER1)
 		else
-			npcBot:Action_AttackMove(DIRE_MTOWER1)
+			AttackMove(npcBot, DIRE_MTOWER1)
 		end
 	--if Radiant--
-	elseif (npcBot:GetTeam() == 2) then
-		if (npcBot:GetPlayerID() == 2 or npcBot:GetPlayerID() == 3) then
-			npcBot:Action_AttackMove(RADIANT_TTOWER1)
-		elseif (npcBot:GetPlayerID() == 5 or npcBot:GetPlayerID() == 6) then
-			npcBot:Action_AttackMove(RADIANT_BTOWER1)
+	elseif (team == 2) then
+		if (pID == 2 or pID == 3) then
+			AttackMove(npcBot, RADIANT_TTOWER1)
+		elseif (pID == 5 or pID == 6) then
+			AttackMove(npcBot, RADIANT_BTOWER1)
 		else
-			npcBot:Action_AttackMove(RADIANT_MTOWER1)
+			AttackMove(npcBot, RADIANT_MTOWER1)
 		end
 	else
-		npcBot:Action_AttackMove(MIDDLE_COORDS)
+		AttackMove(npcBot, MIDDLE_COORDS)
 	end
 end
 
 ----Move to lane to farm----
-function MoveToLane_Farm(npcBot)
+function MoveToLane_Farm()
 	local RADIANT_MTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_MID, 500)
 	local RADIANT_TTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_TOP, 500)
 	local RADIANT_BTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_BOT, 500)
@@ -119,71 +138,91 @@ function MoveToLane_Farm(npcBot)
 	local DIRE_BTOWER_FRONT = GetLaneFrontLocation(TEAM_DIRE, LANE_BOT, 500)
 
 	--if Dire--
-	if (npcBot:GetTeam() == 3) then
-		if (npcBot:GetPlayerID() == 7 or npcBot:GetPlayerID() == 8) then
-			npcBot:Action_AttackMove(DIRE_TTOWER_FRONT)
-		elseif (npcBot:GetPlayerID() == 9 or npcBot:GetPlayerID() == 10) then
-			npcBot:Action_AttackMove(DIRE_BTOWER_FRONT)
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+			AttackMove(npcBot, DIRE_TTOWER_FRONT)
+		elseif (pID == 9 or pID == 10) then
+			AttackMove(npcBot, DIRE_BTOWER_FRONT)
 		else
-			npcBot:Action_AttackMove(DIRE_MTOWER_FRONT)
+			AttackMove(npcBot, DIRE_MTOWER_FRONT)
 		end
 	--if Radiant--
-	elseif (npcBot:GetTeam() == 2) then
-		if (npcBot:GetPlayerID() == 2 or npcBot:GetPlayerID() == 3) then
-			npcBot:Action_AttackMove(RADIANT_TTOWER_FRONT)
-		elseif (npcBot:GetPlayerID() == 5 or npcBot:GetPlayerID() == 6) then
-			npcBot:Action_AttackMove(RADIANT_BTOWER_FRONT)
+	elseif (team == 2) then
+		if (pID == 2 or pID == 3) then
+			AttackMove(npcBot, RADIANT_TTOWER_FRONT)
+		elseif (pID == 5 or pID == 6) then
+			AttackMove(npcBot, RADIANT_BTOWER_FRONT)
 		else
-			npcBot:Action_AttackMove(RADIANT_MTOWER_FRONT)
+			AttackMove(npcBot, RADIANT_MTOWER_FRONT)
 		end
 	else
-		npcBot:Action_AttackMove(MIDDLE_COORDS)
+		AttackMove(npcBot, MIDDLE_COORDS)
 	end
 end
 
 ----Get ready to end the game----
-function MoveToLane_Final(npcBot)
+function MoveToLane_Final()
 	local RADIANT_MTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_MID, 500)
 
 	local DIRE_MTOWER_FRONT = GetLaneFrontLocation(TEAM_DIRE, LANE_MID, 500)
 
 	--if Dire--
-	if (npcBot:GetTeam() == 3) then
-		npcBot:Action_AttackMove(DIRE_MTOWER_FRONT)
+	if (team == 3) then
+		AttackMove(npcBot, DIRE_MTOWER_FRONT)
 	--if Radiant--
-	elseif (npcBot:GetTeam() == 2) then
-		npcBot:Action_AttackMove(RADIANT_MTOWER_FRONT)
+	elseif (team == 2) then
+		AttackMove(npcBot, RADIANT_MTOWER_FRONT)
 	else
-		npcBot:Action_AttackMove(MIDDLE_COORDS)
+		AttackMove(npcBot, MIDDLE_COORDS)
 	end
 end
 
-----Get the fuck out----
-function BTFO(npcBot)
-	if (npcBot:GetTeam() == 3) then
-		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+----Back the fuck out----
+function BTFO()
+	if (team == 3) then
+		MoveTo(npcBot, DIRE_FOUNTAIN)
 		return
 	else
-		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+		MoveTo(npcBot, RADIANT_FOUNTAIN)
 		return
 	end
 end
+
+----Counts the number of units (Heroes or creeps)----
+function NumberOfPeeps(Table)
+	local count = 0
+	for _ in pairs(Table) do
+		count = count + 1
+	end
+	return count
+  end
+
+--
+--
+--
+--
+--
+--
+--
 
 function Think()
 	----various Hero stats----
-	local npcBot = GetBot()
 	local GameTime = DotaTime()
 	local Health = npcBot:GetHealth()
 	local MaxHealth = npcBot:GetMaxHealth()
 	local percentHealth = Health/MaxHealth
 	local ARange = npcBot:GetAttackRange()
-	----Enemy and Creep health stats----
+
+	----Enemy and Creep stats----
 	local creeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local WeakestCreep,CreepHealth = module.GetWeakestUnit(creeps)
-	--local numCreeps =
+	local numCreeps = NumberOfPeeps(creeps)
+
+	local Alliedcreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+	local WeakestAllyCreep,AllyHealth = module.GetWeakestUnit(Alliedcreeps)
 
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	--local numEHero =
+	local numEHero = NumberOfPeeps(EHERO)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
 	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 
@@ -198,7 +237,7 @@ function Think()
 	if (GameTime <= 20) then
 		if (WeakestCreep == nil and WeakestEHero == nil) then
 			if (percentHealth == 1 and npcBot:NumQueuedActions() == 0) then
-				MoveToLane_Start(npcBot)
+				MoveToLane_Start()
 				return
 			end
 		end
@@ -207,17 +246,25 @@ function Think()
 	if (GameTime <= 1200) then
 		----Back the fuck out----
 		if (percentHealth <= 0.25) then
-			BTFO(npcBot)
+			BTFO()
 			return
 		end
-		----Retreat from tower damage----
-		if (npcBot:WasRecentlyDamagedByTower(0.5) or npcBot:WasRecentlyDamagedByCreep(0.5) or npcBot:WasRecentlyDamagedByAnyHero(0.5)) then
-			Retreat(npcBot)
+		----Retreat from various damage----
+		if (WRDByTower(npcBot, 0.5)) then
+			Retreat(300)
+		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3 and EHERO == nil) then
+			AP_AttackUnit(npcBot, creeps[1], false)
+		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3 and EHERO ~= nil) then
+			AP_AttackUnit(npcBot, creeps[1], false)
+		elseif (WRDByCreep(npcBot, 0.5) and percentHealth <= 0.3) then
+			Retreat(100)
+		elseif (WRDByHero(npcBot, 0.5)) then
+			Retreat(100)
 		end
 		----If no other actions, move to beginning of farm----
 		if (WeakestEHero == nil) then
 			if (percentHealth == 1 and npcBot:NumQueuedActions() <= 1) then
-				MoveToLane_Farm(npcBot)
+				MoveToLane_Farm()
 			end
 		end
 		----Calculates weakest heroes percent health, and attacks if they're under the set percent----
@@ -225,25 +272,27 @@ function Think()
 			local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
 			local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
 			if (PowUnit:IsStunned()) then
-				npcBot:ActionPush_AttackUnit(PowUnit, false)
+				AP_AttackUnit(npcBot, PowUnit, false)
 			elseif (WeakestPerHealth <= 0.4) then
-				npcBot:ActionPush_AttackUnit(WeakestEHero, false)
+				AP_AttackUnit(npcBot, WeakestEHero, false)
 			elseif (PowPerHealth <= 0.4 ) then
-				npcBot:ActionPush_AttackUnit(PowUnit, false)
+				AP_AttackUnit(npcBot, PowUnit, false)
 			else
 				return
 			end
 		end
 		----Last hit creep----
-		if (WeakestCreep ~= nil and percentHealth > 0.2 and CreepHealth <= npcBot:GetAttackDamage() * 1.5) then
+		if (WeakestCreep ~= nil and percentHealth > 0.2 and CreepHealth <= npcBot:GetAttackDamage() * 1.2) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
-				npcBot:Action_AttackUnit(WeakestCreep, false)
+				AttackUnit(npcBot, WeakestCreep, false)
 			else
-				npcBot:ActionPush_AttackUnit(WeakestCreep, false)
-				npcBot:ActionPush_MoveToUnit(WeakestCreep)
-				--if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
-				--	npcBot:Action_AttackUnit(WeakestCreep, true)
-				--end
+				AP_AttackUnit(npcBot, WeakestCreep, false)
+				AP_MoveToUnit(npcBot, WeakestCreep)
+			end
+		----Deny creep----
+		elseif (WeakestAllyCreep ~= nil and percentHealth > 0.2 and AllyHealth <= npcBot:GetAttackDamage()) then
+			if (GetUnitToUnitDistance(npcBot,WeakestAllyCreep) <= ARange) then
+				AttackUnit(npcBot, WeakestAllyCreep, false)
 			end
 		end
 
@@ -254,42 +303,42 @@ function Think()
 		----Move to location----
 		if (GameTime <= 1260) then
 			if (WeakestCreep == nil and npcBot:NumQueuedActions() <= 1) then
-				npcBot:Action_MoveToLocation(MIDDLE_COORDS)
+				MoveTo(npcBot, MIDDLE_COORDS)
 				return
 			end
 		end
 		----Retreat from damage if health is low----
-		if (percentHealth <= 0.2 and (npcBot:WasRecentlyDamagedByTower(0.5) or npcBot:WasRecentlyDamagedByCreep(0.5) or npcBot:WasRecentlyDamagedByAnyHero(0.5))) then
-			Retreat(npcBot)
+		if (percentHealth <= 0.2 and (WRDByTower(npcBot, 0.5) or WRDByCreep(npcBot, 0.5) or WRDByHero(npcBot, 0.5))) then
+			Retreat()
 		end
 		----If no other actions, move to beginning of farm----
 		if (percentHealth >= 0.5 and npcBot:NumQueuedActions() <= 1) then
-			MoveToLane_Final(npcBot)
+			MoveToLane_Final()
 		end
 		----Calculates weakest heroes percent health, and attacks if they're under the set percent or attacks the most powerful stunned target----
 		if (percentHealth > 0.2 and WeakestEHero ~= nil) then
 			local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
 			----Attack the stunned most powerful unit----
 			--if (PowUnit:IsStunned()) then
-			--	npcBot:ActionPush_AttackUnit(PowUnit, false)
+			--	AP_AttackUnit(npcBot, PowUnit, false)
 			----If the weakest unit is below 40% health----
 			if (WeakestPerHealth <= 0.4) then
 				if (GetUnitToUnitDistance(npcBot,WeakestEHero) <= ARange) then
-					npcBot:ActionPush_AttackUnit(WeakestEHero, false)
+					AP_AttackUnit(npcBot, WeakestEHero, false)
 				else
-					npcBot:ActionPush_AttackUnit(WeakestEHero, false)
-					npcBot:ActionPush_MoveToUnit(WeakestEHero)
+					AP_AttackUnit(npcBot, WeakestEHero, false)
+					AP_MoveToUnit(npcBot, WeakestEHero)
 				end
 			end
 		end
 		----Last hit creep----
 		if (WeakestCreep ~= nil and percentHealth > 0.2) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
-				npcBot:Action_AttackUnit(WeakestCreep, false)
+				AttackUnit(npcBot, WeakestCreep, false)
 				return
 			else
-				npcBot:ActionPush_AttackUnit(WeakestCreep, false)
-				npcBot:ActionPush_MoveToUnit(WeakestCreep)
+				AP_AttackUnit(npcBot, WeakestCreep, false)
+				AP_MoveToUnit(npcBot, WeakestCreep)
 				return
 			end
 		end
