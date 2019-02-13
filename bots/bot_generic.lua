@@ -218,7 +218,6 @@ function Think()
 	----Enemy and Creep stats----
 	local creeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local WeakestCreep,CreepHealth = module.GetWeakestUnit(creeps)
-	local numCreeps = NumberOfPeeps(creeps)
 
 	local Alliedcreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local WeakestAllyCreep,AllyHealth = module.GetWeakestUnit(Alliedcreeps)
@@ -226,7 +225,6 @@ function Think()
 	local ETowers = npcBot:GetNearbyTowers(700, true)
 
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local numEHero = NumberOfPeeps(EHERO)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
 	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 
@@ -254,14 +252,18 @@ function Think()
 			return
 		end
 	----Retreat from various damage----
-		----Retreat from tower----
-		if (WRDByTower(npcBot, 0.5)) then
-			Retreat(300)
+		----Retreat from tower if too little ally creeps----
+		if (#Alliedcreeps <= 1 and #ETowers > 0) then
+			Retreat (270)
+		end
+		----Retreat from tower if damaged----
+		if (WRDByTower(npcBot, 0.5)) then ----number of allies
+			Retreat(270)
 		----Fight creeps if health is above 30%----
 		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3) then
-			if (numCreeps > 4 or ETowers ~= nil) then
-				Retreat(350)
-			elseif ((ETowers == nil or #ETowers == 0) and numCreeos <= 4) then
+			if (#creeps > 4 and #Alliedcreeps <= 1) then
+				Retreat(120)
+			elseif ((ETowers == nil or #ETowers == 0) and #creeps <= 4) then
 				AP_AttackUnit(npcBot, creeps[1], false)
 			end
 		----Retreat from creeps if health is low----
@@ -278,19 +280,19 @@ function Think()
 			end
 		end
 	----Calculates weakest heroes percent health, and attacks if they're under the set percent----
-		if (percentHealth > 0.3 and EHero ~= nil) then
-			local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
-			local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
-			if (PowUnit:IsStunned()) then
-				AP_AttackUnit(npcBot, PowUnit, false)
-			elseif (WeakestPerHealth <= 0.4) then
-				AP_AttackUnit(npcBot, WeakestEHero, false)
-			elseif (PowPerHealth <= 0.4 ) then
-				AP_AttackUnit(npcBot, PowUnit, false)
-			else
-				return
-			end
-		end
+		--if (percentHealth > 0.3 and EHero ~= nil) then
+		--	local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
+		--	local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
+		--	if (PowUnit:IsStunned()) then
+		--		AP_AttackUnit(npcBot, PowUnit, false)
+		--	elseif (WeakestPerHealth <= 0.4) then
+		--		AP_AttackUnit(npcBot, WeakestEHero, false)
+		--	elseif (PowPerHealth <= 0.4 ) then
+		--		AP_AttackUnit(npcBot, PowUnit, false)
+		--	else
+		--		return
+		--	end
+		--end
 	----Last hit creep----
 		if (WeakestCreep ~= nil and percentHealth > 0.2 and CreepHealth <= npcBot:GetAttackDamage() * 1.2) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
