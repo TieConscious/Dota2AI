@@ -2,6 +2,7 @@ local module = {}
 
 
 ---- Function Pointers -----
+local npcBot = GetBot()
 local MoveDirectly = npcBot.Action_MoveDirectly
 local AttackMove = npcBot.Action_AttackMove
 
