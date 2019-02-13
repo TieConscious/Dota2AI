@@ -91,6 +91,7 @@ function Retreat(RetreatSpace)
 		else
 			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(RetreatSpace, RetreatSpace, 0))
 		end
+		return
 	else
 		if (pID == 2 or pID == 3) then
 			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(0, RetreatSpace, 0))
@@ -99,6 +100,7 @@ function Retreat(RetreatSpace)
 		else
 			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(RetreatSpace, RetreatSpace, 0))
 		end
+		return
 	end
 end
 
@@ -221,6 +223,8 @@ function Think()
 	local Alliedcreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local WeakestAllyCreep,AllyHealth = module.GetWeakestUnit(Alliedcreeps)
 
+	local ETowers = npcBot:GetNearbyTowers(700, true)
+
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local numEHero = NumberOfPeeps(EHERO)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
@@ -244,30 +248,36 @@ function Think()
 	end
 	----"Early" gameplay----
 	if (GameTime <= 1200) then
-		----Back the fuck out----
+	----Back the fuck out----
 		if (percentHealth <= 0.25) then
 			BTFO()
 			return
 		end
-		----Retreat from various damage----
+	----Retreat from various damage----
+		----Retreat from tower----
 		if (WRDByTower(npcBot, 0.5)) then
 			Retreat(300)
-		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3 and EHERO == nil) then
-			AP_AttackUnit(npcBot, creeps[1], false)
-		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3 and EHERO ~= nil) then
-			AP_AttackUnit(npcBot, creeps[1], false)
+		----Fight creeps if health is above 30%----
+		elseif (WRDByCreep(npcBot, 0.5) and percentHealth > 0.3) then
+			if (numCreeps > 4 or ETowers ~= nil) then
+				Retreat(350)
+			elseif ((ETowers == nil or #ETowers == 0) and numCreeos <= 4) then
+				AP_AttackUnit(npcBot, creeps[1], false)
+			end
+		----Retreat from creeps if health is low----
 		elseif (WRDByCreep(npcBot, 0.5) and percentHealth <= 0.3) then
-			Retreat(100)
+			Retreat(120)
+		----Retreat from Heroes----
 		elseif (WRDByHero(npcBot, 0.5)) then
-			Retreat(100)
+			Retreat(120)
 		end
-		----If no other actions, move to beginning of farm----
+	----If no other actions, move to beginning of farm----
 		if (WeakestEHero == nil) then
 			if (percentHealth == 1 and npcBot:NumQueuedActions() <= 1) then
 				MoveToLane_Farm()
 			end
 		end
-		----Calculates weakest heroes percent health, and attacks if they're under the set percent----
+	----Calculates weakest heroes percent health, and attacks if they're under the set percent----
 		if (percentHealth > 0.3 and EHero ~= nil) then
 			local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
 			local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
@@ -281,7 +291,7 @@ function Think()
 				return
 			end
 		end
-		----Last hit creep----
+	----Last hit creep----
 		if (WeakestCreep ~= nil and percentHealth > 0.2 and CreepHealth <= npcBot:GetAttackDamage() * 1.2) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
 				AttackUnit(npcBot, WeakestCreep, false)
@@ -289,33 +299,35 @@ function Think()
 				AP_AttackUnit(npcBot, WeakestCreep, false)
 				AP_MoveToUnit(npcBot, WeakestCreep)
 			end
-		----Deny creep----
+	----Deny creep----
 		elseif (WeakestAllyCreep ~= nil and percentHealth > 0.2 and AllyHealth <= npcBot:GetAttackDamage()) then
 			if (GetUnitToUnitDistance(npcBot,WeakestAllyCreep) <= ARange) then
 				AttackUnit(npcBot, WeakestAllyCreep, false)
 			end
 		end
-
+		--if (ETowers ~= nil) then
+		--	Retreat(100)
+		--end
 	end
 
 	----Mid/Late gameplay----
 	if (GameTime > 1200) then
-		----Move to location----
+	----Move to location----
 		if (GameTime <= 1260) then
 			if (WeakestCreep == nil and npcBot:NumQueuedActions() <= 1) then
 				MoveTo(npcBot, MIDDLE_COORDS)
 				return
 			end
 		end
-		----Retreat from damage if health is low----
+	----Retreat from damage if health is low----
 		if (percentHealth <= 0.2 and (WRDByTower(npcBot, 0.5) or WRDByCreep(npcBot, 0.5) or WRDByHero(npcBot, 0.5))) then
 			Retreat()
 		end
-		----If no other actions, move to beginning of farm----
+	----If no other actions, move to beginning of farm----
 		if (percentHealth >= 0.5 and npcBot:NumQueuedActions() <= 1) then
 			MoveToLane_Final()
 		end
-		----Calculates weakest heroes percent health, and attacks if they're under the set percent or attacks the most powerful stunned target----
+	----Calculates weakest heroes percent health, and attacks if they're under the set percent or attacks the most powerful stunned target----
 		if (percentHealth > 0.2 and WeakestEHero ~= nil) then
 			local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
 			----Attack the stunned most powerful unit----
@@ -331,7 +343,7 @@ function Think()
 				end
 			end
 		end
-		----Last hit creep----
+	----Last hit creep----
 		if (WeakestCreep ~= nil and percentHealth > 0.2) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
 				AttackUnit(npcBot, WeakestCreep, false)
