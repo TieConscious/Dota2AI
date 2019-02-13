@@ -1,6 +1,10 @@
 local module = {}
 
 
+---- Function Pointers -----
+local MoveDirectly = npcBot.Action_MoveDirectly
+local AttackMove = npcBot.Action_AttackMove
+
 ----Item Purchasing Modules----
 
 function module.ItemPurchase(Items)
@@ -26,9 +30,9 @@ function module.ItemPurchase(Items)
 			--Finds which Secret Shop is closer and goes towards the nearest
 			npcBot:ActionImmediate_Chat("Secret Shop", true)
 			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
-				npcBot:Action_MoveDirectly(SS1)
+				MoveDirectly(npcBot, SS1)
 			else
-				npcBot:Action_MoveDirectly(SS2)
+				MoveDirectly(npcBot, SS2)
 			end
 		end
 
@@ -158,9 +162,9 @@ function module.BTFO(npcBot)
 	if (percentHealth <= 0.9) then
 		npcBot:ActionImmediate_Chat("RUN 1!!!", true)
 		if (npcBot:GetTeam() == 3) then
-			npcBot:Action_AttackMove(DIRE_FOUNTAIN)
+			AttackMove(npcbot, DIRE_FOUNTAIN)
 		else
-			npcBot:Action_AttackMove(RADIANT_FOUNTAIN)
+			AttackMove(npcbot, RADIANT_FOUNTAIN)
 		end
 		npcBot:ActionImmediate_Chat("RUN 2!!!", true)
 	end
