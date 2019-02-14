@@ -209,14 +209,15 @@ function Think()
 	local percentHealth = Health/MaxHealth
 	local ARange = npcBot:GetAttackRange()
 
+	local AllyTowers = npcBot:GetNearbyTowers(700, false)
+	local ETowers = npcBot:GetNearbyTowers(700, true)
+
 	----Enemy and Creep stats----
 	local creeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local WeakestCreep,CreepHealth = module.GetWeakestUnit(creeps)
 
 	local Alliedcreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local WeakestAllyCreep,AllyHealth = module.GetWeakestUnit(Alliedcreeps)
-
-	local ETowers = npcBot:GetNearbyTowers(700, true)
 
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
@@ -272,17 +273,16 @@ function Think()
 			end
 		end
 	----Calculates weakest heroes percent health, and attacks if they're under the set percent----
-		--if (percentHealth > 0.3 and EHero ~= nil and #EHero > 0 and #EHero < 3) then
-		--	local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
-		--	local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
-		--	if (WeakestPerHealth <= 0.4) then
-		--		AP_AttackUnit(npcBot, WeakestEHero, false)
-		--	elseif (PowPerHealth <= 0.4 ) then
-		--		AP_AttackUnit(npcBot, PowUnit, false)
-		--	else
-		--		return
-		--	end
-		--end
+		if (percentHealth > 0.3 and EHERO ~= nil and #EHERO > 0) then
+			local FirstEHeroHealth = (EHERO[1]:GetHealth())/(EHERO[1]:GetMaxHealth())
+			--local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
+			--local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
+			if (FirstEHeroHealth <= 0.5 and AllyTowers ~= nil and #AllyTowers > 0) then
+				AP_AttackUnit(npcBot, EHERO[1], false)
+			elseif (FirstEHeroHealth <= 0.3) then
+				AP_AttackUnit(npcBot, EHERO[1], false)
+			end
+		end
 	----Last hit creep----
 		if (WeakestCreep ~= nil and percentHealth > 0.2 and CreepHealth <= npcBot:GetAttackDamage() * 1.2 and #Alliedcreeps >= 1) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= ARange) then
