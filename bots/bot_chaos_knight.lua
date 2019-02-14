@@ -1,5 +1,6 @@
 local module = require(GetScriptDirectory().."/functions")
 local bot_generic = require(GetScriptDirectory().."/bot_generic")
+local cu  = require(GetScriptDirectory().."/chaos_util")
 
 local SKILL_Q = "chaos_knight_chaos_bolt"
 local SKILL_W = "chaos_knight_reality_rift"
@@ -42,7 +43,6 @@ local Ability = {
 	TALENT7
 }
 
-local npcBot = GetBot()
 local UseAbility = npcBot.ActionPush_UseAbilityOnEntity
 
 function IsBotCasting()
@@ -102,14 +102,60 @@ end
 
 function Think()
 	local npcBot = GetBot()
-	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
-	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
+	local gameTime = DotaTime()
+	local health = npcBot:GetHealth()
+	local maxHealth = npcBot:GetMaxHealth()
+	local percentHealth = health/maxHealth
+	local attackRange = npcBot:GetAttackRange()
+	------Enemy and Creep stats----
+	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(eCreeps)
+	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
+	local eTowers = npcBot:GetNearbyTowers(700, true)
+	local aTowers = npcBot:GetNearbyTowers(700, false)
+	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local eWeakestHero,eWHeroHealth = module.GetWeakestUnit(EHERO)
+	local eStrongest,eSHeroHealth = module.GetStrongestHero(EHERO)
 
 	module.AbilityLevelUp(Ability)
 	if (npcBot:GetLevel() >= 1 and PowUnit ~= nil) then
-		castOrder(PowUnit)
+		castOrder(eWeakestHero)
 	end
+
+	if (gameTime <= 20) then
+		cu.MTL_Start(npcBot)
+	end
+
+-- ----Last-hit Creep----
+-- 	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
+-- 		if (eCreepHealth <= npcBot:GetAttackDamage() or #aCreeps == 0) then
+-- 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
+-- 				npcBot:Action_AttackUnit(eWeakestCreep, false)
+-- 			else
+-- 				npcBot:Action_AttackUnit(eWeakestCreep, false)
+-- 				npcBot:ActionPush_MoveToUnit(eWeakestCreep)
+-- 			end
+-- 		end
+-- 		if (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
+-- 			npcBot:ActionPush_MoveToUnit(eWeakestCreep)
+-- 		end
+-- ----Deny creep----
+-- 	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
+-- 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
+-- 			npcBot:Action_AttackUnit(aWeakestCreep, false)
+-- 		end
+-- ----Wack something----
+-- 	elseif (eCreeps[1] ~= nil) then
+-- 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+-- 			npcBot:Action_AttackUnit(eCreeps[1], false)
+-- 		else
+-- 			npcBot:Action_AttackUnit(eCreeps[1], false)
+-- 			npcBot:ActionPush_MoveToUnit(eCreeps[1])
+-- 		end
+-- 	else
+-- 		cu.MTL_Farm(npcBot)
+-- 	end
 
 	bot_generic.Think()
 end
