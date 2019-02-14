@@ -81,25 +81,51 @@ local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
 local WRDByTower = npcBot.WasRecentlyDamagedByTower
 local WRDByCreep = npcBot.WasRecentlyDamagedByCreep
 local WRDByHero = npcBot.WasRecentlyDamagedByAnyHero
+local howFar;
+
+--move only for that distance.
+function completedPathFinding(totalDistance, a,wayPointList)
+	moved = 0
+	estimatedPosition = npcBot:GetLocation()
+	npcBot:Action_ClearActions(true)
+	for _,location in pairs(wayPointList) do
+		--calculate distance to that way point.
+		vectorToLocation = location - estimatedPosition
+		distance = math.sqrt(math.pow(vectorToLocation[1], 2) + math.pow(vectorToLocation[2], 2) + math.pow(vectorToLocation[3], 2))
+		moved = moved + distance
+		if moved > howFar then
+			--get direction and multiply by distance left, move there
+			npcBot:ActionQueue_MoveToLocation(vectorToLocation / distance * (moved - howFar))
+			return
+		end
+		npcBot:ActionQueue_MoveToLocation(location)
+		estimatedPosition = location
+	end
+end
 
 ----Retreating function using 4 points on map to see where you are (imperfect if team fight)----
 function Retreat(RetreatSpace)
 	if (team == 3) then
 		if (pID == 7 or pID == 8) then
-			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(0, RetreatSpace, 0))
+			howFar = RetreatSpace
+			GeneratePath(npcBot:GetLocation(), DIRE_TTOWER1, GetAvoidanceZones(), completedPathFinding)
 		elseif (pID == 9 or pID == 10) then
-			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(0, RetreatSpace, 0))
+			howFar = RetreatSpace
+			GeneratePath(npcBot:GetLocation(), DIRE_BTOWER1, GetAvoidanceZones(), completedPathFinding)
 		else
-			MoveDirectly(npcBot, GetLocation(npcBot) + Vector(RetreatSpace, RetreatSpace, 0))
+			MoveDirectly(npcBot, npcBot:GetLocation() + Vector(RetreatSpace, RetreatSpace, 0))
 		end
 	else
 		if (pID == 2 or pID == 3) then
-			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(0, RetreatSpace, 0))
+			howFar = RetreatSpace
+			GeneratePath(npcBot:GetLocation(), RADIANT_TTOWER1, GetAvoidanceZones(), completedPathFinding)
 		elseif (pID == 4 or pID == 5) then
-			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(0, RetreatSpace, 0))
+			howFar = RetreatSpace
+			GeneratePath(npcBot:GetLocation(), RADIANT_BTOWER1, GetAvoidanceZones(), completedPathFinding)
 		else
-			MoveDirectly(npcBot, GetLocation(npcBot) - Vector(RetreatSpace, RetreatSpace, 0))
+			MoveDirectly(npcBot, npcBot:GetLocation() - Vector(RetreatSpace, RetreatSpace, 0))
 		end
+		return
 	end
 end
 
@@ -262,8 +288,9 @@ function Think()
 		elseif (WRDByCreep(npcBot, 0.5) and percentHealth <= 0.3) then
 			Retreat(120)
 		----Retreat from Heroes----
-		elseif (WRDByHero(npcBot, 0.5)) then
-			Retreat(120)
+        elseif (WRDByHero(npcBot, 0.5)) then
+            Retreat(120)
+        return
 		end
 	----If no other actions, move to beginning of farm----
 		if (ETowers == nil or #ETowers == 0) then
@@ -273,7 +300,7 @@ function Think()
 			end
 		end
 	----Calculates weakest heroes percent health, and attacks if they're under the set percent----
-		if (percentHealth > 0.3 and EHERO ~= nil and #EHERO > 0) then
+		if (percentHealth > 0.3 and ETowers == nil and #ETowers == 0 and EHERO ~= nil and #EHERO > 0) then
 			local FirstEHeroHealth = (EHERO[1]:GetHealth())/(EHERO[1]:GetMaxHealth())
 			--local WeakestPerHealth = EHeroHealth/WeakestEHero:GetMaxHealth()
 			--local PowPerHealth = PowHealth/PowUnit:GetMaxHealth()
@@ -364,4 +391,3 @@ function bot_generic.Think()
 end
 
 return bot_generic
-
