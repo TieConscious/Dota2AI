@@ -62,11 +62,10 @@ NP = Vector(-3500, 3500, 0)
 NN = Vector(-3500, -3500, 0)
 PN = Vector(3500, -3500, 0)
 
-----Globals----
-npcBot = GetBot()
-pID = npcBot:GetPlayerID()
-team = npcBot:GetTeam()
-
+----Game Constants----
+local npcBot = GetBot()
+local pID = npcBot:GetPlayerID()
+local team = npcBot:GetTeam()
 
 ----Function Pointers----
 local GetLocation = npcBot.GetLocation
@@ -209,15 +208,14 @@ function NumberOfPeeps(Table)
 --
 
 function Think()
-	npcBot = GetBot()
-	pID = npcBot:GetPlayerID()
-	team = npcBot:GetTeam()
 	----various Hero stats----
+	npcBot = GetBot()
 	local GameTime = DotaTime()
 	local Health = npcBot:GetHealth()
 	local MaxHealth = npcBot:GetMaxHealth()
 	local percentHealth = Health/MaxHealth
 	local ARange = npcBot:GetAttackRange()
+	print("generic: "..npcBot:GetPlayerID())
 
 	----Enemy and Creep stats----
 	local creeps = npcBot:GetNearbyLaneCreeps(1600, true)
@@ -366,6 +364,11 @@ function Think()
 end
 
 function bot_generic.Think()
+	Think()
+	return
+end
+
+function bot_generic.Medusa()
 	Think()
 	return
 end
