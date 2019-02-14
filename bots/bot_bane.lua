@@ -43,6 +43,7 @@ local Ability = {
 }
 
 local npcBot = GetBot()
+local AP_AttackUnit = npcBot.ActionPush_AttackUnit
 local UseAbility = npcBot.ActionPush_UseAbilityOnEntity
 
 function IsBotCasting()
@@ -67,7 +68,10 @@ function ConsiderCast(ability)
 	return 1
 end
 
-function castOrder(PowUnit)
+function castOrder(EHERO)
+	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
+	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
+
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
@@ -76,38 +80,41 @@ function castOrder(PowUnit)
 	local Mana = npcBot:GetMana()
 	local MaxMana = npcBot:GetMaxMana()
 	local manaPer = Mana/MaxMana
+	local AllyTowers = npcBot:GetNearbyTowers(700, false)
 
 	if (IsBotCasting()) then
 		return
 	end
 
-	if (ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1) then
-		if (GetUnitToUnitDistance(npcBot,PowUnit) <= abilityW:GetCastRange()) then
-			UseAbility(npcBot, abilityW, PowUnit)
-			UseAbility(npcBot, abilityR, PowUnit)
-			UseAbility(npcBot, abilityW, PowUnit)
-		end
+	if (ConsiderCast(abilityE) == 1 and AllyTowers ~= nil and #AllyTowers ~= 0) then
+		UseAbility(npcBot, abilityE, EHERO[1])
 	end
 
-	if (ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,PowUnit) <= abilityW:GetCastRange()) then
-		UseAbility(npcBot, abilityW, PowUnit)
+	if (ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1) then
+		if (GetUnitToUnitDistance(npcBot,PowUnit) <= abilityW:GetCastRange()) then
+			UseAbility(npcBot, abilityQ, PowUnit)
+			UseAbility(npcBot, abilityW, PowUnit)
+			UseAbility(npcBot, abilityR, PowUnit)
+			AP_AttackUnit(npcBot, PowUnit)
+		end
 	end
 
 	if (ConsiderCast(abilityR) == 1 and GetUnitToUnitDistance(npcBot,PowUnit) <= abilityR:GetCastRange()) then
 		UseAbility(npcBot, abilityR, PowUnit)
 	end
 
+	if (ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,EHERO[1]) <= abilityW:GetCastRange()) then
+		UseAbility(npcBot, abilityW, EHERO[1])
+	end
 
 end
 
 function Think()
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local WeakestEHero,EHeroHealth = module.GetWeakestUnit(EHERO)
-	local PowUnit,PowHealth = module.GetStrongestHero(EHERO)
 
 	module.AbilityLevelUp(Ability)
-	if (npcBot:GetLevel() >= 1 and PowUnit ~= nil) then
-		castOrder(PowUnit)
+	if (npcBot:GetLevel() >= 1 and (EHERO ~= nil or #EHERO ~= 0)) then
+		castOrder(EHERO)
 	end
 
 	bot_generic.Think()
