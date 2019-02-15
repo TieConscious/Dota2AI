@@ -1,5 +1,5 @@
 local module = require(GetScriptDirectory().."/functions")
-local cu = {}
+local movement = {}
 
 ----Radiant Locations----
 RADIANT_FOUNTAIN = Vector(-6750 ,-6550, 512)
@@ -169,4 +169,4 @@ end
 -- 	end
 -- end
 
-return cu
+return movement
