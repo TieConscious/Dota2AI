@@ -1,3 +1,4 @@
+local movement = require(GetScriptDirectory().."/movement_util")
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)
@@ -26,8 +27,8 @@ function Heal()
 end
 
 function Hunt()
-	--Generic enemy hunting logic
-	end
+--Generic enemy hunting logic
+end
 
 function Tower()
 --tower fighting logic
@@ -43,7 +44,7 @@ function Farm()
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
 
 
-----Last-hit Creep----
+	----Last-hit Creep----
 	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
 		if (eCreepHealth <= npcBot:GetAttackDamage() or #aCreeps == 0) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
@@ -56,12 +57,12 @@ function Farm()
 		if (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
 			npcBot:ActionPush_MoveToUnit(eWeakestCreep)
 		end
-----Deny creep----
+	----Deny creep----
 	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
 			npcBot:Action_AttackUnit(aWeakestCreep, false)
 		end
-----Wack something----
+	----Wack nearest creep----
 	elseif (eCreeps[1] ~= nil) then
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eCreeps[1], false)
@@ -70,7 +71,7 @@ function Farm()
 			npcBot:ActionPush_MoveToUnit(eCreeps[1])
 		end
 	else
-		cu.MTL_Farm(npcBot)
+		movement.MTL_Farm(npcBot)
 	end
 end
 
