@@ -50,6 +50,7 @@ function Think()
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
 		--implement custom hero hunting here
+	else
+		behavior.generic(npcBot, state)
 	end
-	behavior.generic(npcBot, state)
 end
