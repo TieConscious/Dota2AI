@@ -126,36 +126,6 @@ function Think()
 	if (gameTime <= 20) then
 		cu.MTL_Start(npcBot)
 	end
-
--- ----Last-hit Creep----
--- 	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
--- 		if (eCreepHealth <= npcBot:GetAttackDamage() or #aCreeps == 0) then
--- 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
--- 				npcBot:Action_AttackUnit(eWeakestCreep, false)
--- 			else
--- 				npcBot:Action_AttackUnit(eWeakestCreep, false)
--- 				npcBot:ActionPush_MoveToUnit(eWeakestCreep)
--- 			end
--- 		end
--- 		if (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
--- 			npcBot:ActionPush_MoveToUnit(eWeakestCreep)
--- 		end
--- ----Deny creep----
--- 	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
--- 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
--- 			npcBot:Action_AttackUnit(aWeakestCreep, false)
--- 		end
--- ----Wack something----
--- 	elseif (eCreeps[1] ~= nil) then
--- 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
--- 			npcBot:Action_AttackUnit(eCreeps[1], false)
--- 		else
--- 			npcBot:Action_AttackUnit(eCreeps[1], false)
--- 			npcBot:ActionPush_MoveToUnit(eCreeps[1])
--- 		end
--- 	else
--- 		cu.MTL_Farm(npcBot)
--- 	end
-
+	
 	bot_generic.Think()
 end
