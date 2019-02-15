@@ -1,56 +1,91 @@
 local module = require(GetScriptDirectory().."/helpers")
 
-local stateMachine = {}
+--was never compiled.
+--initialize npcBot before using
+--I mean if you want to.
+--I was just bored and had nothing to do.
+--There aren't much to lurn in lua
 
-local state =
+local stateMachine =
 {
-    state = "farm", 
+    state = "farm", --farm for place holding.
     farmWeight = 0,
     huntWeight = 0,
-    demoWeight = 0,
+    towerWeight = 0,
     healWeight = 0,
     retreatWeight = 0
 }
 
+
+npcBot = nil
+
 --find FarmWight
-function stateMachine:findFarmWeight(customFunction, npcBot)
+function stateMachine:findFarmWeight(customFunction)
     --default 10.
     local weight = 10
     if customFunction ~= nil then
         weight = customFunction()
-    else
-        --when there's low health enemy/ally creep, only apply one at a time.
-        --getLowestCreep returns creep unit
-        local lowEcreep = module.get(npcBot:GetNearbyLaneCreeps(200, true))
-        local lowAcreep = getLowestCreep(npcBot:GetNearbyLaneCreeps(200, false))
-        --borrowed from moo
-        if (lowEcreep ~= nil and lowEcreep:GetHealth() / lowEcreep:GetMaxHealth() > 0.2 and lowEcreep:GetHealth() <= npcBot:GetAttackDamage() * 1.2) then
-            weight = weight + 70
-        else if (lowAcreep ~= nil and lowAcreep:GetHealth() / lowAcreep:GetMaxHealth() > 0.2 and lowAcreep:GetHealth() <= npcBot:GetAttackDamage() * 1.2) then
-            weight = weight + 60
-        end
+	else
+		--medusa has 600, tide hunter has 150 range.
+		--medusa will search in 800 range and tide hunter will search in 575 range
+		local attackRange = npcBot:GetAttackRange()
+		local nearbyECreeps = npcBot:GetNearbyLaneCreeps(500 + AttackRange / 2, true)
+		local nearbyACreeps = npcBot:GetNearbyLaneCreeps(500 + AttackRange / 2, false)
+		local lowECreep = module.GetWeakestUnit(nearbyECreeps)
+		local lowACreep = module.GetWeakestUnit(nearbyAcreeps)
+		local ECreepDist = GetUnitToUnitDistance(npcBot, lowECreep)
+		local ACreepDist = GetUnitToUnitDistance(npcBot, lowACreep) 
+		--check Ecreep first and then Acreep. never increase weight at the same time.
+		--bonus weight if in range. If not, further they are, lower the weight
+		if module.CalcPerHealth(lowECreep) < 0.2 then
+			weight = weight + 40
+			if attackRange > EcreepDist then
+				weight = weight + 30
+			else
+				weight = weight + 300 / (15 + attackRange - Ecreepdist)
+			end
+		elseif module.CalcPerHealth(lowACreep) < 0.2 then
+			weight = weight + 35
+			if attackRange > AcreepDist then
+				weight = weight + 20
+			else
+				weight = weight + 150 / (7 + attackRange - Acreepdist)
+			end
+		end
     end
-    state.farmWeight = weight;
+    self.farmWeight = weight;
 end
 
 --find HuntWight
-function stateMachine:findHuntWeight(customFunction, npcBot)
+function stateMachine:findHuntWeight(customFunction)
     local weight = 0
     if customFunction ~= nil then
         weight = customFunction()
-    else
-        --Lower the enemy Health, WE JUST GO FOR IT BECAUSE WE'RE BEASTS
-        local nearbyEnemy = npcBot:GetNearbyHeroes(500, true)
-        local nearbyTower = npcBot:GetNearbyTowers(700, true)
-        if nearbyTower[1] == nil and nearbyEnemy[1]:GetHealth() / nearbyEnemy[1]:GetMaxHealth() < 0.3 then
-            weight = weight + 90
-        end
+	else
+		--in the document it says we can't use BOT_MODE_NONE for some reason.
+		local attackRange = npcBot:GetAttackRange()
+		local nearbyEnemy = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_ATTACK)
+		local nearbyAlly = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+		local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+		local lowestEnemy = module.GetWeakestUnit(nearbyEnemy)
+
+		--Bonus for low health EHero nearby. 
+		--Bonus for attackable EHero nearby. more bonus if I'm melee
+		--Only calculates either.
+		if module.CalcPerHealth(lowestEnemy) < 0.5 and GetUnitToUnitDistance(npcBot lowestEnemy) < 700 then
+			weight = weight + 20 / module.CalcPerHealth(lowestEnemy)
+		else if attackRange > GetUnitToUnitDistance(npcBot, nearbyEnemy[1]) then
+			weight = weight + 20 + 3000/attackRange
+		end
+		
+		--Total Factor : powerRatio.
+		weight = weight / powerRatio 
     end
-    state.huntWeight = weight;
+    self.huntWeight = weight;
 end
 
 --find demoWight
-function stateMachine:findTowerWeight(customFunction, npcBot)
+function stateMachine:findTowerWeight(customFunction)
     local weight = 0
     if customFunction ~= nil then
        weight = customFunction()
@@ -61,11 +96,11 @@ function stateMachine:findTowerWeight(customFunction, npcBot)
             weight = weight + 80
         end
     end
-    state.towerWeight = weight;
+    self.towerWeight = weight;
 end
 
 --find healWight
-function stateMachine:findHealWeight(customFunction, npcBot)
+function stateMachine:findHealWeight(customFunction)
     local weight = 0
     if customFunction ~= nil then
         weight = customFunction()
@@ -79,11 +114,11 @@ function stateMachine:findHealWeight(customFunction, npcBot)
 
         --collaborate with item situations
     end
-    state.healWeight = weight;
+    self.healWeight = weight;
 end
 
 --find RetreatWight
-function stateMachine:findRetreatWeight(customFunction, npcBot)
+function stateMachine:findRetreatWeight(customFunction)
     local weight = 0
     if customFunction ~= nil then
         weight = customFunction()
@@ -126,39 +161,38 @@ function stateMachine:findRetreatWeight(customFunction, npcBot)
         --I got lazy cya
         end
     end
-    state.retreatWeight = weight;
+    self.retreatWeight = weight;
 end
 
-function stateMachine.calculateStates(npcBot)
-    stateMachine:findTowerWeight(nil, npcBot)
-    stateMachine:findHealWeight(nil, npcBot)
-    stateMachine:findFarmWeight(nil, npcBot)
-    stateMachine:findHuntWeight(nil, npcBot)
-    stateMachine:findRetreatWeight(nil, npcBot)
+function stateMachine:calculateStates(bot)
+    npcBot = bot
+    stateMachine:findTowerWeight(nil)
+    stateMachine:findHealWeight(nil)
+    stateMachine:findFarmWeight(nil)
+    stateMachine:findHuntWeight(nil)
+    stateMachine:findRetreatWeight(nil)
 
     local maxWeight = {-999}
     --change this if more state.
     if maxWeight < stateMachine[2] then
         maxWeight = stateMachine[2]
-        state.state = "farm"
+        self.state = "farm"
     end
     if maxWeight < stateMachine[3] then
         maxWeight = stateMachine[3]
-        state.state = "hunt"
+        self.state = "hunt"
     end
     if maxWeight < stateMachine[4] then
         maxWeight = stateMachine[4]
-        state.state = "tower"
+        self.state = "tower"
     end
     if maxWeight < stateMachine[5] then
         maxWeight = stateMachine[5]
-        state.state = "heal"
+        self.state = "heal"
     end
     if maxWeight < stateMachine[6] then
         maxWeight = stateMachine[6]
-        state.state = "retreat"
+        self.state = "retreat"
     end
-    return state
+    return self
 end
-
-return stateMachine
