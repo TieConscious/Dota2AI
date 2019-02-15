@@ -1,4 +1,6 @@
 local movement = require(GetScriptDirectory().."/movement_util")
+local module = require(GetScriptDirectory().."/helpers")
+
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)

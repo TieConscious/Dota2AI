@@ -1,4 +1,5 @@
-local module = require(GetScriptDirectory().."/functions")
+local module = require(GetScriptDirectory().."/helpers")
+
 local movement = {}
 
 ----Radiant Locations----
@@ -72,7 +73,7 @@ PN = Vector(3500, -3500, 0)
 -- end
 
 ----Move to lane at start of game----
-function cu.MTL_Start(npcBot)
+function movement.MTL_Start(npcBot)
 	local pID = npcBot:GetPlayerID()
 	local team = npcBot:GetTeam()
 	--if Dire--
@@ -100,7 +101,7 @@ function cu.MTL_Start(npcBot)
 end
 
 ----Move to lane to farm----
-function cu.MTL_Farm(npcBot)
+function movement.MTL_Farm(npcBot)
 	local pID = npcBot:GetPlayerID()
 	local team = npcBot:GetTeam()
 	local RADIANT_MTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_MID, -10)

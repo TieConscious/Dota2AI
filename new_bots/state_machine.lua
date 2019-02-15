@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 
-local stateMachine =
+local stateMachine = {}
+
+local state =
 {
     state = "farm", 
     farmWeight = 0,
@@ -10,6 +12,8 @@ local stateMachine =
     retreatWeight = 0
 }
 
-function stateMachine:calculateStates(npcBot)
-    return self
+function stateMachine.calculateStates(npcBot)
+    return state
 end
+
+return stateMachine
