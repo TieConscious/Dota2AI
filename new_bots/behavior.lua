@@ -67,9 +67,9 @@ function Farm()
 	----Wack nearest creep----
 	elseif (eCreeps[1] ~= nil) then
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eCreeps[1], false)
+			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
-			npcBot:Action_AttackUnit(eCreeps[1], false)
+			npcBot:Action_AttackUnit(eCreeps[1], true)
 			npcBot:ActionPush_MoveToUnit(eCreeps[1])
 		end
 	else
