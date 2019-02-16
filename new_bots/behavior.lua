@@ -21,19 +21,75 @@ function behavior.generic(npcBot, stateMachine)
 end
 
 function Retreat()
---retreating logic
+	local npcBot = GetBot()
+	movement.Retreat(npcBot)
 end
 
 function Heal()
---healing logic
+	local npcBot = GetBot()
+	movement.RetreatToBase(npcBot)
 end
 
 function Hunt()
---Generic enemy hunting logic
+	--Generic enemy hunting logic
+	local npcBot = GetBot()
+	local attackRange = npcBot:GetAttackRange()
+
+	local eHeros = npcBot:GetNearbyHeros(1600, true, BOT_MODE_NONE)
+	if (eHeros ~= nil and #eHeros > 0) then
+		if (GetUnitToUnitDistance(npcBot, eHeros[0]) <= attackRange) then
+			npcBot:Action_AttackUnit(eHeros[0], false)
+		else
+			npcBot:Action_AttackUnit(eHeros[0], false)
+			npcBot:ActionPush_MoveToUnit(eHeros[0])
+		end
+		return
+	end
 end
 
 function Tower()
---tower fighting logic
+	--building fighting logic
+	local npcBot = GetBot()
+	local attackRange = npcBot:GetAttackRange()
+
+	local eTowers = npcBot:GetNearbyTowers(1600, true)
+	if (eTowers ~= nil and #eTowers > 0) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[0]) <= attackRange) then
+			npcBot:Action_AttackUnit(eTowers[0], false)
+		else
+			npcBot:Action_AttackUnit(eTowers[0], false)
+			npcBot:ActionPush_MoveToUnit(eTowers[0])
+		end
+		return
+	end
+
+	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
+	if (eBarracks ~= nil and #eBarracks > 0) then
+		if (GetUnitToUnitDistance(npcBot, eBarracks[0]) <= attackRange) then
+			npcBot:Action_AttackUnit(eBarracks[0], false)
+		else
+			npcBot:Action_AttackUnit(eBarracks[0], false)
+			npcBot:ActionPush_MoveToUnit(eBarracks[0])
+		end
+		return
+	end
+
+	local eAncient 
+	if npcBot:getTeam() == 2 then
+		eAncient = GetAncient(3)
+	else
+		eAncient = GetAncient(2)
+	end
+	if (eAncient ~= nil and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
+		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange) then
+			npcBot:Action_AttackUnit(eAncient, false)
+		else
+			npcBot:Action_AttackUnit(eAncient, false)
+			npcBot:ActionPush_MoveToUnit(eAncient)
+		end
+		return
+	end
+	
 end
 
 function Farm()

@@ -136,6 +136,24 @@ function movement.MTL_Farm(npcBot)
     return
 end
 
+function movement.Retreat(npcBot)
+	local team = npcBot:GetTeam()
+	if (team == 3) then
+		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+	else
+		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+	end
+end
+
+function movement.RetreatToBase(npcBot)
+	local team = npcBot:GetTeam()
+	if (team == 3) then
+		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+	else
+		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+	end
+end
+
 ----Get ready to end the game----
 -- function MoveToLane_Final()
 --     npcBot = GetBot()
