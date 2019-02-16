@@ -31,9 +31,9 @@ function module.ItemPurchase(Items)
 			--Finds which Secret Shop is closer and goes towards the nearest
 			npcBot:ActionImmediate_Chat("Secret Shop", true)
 			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
-				MoveDirectly(npcBot, SS1)
+				npcBot:ActionPush_MoveToLocation(SS1)
 			else
-				MoveDirectly(npcBot, SS2)
+				npcBot:ActionPush_MoveToLocation(SS2)
 			end
 		end
 
@@ -123,7 +123,7 @@ end
 function module.CalcPerMana(Unit)
 	local Mana = Unit:GetMana()
 	local MaxMana = Unit:GetMaxMana()
-	local PercentMana = Mana/MaxMana
+	local percentMana = Mana/MaxMana
 
 	return percentMana
 end

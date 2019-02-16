@@ -1,14 +1,8 @@
-local module = require(GetScriptDirectory().."/functions")
+local module = require(GetScriptDirectory().."/helpers")
 
 local Items =
 {
-	"item_tango",
-	"item_clarity",
-	"item_branches",
-	"item_branches",
 	"item_boots",
-	"item_magic_stick",
-	"item_recipe_magic_wand",
 	"item_energy_booster",
 	"item_void_stone",
 	"item_energy_booster",

@@ -1,4 +1,4 @@
-local module = require(GetScriptDirectory().."/functions")
+local module = require(GetScriptDirectory().."/helpers")
 
 local Items =
 {

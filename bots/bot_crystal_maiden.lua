@@ -1,36 +1,36 @@
 local module = require(GetScriptDirectory().."/helpers")
 local bot_generic = require(GetScriptDirectory().."/bot_generic")
 
-local SKILL_Q = "bane_enfeeble"
-local SKILL_W = "bane_brain_sap"
-local SKILL_E = "bane_nightmare"
-local SKILL_R = "bane_fiends_grip"
-local TALENT1 = "special_bonus_armor_7"
+local SKILL_Q = "crystal_maiden_crystal_nova"
+local SKILL_W = "crystal_maiden_frostbite"
+local SKILL_E = "crystal_maiden_brilliance_aura"
+local SKILL_R = "crystal_maiden_freezing_field"
+local TALENT1 = "special_bonus_hp_250"
 local TALENT2 = "special_bonus_cast_range_100"
-local TALENT3 = "special_bonus_unique_bane_4"
-local TALENT4 = "special_bonus_exp_boost_40"
-local TALENT5 = "special_bonus_unique_bane_1"
-local TALENT6 = "special_bonus_movement_speed_50"
-local TALENT7 = "special_bonus_unique_bane_2"
-local TALENT8 = "special_bonus_unique_bane_3"
+local TALENT3 = "special_bonus_unique_crystal_maiden_4"
+local TALENT4 = "special_bonus_gold_income_25"
+local TALENT5 = "special_bonus_attack_speed_250"
+local TALENT6 = "special_bonus_unique_crystal_maiden_3"
+local TALENT7 = "special_bonus_unique_crystal_maiden_1"
+local TALENT8 = "special_bonus_unique_crystal_maiden_2"
 
 local Ability = {
-	SKILL_W,
-	SKILL_E,
-	SKILL_W,
 	SKILL_Q,
+	SKILL_E,
 	SKILL_W,
+	SKILL_E,
+	SKILL_E,
 	SKILL_R,
-	SKILL_W,
 	SKILL_E,
-	SKILL_E,
+	SKILL_Q,
+	SKILL_Q,
 	TALENT2,
-	SKILL_E,
+	SKILL_Q,
 	SKILL_R,
-	SKILL_Q,
-	SKILL_Q,
+	SKILL_W,
+	SKILL_W,
 	TALENT4,
-	SKILL_Q,
+	SKILL_W,
 	"nil",
 	SKILL_R,
 	"nil",
@@ -77,6 +77,7 @@ function ConsiderCast(ability)
 	return 1
 end
 
+
 ----Murder closest enemy hero----
 function Murder(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
@@ -86,24 +87,30 @@ function Murder(eHero)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
-	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+	local blink = module.ItemSlot(npcBot, "item_blink")
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	----Try various combos on weakened enemy unit----
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5) then
-		if (GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
-			UseAbilityEnemy(npcBot, abilityR, eHero)
-			UseAbilityEnemy(npcBot, abilityW, eHero)
-			UseAbilityEnemy(npcBot, abilityQ, eHero)
+	if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1) then
+		npcBot:ActionPush_UseAbility(abilityR)
+		npcBot:ActionPush_UseAbilityOnLocation(blink, eHero:GetLocation())
+	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1) then
+		if (GetUnitToUnitDistance(npcBot, eHero) <= 500) then
+			npcBot:ActionPush_UseAbility(abilityR)
 		else
 			AP_MoveToUnit(npcBot, eHero)
 		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
-		UseAbilityEnemy(npcBot, abilityW, eHero)
-	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange()) then
-		UseAbilityEnemy(npcBot, abilityR, eHero)
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1) then
+		if (GetUnitToUnitDistance(npcBot, eHero) <= abilityW:GetCastRange()) then
+			npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
+		elseif (GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange()) then
+			npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
+		end
+	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange()) then
+		npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
 	end
+
 	----Fuck'em up!----
 	if (not IsBotCasting()) then
 		if (GetUnitToUnitDistance(npcBot, eHero) <= hRange) then
@@ -138,7 +145,6 @@ function Hunt()
 	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local eTowers = npcBot:GetNearbyTowers(1000, true)
 
-
 	local powerRatio = module.CalcPowerRatio(npcBot, aHero, eHero)
 
 	if (eHero == nil or #eHero == 0) then
@@ -149,10 +155,12 @@ function Hunt()
 		end
 	else
 		local ePerHealth = module.CalcPerHealth(eHero[1])
-		if (ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) then
+		if (ePerHealth <= 0.75 or powerRatio <= 1) then
 			Murder(eHero[1])
+			return
 		elseif (ePerHealth > 0.75) then
 			Poke(eHero[1])
+			return
 		end
 	end
 end
