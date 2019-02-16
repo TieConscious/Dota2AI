@@ -77,7 +77,7 @@ end
 function Murder(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
 	local manaPer = module.CalcPerMana(npcBot)
-	local hRange = npcBot:GetAttackRange() - 100
+	local hRange = npcBot:GetAttackRange() - 50
 	--local spamSkill = comboList[npcBot:GetUnitName()]
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
@@ -116,7 +116,7 @@ end
 function Poke(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
 	local eHeroClose = module.CalcPerHealth(eHero)
-	local hRange = npcBot:GetAttackRange() - 100
+	local hRange = npcBot:GetAttackRange() - 50
 
 	if (GetUnitToUnitDistance(npcBot, eHero) <= hRange and npcBot:NumQueuedActions() == 0) then
 		AP_AttackUnit(npcBot, eHero, true)
