@@ -40,8 +40,7 @@ function Hunt()
 		if (GetUnitToUnitDistance(npcBot, eHeros[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eHeros[1], false)
 		else
-			npcBot:Action_AttackUnit(eHeros[1], false)
-			npcBot:ActionPush_MoveToUnit(eHeros[1])
+			npcBot:Action_MoveToUnit(eHeros[1])
 		end
 		return
 	end
@@ -57,8 +56,7 @@ function Tower()
 		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eTowers[1], false)
 		else
-			npcBot:Action_AttackUnit(eTowers[1], false)
-			npcBot:ActionPush_MoveToUnit(eTowers[1])
+			npcBot:Action_MoveToUnit(eTowers[1])
 		end
 		return
 	end
@@ -68,8 +66,7 @@ function Tower()
 		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eBarracks[1], false)
 		else
-			npcBot:Action_AttackUnit(eBarracks[1], false)
-			npcBot:ActionPush_MoveToUnit(eBarracks[1])
+			npcBot:Action_MoveToUnit(eBarracks[1])
 		end
 		return
 	end
@@ -84,8 +81,7 @@ function Tower()
 		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange) then
 			npcBot:Action_AttackUnit(eAncient, false)
 		else
-			npcBot:Action_AttackUnit(eAncient, false)
-			npcBot:ActionPush_MoveToUnit(eAncient)
+			npcBot:Action_MoveToUnit(eAncient)
 		end
 		return
 	end
@@ -103,17 +99,16 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 3) then
+	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2) then
 		if (eCreepHealth <= npcBot:GetAttackDamage() or #aCreeps == 0) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
 				npcBot:Action_AttackUnit(eWeakestCreep, false)
 			else
-				npcBot:Action_AttackUnit(eWeakestCreep, false)
-				npcBot:ActionPush_MoveToUnit(eWeakestCreep)
+				npcBot:Action_MoveToUnit(eWeakestCreep)
 			end
 		end
 		if (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
-			npcBot:ActionPush_MoveToUnit(eWeakestCreep)
+			npcBot:Action_MoveToUnit(eWeakestCreep)
 		end
 	----Deny creep----
 	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
@@ -125,8 +120,7 @@ function Farm()
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
-			npcBot:Action_AttackUnit(eCreeps[1], true)
-			npcBot:ActionPush_MoveToUnit(eCreeps[1])
+			npcBot:Action_MoveToUnit(eCreeps[1])
 		end
 	else
 		movement.MTL_Farm(npcBot)

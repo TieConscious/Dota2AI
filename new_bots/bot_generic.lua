@@ -3,6 +3,6 @@ local stateMachine = require(GetScriptDirectory().."/state_machine")
 
 function Think()
 	local npcBot = GetBot()
-	local state = stateMachine.calculateStates(npcBot)
+	local state = stateMachine.calculateState(npcBot)
 	behavior.generic(npcBot, state)
 end

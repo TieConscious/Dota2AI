@@ -122,7 +122,7 @@ function stateMachine.findHuntWeight(customFunction)
 		--Total Factor : powerRatio.
 		weight = weight / powerRatio 
     end
-    state.huntWeight = weight;
+    state.huntWeight = weight * .1;
 end
 
 --find demoWeight
@@ -133,7 +133,7 @@ function stateMachine.findTowerWeight(customFunction)
     else
         --if i'm not getting hit by the tower and there's several creeps helping
         local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
-        if nearbyEnemyTowers ~= nil and #nearbyEnemyTowers > 0 and npcBot:WasRecentlyDamagedByTower(0.5) and nearbyEnemyTowers[1] ~= nil
+        if nearbyEnemyTowers ~= nil and #nearbyEnemyTowers > 0 and npcBot:WasRecentlyDamagedByTower(0.5) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, true) ~= nil 
             and #nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, true) > 1 then
             weight = weight + 70
         end
@@ -220,7 +220,7 @@ function stateMachine.findRetreatWeight(customFunction)
     state.retreatWeight = weight;
 end
 
-function stateMachine.calculateStates(bot)
+function stateMachine.calculateState(bot)
     npcBot = bot
     stateMachine.findTowerWeight(nil)
     stateMachine.findHealWeight(nil)
