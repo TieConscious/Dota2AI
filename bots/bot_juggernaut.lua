@@ -87,13 +87,13 @@ function Murder(eHero)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1) then
+	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3) then
 		if (GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange()) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityR, eHero)
 		else
 			AP_MoveToUnit(npcBot, eHero)
 		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1) then
+	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
 		npcBot:ActionPush_UseAbility(abilityQ)
 		AP_MoveToUnit(npcBot, eHero)
 	end
@@ -137,7 +137,7 @@ function Hunt()
 	if (eHero == nil or #eHero == 0) then
 		return
 	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 650) then
+		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
 			return
 		end
 	else

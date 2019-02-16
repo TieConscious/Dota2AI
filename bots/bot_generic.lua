@@ -273,7 +273,7 @@ function Think()
 	local ARange = npcBot:GetAttackRange()
 
 	local aTowers = npcBot:GetNearbyTowers(700, false)
-	local eTowers = npcBot:GetNearbyTowers(700, true)
+	local eTowers = npcBot:GetNearbyTowers(1000, true)
 
 	----Enemy and Creep stats----
 	local EHERO = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -360,19 +360,19 @@ function Think()
 	end
 
 	------Mid/Late gameplay----
-	if (GameTime > 900) then
+	if (GameTime > 1000) then
 	----Move to location----
-		if (GameTime <= 930) then
+		if (GameTime <= 1030) then
 			MoveTo(npcBot, MIDDLE_COORDS)
 		end
 
 	----Get out----
-		if (percentHealth <= 0.25) then
+		if (percentHealth <= 0.15) then
 			BTFO()
 			return
 		end
 
-		if (percentHealth < 1 and npcBot:DistanceFromFountain() <= 500) then
+		if (percentHealth < 1 and npcBot:DistanceFromFountain() <= 750) then
 			BTFO()
 			return
 		end

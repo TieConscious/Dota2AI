@@ -94,10 +94,10 @@ function Murder(eHero)
 		else
 			AP_MoveToUnit(npcBot, eHero)
 		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange() and manaPer >= 0.3) then
 		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
 		npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange()) then
+	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
 		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
 	end
 
@@ -140,7 +140,7 @@ function Hunt()
 	if (eHero == nil or #eHero == 0) then
 		return
 	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 650) then
+		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
 			return
 		end
 	else

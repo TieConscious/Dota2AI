@@ -144,7 +144,7 @@ function Hunt()
 	if (eHero == nil or #eHero == 0) then
 		return
 	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 650) then
+		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
 			return
 		end
 	else
