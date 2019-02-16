@@ -45,11 +45,13 @@ local Ability = {
 
 function Think()
 	local npcBot = GetBot()
-	local state = stateMachine:calculateStates(npcBot)
+	local state = stateMachine.calculateStates(npcBot)
 	
 	module.AbilityLevelUp(Ability)
+	stateMachine.printState(state)
 	if state.state == "hunt" then
 		--implement custom hero hunting here
+		behavior.generic(npcBot, state)
 	else
 		behavior.generic(npcBot, state)
 	end

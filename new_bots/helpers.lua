@@ -111,19 +111,19 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 end
 
 ----Calculate units percent health----
-function module.CalcPerHealth(Unit)
-	local Health = Unit:GetHealth()
-	local MaxHealth = Unit:GetMaxHealth()
+function module.CalcPerHealth(unit)
+	local Health = unit:GetHealth()
+	local MaxHealth = unit:GetMaxHealth()
 	local percentHealth = Health/MaxHealth
 
 	return percentHealth
 end
 
 ----Calculate units percent mana----
-function module.CalcPerMana(Unit)
-	local Mana = Unit:GetMana()
-	local MaxMana = Unit:GetMaxMana()
-	local PercentMana = Mana/MaxMana
+function module.CalcPerMana(unit)
+	local Mana = unit:GetMana()
+	local MaxMana = unit:GetMaxMana()
+	local percentMana = Mana/MaxMana
 
 	return percentMana
 end

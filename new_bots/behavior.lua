@@ -35,13 +35,13 @@ function Hunt()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
 
-	local eHeros = npcBot:GetNearbyHeros(1600, true, BOT_MODE_NONE)
+	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	if (eHeros ~= nil and #eHeros > 0) then
-		if (GetUnitToUnitDistance(npcBot, eHeros[0]) <= attackRange) then
-			npcBot:Action_AttackUnit(eHeros[0], false)
+		if (GetUnitToUnitDistance(npcBot, eHeros[1]) <= attackRange) then
+			npcBot:Action_AttackUnit(eHeros[1], false)
 		else
-			npcBot:Action_AttackUnit(eHeros[0], false)
-			npcBot:ActionPush_MoveToUnit(eHeros[0])
+			npcBot:Action_AttackUnit(eHeros[1], false)
+			npcBot:ActionPush_MoveToUnit(eHeros[1])
 		end
 		return
 	end
@@ -54,22 +54,22 @@ function Tower()
 
 	local eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[0]) <= attackRange) then
-			npcBot:Action_AttackUnit(eTowers[0], false)
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange) then
+			npcBot:Action_AttackUnit(eTowers[1], false)
 		else
-			npcBot:Action_AttackUnit(eTowers[0], false)
-			npcBot:ActionPush_MoveToUnit(eTowers[0])
+			npcBot:Action_AttackUnit(eTowers[1], false)
+			npcBot:ActionPush_MoveToUnit(eTowers[1])
 		end
 		return
 	end
 
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
 	if (eBarracks ~= nil and #eBarracks > 0) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[0]) <= attackRange) then
-			npcBot:Action_AttackUnit(eBarracks[0], false)
+		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange) then
+			npcBot:Action_AttackUnit(eBarracks[1], false)
 		else
-			npcBot:Action_AttackUnit(eBarracks[0], false)
-			npcBot:ActionPush_MoveToUnit(eBarracks[0])
+			npcBot:Action_AttackUnit(eBarracks[1], false)
+			npcBot:ActionPush_MoveToUnit(eBarracks[1])
 		end
 		return
 	end
