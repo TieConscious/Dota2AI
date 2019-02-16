@@ -48,7 +48,6 @@ function module.ItemPurchase(Items)
 end
 
 ----Ability Leveling Modules----
-
 function module.AbilityLevelUp(Ability)
 	local npcBot = GetBot()
 
@@ -77,6 +76,56 @@ function module.AbilityLevelUp(Ability)
 		table.remove(Ability, 1)
 		return
 	end
+end
+
+--use percent health as another ratio unit
+----Calculate power ratios----
+function module.CalcPowerRatio(npcBot, aHero, eHero)
+	--GetOffensivePower calculates a more accurate power level of heroes, but is only usable on allies
+	--GetRawOffensivePower calculates the "theoretical" power level of heroes
+
+	local aPower = npcBot:GetOffensivePower()
+	local ePower = 0.0
+
+	----Get power level of allied heroes----
+	if (aHero ~= nil or #aHero ~= 0) then
+		for _,unit in pairs(aHero) do
+			if (unit ~= nil and unit:IsAlive()) then
+				aPower = aPower + unit:GetRawOffensivePower()
+			end
+		end
+	end
+
+	----Get power level of enemy heroes----
+	for _,unit in pairs(eHero) do
+		if (unit ~= nil and unit:IsAlive()) then
+			ePower = ePower + unit:GetRawOffensivePower()
+		end
+	end
+
+	----Calculate power ratio----
+	local powerRatio = ePower / aPower
+
+	return powerRatio
+
+end
+
+----Calculate units percent health----
+function module.CalcPerHealth(Unit)
+	local Health = Unit:GetHealth()
+	local MaxHealth = Unit:GetMaxHealth()
+	local percentHealth = Health/MaxHealth
+
+	return percentHealth
+end
+
+----Calculate units percent mana----
+function module.CalcPerMana(Unit)
+	local Mana = Unit:GetMana()
+	local MaxMana = Unit:GetMaxMana()
+	local PercentMana = Mana/MaxMana
+
+	return percentMana
 end
 
 ----Assign castable item so it can be used----
@@ -168,26 +217,6 @@ function module.BTFO(npcBot)
 			AttackMove(npcbot, RADIANT_FOUNTAIN)
 		end
 		npcBot:ActionImmediate_Chat("RUN 2!!!", true)
-	end
-end
-
-function module.completedPathFinding(totalDistance, a, wayPointList)
-	npcBot = GetBot()
-	moved = 0
-	estimatedPosition = npcBot:GetLocation()
-	npcBot:Action_ClearActions(true)
-	for _,location in pairs(wayPointList) do
-		--calculate distance to that way point.
-		vectorToLocation = location - estimatedPosition
-		distance = math.sqrt(math.pow(vectorToLocation[1], 2) + math.pow(vectorToLocation[2], 2) + math.pow(vectorToLocation[3], 2))
-		moved = moved + distance
-		if moved > howFar then
-			--get direction and multiply by distance left, move there
-			npcBot:ActionQueue_MoveToLocation(vectorToLocation / distance * (moved - howFar))
-			return
-		end
-		npcBot:ActionQueue_MoveToLocation(location)
-		estimatedPosition = location
 	end
 end
 ----End of Functions----
