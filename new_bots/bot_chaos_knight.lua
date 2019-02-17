@@ -43,11 +43,15 @@ local Ability = {
 	TALENT7
 }
 
+function OnStart()
+	print("init")
+end
+
 function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 	
-	stateMachine.printState(state)
+	--stateMachine.printState(state)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then

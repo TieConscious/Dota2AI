@@ -1,26 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
 
-local farm_weight = {}
-
-local weight_settings =
-{
-    name = "farm", 
-
-    components = {
-        --{func=calcEnemies, weight=5},
-        {func=findFarmWeight, weight=1}
-    },
-
-    conditionals = {
-        --{func=calcEnemies, condition=condFunc, weight=3},
-        {func=findFarmWeight, condition=beTrue, weight=1}
-    }
-}
-
-function farm_weight.getSettings()
-    return weight_settings
-end
-
 function beTrue(npcBot)
     return true
 end
@@ -61,5 +40,22 @@ function findFarmWeight(npcBot)
     end
     return weight;
 end
+
+local farm_weight = {
+    settings =
+    {
+        name = "farm", 
+    
+        components = {
+            --{func=calcEnemies, weight=5},
+            {func=findFarmWeight, weight=1}
+        },
+    
+        conditionals = {
+            --{func=calcEnemies, condition=condFunc, weight=3},
+            {func=findFarmWeight, condition=beTrue, weight=1}
+        }
+    }
+}
 
 return farm_weight
