@@ -4,8 +4,7 @@ local module = require(GetScriptDirectory().."/helpers")
 --health----------------------------------------------------------------------------
 function lowHealth(npcBot)
     local percentHealth = module.CalcPerHealth(npcBot)
---    return 100 * math.exp(-5 * percentHealth)
-	return 100 * (1 - percentHealth)
+ 		return 100 * math.exp(-5 * percentHealth)
 end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
@@ -20,7 +19,7 @@ function willEnemyTowerTargetMe(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
 	if #nearbyEnemyTowers ~= 0 and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
 		AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
-		if #AcreepsInTowerRange < 3 then
+		if AcreepsInTowerRange ~= nil and #AcreepsInTowerRange < 3 then
 			return true
 		end
 	end
@@ -58,10 +57,10 @@ function considerPowerRatio(npcBot)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 	if powerRatio > 1 then
-		return 50 * powerRatio
+		return Clamp(50 * powerRatio, 0, 100)
 	else
 		powerRatio = 1 / powerRatio
-		return 50 * (powerRatio * 2 - 1) 
+		return Clamp(50 * (powerRatio * 2 - 1), 0, 100)
 	end
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
@@ -91,14 +90,14 @@ local retreat_weight = {
     
         components = {
             {func=lowHealth, weight=3},
-            {func=numberDifference, weight=2}
+            {func=numberDifference, weight=0.5}
         },
     
         conditionals = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=2},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=5},
-			{func=considerPowerRatio, condition=hasEnemyNearby, weight=2},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=1}
+			{func=considerPowerRatio, condition=hasEnemyNearby, weight=0.5},
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=0.5}
 		}
     }
 }
