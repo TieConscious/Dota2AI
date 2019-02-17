@@ -17,7 +17,7 @@ end
 --tower-----------------------------------------------------------------------------
 --do not calc if EnemyTower is actually targeting me. use function below for that
 function willEnemyTowerTargetMe(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(900, true)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
 	if #nearbyEnemyTowers ~= 0 and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
 		AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
 		if AcreepsInTowerRange ~= nil and #AcreepsInTowerRange < 3 then
@@ -28,13 +28,13 @@ function willEnemyTowerTargetMe(npcBot)
 end
 
 function enemyTowerShallTargetMe(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(900, true)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
 	local AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
 	return Clamp((3 - #AcreepsInTowerRange) * 40, 0, 100)
 end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMe(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(900, true)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
 	if next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
 		return true
 	end
@@ -95,10 +95,10 @@ local retreat_weight = {
         },
     
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=3},
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=5},
 			{func=considerPowerRatio, condition=hasEnemyNearby, weight=0.5},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=0.5}
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=1.5}
 		}
     }
 }
