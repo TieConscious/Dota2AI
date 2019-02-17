@@ -7,6 +7,20 @@ end
 local hitConsider = 2.5
 local moveDist = 300
 
+function creepsAround(npcBot)
+    local creepCount = 0
+    local nearbyECreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+    local nearbyACreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+
+    if nearbyECreeps ~= nil then
+        creepCount = creepCount + #nearbyECreeps
+    end
+    if nearbyACreeps ~= nil then
+        creepCount = creepCount + #nearbyACreeps
+    end
+
+    return RemapValClamped(creepCount, 0, 3, 0, 100)
+end
 
 function calcEnemyCreepHealth(npcBot)
     local attackRange = npcBot:GetAttackRange()
@@ -38,6 +52,7 @@ local farm_weight = {
     
         components = {
             --{func=calcEnemies, weight=5},
+            {func=creepsAround, weight=3},
             {func=calcEnemyCreepHealth, weight=5},
             {func=calcEnemyCreepDist, weight=3}
         },
