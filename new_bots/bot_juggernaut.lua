@@ -76,7 +76,8 @@ function ConsiderCast(ability)
 end
 
 ----Murder closest enemy hero----
-function Murder(target)
+function Murder()
+	npcBot = GetBot()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local manaPer = module.CalcPerMana(npcBot)
 	local hRange = npcBot:GetAttackRange() - 25
@@ -89,29 +90,29 @@ function Murder(target)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (eHeroList ~= nil or #eHeroList > 0) then
-		local target = module.GetWeakestUnit(eHeroList)
-	end
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		local target,eHealth = module.GetWeakestUnit(eHeroList)
+	
 
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange() then
-		npcBot:Action_UseAbilityOnEntity(abilityR, target)
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
-		if (GetUnitToUnitDistance(npcBot,target) <= 150) then
-			npcBot:Action_UseAbility(abilityQ)
-		else
-			AP_MoveToUnit(npcBot, target)
+		if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityR, target)
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3 and target ~= nil) then
+			if (GetUnitToUnitDistance(npcBot,target) <= 150) then
+				npcBot:Action_UseAbility(abilityQ)
+			else
+				npcBot:Action_MoveToUnit(target)
+			end
+		end
+
+		----Fuck'em up!----
+		if (not IsBotCasting()) then
+			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+				npcBot:Action_AttackUnit(target, true)
+			else
+				npcBot:Action_MoveToUnit(target)
+			end
 		end
 	end
-
-	----Fuck'em up!----
-	if (not IsBotCasting()) then
-		if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-			npcBot:Action_AttackUnit(target, true)
-		else
-			npcBot:Action_MoveToUnit(target)
-		end
-	end
-
 end
 
 ----Pokes hero if within range----
@@ -158,8 +159,6 @@ end
 function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
-
-	stateMachine.printState(state)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then

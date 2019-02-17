@@ -5,7 +5,7 @@ local module = require(GetScriptDirectory().."/helpers")
 function lowHealth(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	--100 on 0.1, 70 on 0.7
- 		return RemapValClamped(percentHealth, 0.1, 0.7, 100, 0)
+ 		return RemapValClamped(percentHealth, 0.1, 0.65, 100, 0)
 end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
@@ -35,7 +35,7 @@ end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMe(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
-	if npcBot:WasRecentlyDamagedByTower(0.5) or next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
+	if npcBot:WasRecentlyDamagedByTower(1) or next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
 		return true
 	end
 	return false
@@ -94,15 +94,15 @@ local retreat_weight = {
         name = "retreat", 
     
         components = {
-            {func=lowHealth, weight=6},
+            {func=lowHealth, weight=4},
             {func=numberDifference, weight=0.5}
         },
     
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=5},
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=7},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=7},
 			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=4},
 			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
 		}
     }

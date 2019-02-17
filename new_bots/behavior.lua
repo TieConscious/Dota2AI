@@ -100,7 +100,7 @@ function Farm()
 
 	----Last-hit Creep----
 	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
-		if (eCreepHealth <= npcBot:GetAttackDamage() or #aCreeps == 0) then
+		if (eCreepHealth <= npcBot:GetAttackDamage() * 0.9 or #aCreeps == 0) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
 				npcBot:Action_AttackUnit(eWeakestCreep, false)
 			else

@@ -86,6 +86,7 @@ end
 
 ----Murder closest enemy hero----
 function Murder()
+	npcBot = GetBot()
 	local manaPer = module.CalcPerMana(npcBot)
 	local hRange = npcBot:GetAttackRange() - 25
 
@@ -97,29 +98,29 @@ function Murder()
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (eHeroList ~= nil or #eHeroList > 0) then
+	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.GetWeakestUnit(eHeroList)
-	end
+	
 
-	----Try various combos on weakened enemy unit----
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
-		npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
-		npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
-		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
-	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()) then
-		npcBot:Action_UseAbilityOnEntity(abilityR, target)
-	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
-		npcBot:Action_UseAbilityOnEntity(abilityW, target)
-	end
-	----Fuck'em up!----
-	if (not IsBotCasting()) then
-		if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-			npcBot:Action_AttackUnit(target, true)
-		else
-			npcBot:Action_MoveToUnit(target)
+		----Try various combos on weakened enemy unit----
+		if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
+			npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+		elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityR, target)
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+		end
+		----Fuck'em up!----
+		if (not IsBotCasting()) then
+			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+				npcBot:Action_AttackUnit(target, true)
+			else
+				npcBot:Action_MoveToUnit(target)
+			end
 		end
 	end
-
 end
 
 ----Pokes hero if within range----
@@ -173,8 +174,6 @@ end
 function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
-
-	stateMachine.printState(state)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
