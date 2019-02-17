@@ -6,11 +6,9 @@ local Items = {
 	"item_boots",
 	"item_gloves",
 
-	----echo sabre----
-	"item_ogre_axe",
+	----mask of madness----
+	"item_lifesteal",
 	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
 
 	----manta style----
 	"item_ultimate_orb",
@@ -19,12 +17,20 @@ local Items = {
 	"item_recipe_yasha",
 	"item_recipe_manta",
 
-	----heart of tarrasque----
-	"item_reaver",
-	"item_vitality_booster",
-	"item_ring_of_tarrasque",
-	"item_recipe_heart"
+	----eye of skadi----
+	"item_ultimate_orb",
+	"item_ultimate_orb",
+	"item_point_booster",
 
+	----butterfly----
+	"item_eagle",
+	"item_talisman_of_evasion",
+	"item_quarterstaff",
+
+	----dragon lance----
+	"item_boots_of_elves",
+	"item_boots_of_elves",
+	"item_ogre_axe"
 }
 
 function ItemPurchaseThink()

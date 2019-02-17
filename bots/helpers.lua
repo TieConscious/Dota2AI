@@ -48,12 +48,12 @@ function module.ItemPurchase(Items)
 		if (PurchaseResult == PURCHASE_ITEM_SUCCESS) then
 			table.remove(Items, 1)
 			npcBot:ActionImmediate_Chat("Bought", true)
+			if (npcBot:GetTeam() == 3) then
+				npcBot:ActionPush_MoveToLocation(Vector(6780, 6124, 512))
+			else
+				npcBot:ActionPush_MoveToLocation(Vector(-6750 ,-6550, 512))
+			end
 		end
-		--if (npcBot:GetTeam() == 3) then
-		--	npcBot:ActionPush_MoveToLocation(Vector(6780, 6124, 512))
-		--else
-		--	npcBot:ActionPush_MoveToLocation(Vector(-6750 ,-6550, 512))
-		--end
 	end
 end
 
