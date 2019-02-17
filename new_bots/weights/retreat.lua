@@ -5,12 +5,12 @@ local module = require(GetScriptDirectory().."/helpers")
 function lowHealth(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	--100 on 0.1, 70 on 0.7
- 		return RemapValClamped(-68 * math.exp(-5 * percentHealth) + 52), 0, 100)
+ 		return RemapValClamped(percentHealth, 0.1, 0.7, 100, 0)
 end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
 	return  20 * #nearbyEnemy/(#nearbyAlly + 1)
 end
 --conditionals--
@@ -30,7 +30,7 @@ end
 function enemyTowerShallTargetMe(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
 	local AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
-	return Clamp((3 - #AcreepsInTowerRange) * 40, 0, 100)
+	return Clamp((3 - #AcreepsInTowerRange) * 60, 0, 100)
 end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMe(npcBot)
@@ -46,7 +46,7 @@ function enemyTowerTargetingMe(npcBot)
 end
 --powerRatio------------------------------------------------------------------------
 function hasEnemyNearby(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
 	if #nearbyEnemy ~= 0 then
 		return true
 	end
@@ -54,8 +54,8 @@ function hasEnemyNearby(npcBot)
 end
 
 function considerPowerRatio(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 	if powerRatio > 1 then
 		return Clamp(50 * powerRatio, 0, 100)
@@ -90,7 +90,7 @@ local retreat_weight = {
         name = "retreat", 
     
         components = {
-            {func=lowHealth, weight=3},
+            {func=lowHealth, weight=6},
             {func=numberDifference, weight=0.5}
         },
     
@@ -98,7 +98,7 @@ local retreat_weight = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=5},
 			{func=considerPowerRatio, condition=hasEnemyNearby, weight=0.5},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=1.5}
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=2}
 		}
     }
 }
