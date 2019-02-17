@@ -91,18 +91,14 @@ function Murder(eHero)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
 	----Try various combos on weakened enemy unit----
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5) then
-		if (GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
-			UseAbilityEnemy(npcBot, abilityR, eHero)
-			UseAbilityEnemy(npcBot, abilityW, eHero)
-			UseAbilityEnemy(npcBot, abilityQ, eHero)
-		else
-			AP_MoveToUnit(npcBot, eHero)
-		end
+	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
+		UseAbilityEnemy(npcBot, abilityR, eHero)
+		UseAbilityEnemy(npcBot, abilityW, eHero)
+		UseAbilityEnemy(npcBot, abilityQ, eHero)
+	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange()) then
+		UseAbilityEnemy(npcBot, abilityR, eHero)
 	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
 		UseAbilityEnemy(npcBot, abilityW, eHero)
-	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.4 and GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange()) then
-		UseAbilityEnemy(npcBot, abilityR, eHero)
 	end
 	----Fuck'em up!----
 	if (not IsBotCasting()) then
@@ -143,9 +139,16 @@ function Hunt()
 
 	if (eHero == nil or #eHero == 0) then
 		return
-	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
+	elseif (eTowers ~= nil or #eTowers > 0) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 300) then
 			return
+		else
+			local ePerHealth = module.CalcPerHealth(eHero[1])
+			if (ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) then
+				Murder(eHero[1])
+			elseif (ePerHealth > 0.75) then
+				Poke(eHero[1])
+			end
 		end
 	else
 		local ePerHealth = module.CalcPerHealth(eHero[1])

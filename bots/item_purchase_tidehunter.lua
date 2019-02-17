@@ -2,9 +2,12 @@ local module = require(GetScriptDirectory().."/helpers")
 
 local Items =
 {
+	----arcane boots----
 	"item_boots",
-	"item_blink",
-	"item_energy_booster"
+	"item_energy_booster",
+
+	----blink dagger----
+	"item_blink"
 }
 
 function ItemPurchaseThink()

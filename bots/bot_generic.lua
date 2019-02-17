@@ -320,7 +320,7 @@ function Think()
 		if (WRDByTower(npcBot, 0.25)) then
 			Retreat(350)
 		----Retreat from creeps if health is low----
-		elseif (WRDByCreep(npcBot, 0.25) and percentHealth <= 0.3) then
+		elseif (WRDByCreep(npcBot, 0.25) and percentHealth <= 0.3 and GetUnitToUnitDistance(npcBot, eCreeps[1]) <= 100) then
 			Retreat(120)
 		----Retreat from Heroes----
 		elseif (WRDByHero(npcBot, 0.25)) then

@@ -86,19 +86,17 @@ function Murder(eHero)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5) then
-		if (GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
+	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange()) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
 			npcBot:ActionPush_UseAbility(abilityR)
-		else
-			AP_MoveToUnit(npcBot, eHero)
-		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange() and manaPer >= 0.3) then
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot,eHero) <= abilityW:GetCastRange() and manaPer >= 0.4) then
 		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
 		npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
 	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
 		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityW:GetCastRange() and manaPer >= 0.3) then
+		npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
 	end
 
 	----Fuck'em up!----
@@ -140,14 +138,14 @@ function Hunt()
 	if (eHero == nil or #eHero == 0) then
 		return
 	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 725) then
 			return
 		end
 	else
 		local ePerHealth = module.CalcPerHealth(eHero[1])
-		if (ePerHealth <= 0.75 or powerRatio <= 1) then
+		if ((ePerHealth <= 0.6 or powerRatio <= 1 or #aTowers ~= 0) and eTowers == nil) then
 			Murder(eHero[1])
-		elseif (ePerHealth > 0.75) then
+		elseif (ePerHealth > 0.6) then
 			Poke(eHero[1])
 		end
 	end

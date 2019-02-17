@@ -1,40 +1,40 @@
 local module = require(GetScriptDirectory().."/helpers")
 local bot_generic = require(GetScriptDirectory().."/bot_generic")
 
-local SKILL_Q = "tidehunter_gush"
-local SKILL_W = "tidehunter_kraken_shell"
-local SKILL_E = "tidehunter_anchor_smash"
-local SKILL_R = "tidehunter_ravage"
-local TALENT1 = "special_bonus_movement_speed_20"
-local TALENT2 = "special_bonus_unique_tidehunter_2"
-local TALENT3 = "special_bonus_exp_boost_40"
-local TALENT4 = "special_bonus_unique_tidehunter_3"
-local TALENT5 = "special_bonus_unique_tidehunter_4"
-local TALENT6 = "special_bonus_unique_tidehunter"
-local TALENT7 = "special_bonus_cooldown_reduction_25"
-local TALENT8 = "special_bonus_attack_damage_250"
+local SKILL_Q = "phantom_assassin_stifling_dagger"
+local SKILL_W = "phantom_assassin_phantom_strike"
+local SKILL_E = "phantom_assassin_blur"
+local SKILL_R = "phantom_assassin_coup_de_grace"
+local TALENT1 = "special_bonus_hp_150"
+local TALENT2 = "special_bonus_attack_damage_15"
+local TALENT3 = "special_bonus_lifesteal_15"
+local TALENT4 = "special_bonus_cleave_25"
+local TALENT5 = "special_bonus_corruption_4"
+local TALENT6 = "special_bonus_unique_phantom_assassin_3"
+local TALENT7 = "special_bonus_unique_phantom_assassin_2"
+local TALENT8 = "special_bonus_unique_phantom_assassin"
 
 local Ability = {
-	SKILL_E,
+	SKILL_Q,
 	SKILL_W,
-	SKILL_E,
 	SKILL_Q,
 	SKILL_E,
+	SKILL_Q,
 	SKILL_R,
-	SKILL_E,
+	SKILL_Q,
 	SKILL_W,
 	SKILL_W,
 	TALENT2,
 	SKILL_W,
 	SKILL_R,
-	SKILL_Q,
-	SKILL_Q,
+	SKILL_E,
+	SKILL_E,
 	TALENT4,
-	SKILL_Q,
+	SKILL_E,
 	"nil",
 	SKILL_R,
 	"nil",
-	TALENT6,
+	TALENT5,
 	"nil",
 	"nil",
 	"nil",
@@ -44,6 +44,8 @@ local Ability = {
 
 local npcBot = GetBot()
 
+
+----Function pointers----
 local AP_AttackUnit = npcBot.ActionPush_AttackUnit
 local AP_MoveDirectly = npcBot.ActionPush_MoveDirectly
 local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
@@ -76,31 +78,22 @@ end
 function Murder(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
 	local manaPer = module.CalcPerMana(npcBot)
-	local hRange = npcBot:GetAttackRange()
+	local hRange = npcBot:GetAttackRange() - 50
 	--local spamSkill = comboList[npcBot:GetUnitName()]
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
-	local abilityE = npcBot:GetAbilityByName(SKILL_E)
-	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local blink = module.ItemSlot(npcBot, "item_blink")
-	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	----Try various combos on weakened enemy unit----
-	if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, eHero) <= 1500) then
+
+	if (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,eHero) <= abilityQ:GetCastRange()) then
 		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
-		npcBot:ActionPush_UseAbility(abilityR)
-		npcBot:ActionPush_UseAbilityOnLocation(blink, eHero:GetLocation())
-	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, eHero) <= 800) then
-		npcBot:ActionPush_UseAbility(abilityR)
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
-		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, eHero)
-	elseif (not IsBotCasting() and ConsiderCast(abilityE) == 1 and manaPer >= 0.3) then
-		npcBot:ActionPush_UseAbility(abilityE)
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,eHero) <= abilityQ:GetCastRange()) then
+		npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
 	end
+
 	----Fuck'em up!----
 	if (not IsBotCasting()) then
-		if (GetUnitToUnitDistance(npcBot, eHero) <= hRange and npcBot:NumQueuedActions() == 0) then
+		if (GetUnitToUnitDistance(npcBot, eHero) <= hRange) then
 			AP_AttackUnit(npcBot, eHero, true)
 		else
 			AP_AttackUnit(npcBot, eHero, true)
@@ -113,9 +106,9 @@ end
 function Poke(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
 	local eHeroClose = module.CalcPerHealth(eHero)
-	local hRange = npcBot:GetAttackRange()
+	local hRange = npcBot:GetAttackRange() - 50
 
-	if (GetUnitToUnitDistance(npcBot, eHero) <= hRange) then
+	if (GetUnitToUnitDistance(npcBot, eHero) <= hRange and npcBot:NumQueuedActions() == 0) then
 		AP_AttackUnit(npcBot, eHero, true)
 	end
 end

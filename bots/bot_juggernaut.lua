@@ -87,15 +87,15 @@ function Murder(eHero)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3) then
-		if (GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange()) then
-			npcBot:ActionPush_UseAbilityOnEntity(abilityR, eHero)
+	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,eHero) <= abilityR:GetCastRange() then
+		npcBot:ActionPush_UseAbilityOnEntity(abilityR, eHero)
+	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
+		if (GetUnitToUnitDistance(npcBot,eHero) <= 150) then
+			AP_MoveToUnit(npcBot, eHero)
+			npcBot:ActionPush_UseAbility(abilityQ)
 		else
 			AP_MoveToUnit(npcBot, eHero)
 		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
-		npcBot:ActionPush_UseAbility(abilityQ)
-		AP_MoveToUnit(npcBot, eHero)
 	end
 
 	----Fuck'em up!----
@@ -137,12 +137,12 @@ function Hunt()
 	if (eHero == nil or #eHero == 0) then
 		return
 	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToLocationDistance(npcBot, eTowers[1]:GetLocation()) <= 725) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 725) then
 			return
 		end
 	else
 		local ePerHealth = module.CalcPerHealth(eHero[1])
-		if (ePerHealth <= 0.75 or powerRatio <= 1) then
+		if ((ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) and eTowers == nil) then
 			Murder(eHero[1])
 		elseif (ePerHealth > 0.75) then
 			Poke(eHero[1])
