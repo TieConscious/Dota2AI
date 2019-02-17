@@ -8,8 +8,6 @@ local state =
     weights = {}
 }
 
-npcBot = nil
-
 function stateMachine.calcWeightedAvg(table)
     local denom = 0
     local total = 0
@@ -20,7 +18,7 @@ function stateMachine.calcWeightedAvg(table)
     return total / denom
 end
 
-function stateMachine.calcWeight(settings)
+function stateMachine.calcWeight(npcBot, settings)
     local computedComps = {}
 
     for _,component in pairs(settings.components) do
@@ -42,9 +40,8 @@ function stateMachine.calcWeight(settings)
     state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
 end
 
-function stateMachine.calculateState(bot)
-    npcBot = bot
-    stateMachine.calcWeight(farm_weight.getSettings())
+function stateMachine.calculateState(npcBot)
+    stateMachine.calcWeight(npcBot, farm_weight.getSettings())
 
     local maxWeight = 0
     --change this if more state.
