@@ -35,7 +35,7 @@ end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMe(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
-	if next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
+	if npcBot:WasRecentlyDamagedByTower(0.5) or next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
 		return true
 	end
 	return false
@@ -45,9 +45,17 @@ function enemyTowerTargetingMe(npcBot)
 	return 100;
 end
 --powerRatio------------------------------------------------------------------------
-function hasEnemyNearby(npcBot)
+function hasPassiveEnemyNearby(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
-	if #nearbyEnemy ~= 0 then
+	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) then
+		return true
+	end
+	return false
+end
+
+function hasAggressiveEnemyNearby(npcBot)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) then
 		return true
 	end
 	return false
@@ -57,12 +65,8 @@ function considerPowerRatio(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-	if powerRatio > 1 then
-		return Clamp(50 * powerRatio, 0, 100)
-	else
-		powerRatio = 1 / powerRatio
-		return Clamp(50 * (powerRatio * 2 - 1), 0, 100)
-	end
+
+	return Clamp(100 * (powerRatio * 2 - 1), 0, 100)
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
 function hasEnemyCreepsNearby(npcBot)
@@ -97,8 +101,9 @@ local retreat_weight = {
         conditionals = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=5},
-			{func=considerPowerRatio, condition=hasEnemyNearby, weight=0.5},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=2}
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
 		}
     }
 }
