@@ -4,18 +4,19 @@ local BotPicks = {
 	'npc_dota_hero_chaos_knight',
 	'npc_dota_hero_bane',
 	'npc_dota_hero_crystal_maiden',
+	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_medusa',
-	'npc_dota_hero_lich',
 	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_abyssal_underlord',
+
 	'npc_dota_hero_pugna',
-	'npc_dota_hero_juggernaut',
-	'npc_dota_hero_earthshaker',
-	'npc_dota_hero_skeleton_king',
-	'npc_dota_hero_furion',
-	'npc_dota_hero_bloodseeker',
-	'npc_dota_hero_phoenix'
-};
+	'npc_dota_hero_lich',
+	'npc_dota_hero_sven',
+	'npc_dota_hero_shadow_shaman',
+	'npc_dota_hero_dazzle',
+	'npc_dota_hero_tinker',
+	'npc_dota_hero_jakiro'
+}
 
 local BotBans = {
 	'npc_dota_hero_sniper',
@@ -30,32 +31,35 @@ local BotBans = {
     'npc_dota_hero_witch_doctor',
 	'npc_dota_hero_zuus',
 	'npc_dota_hero_slark'
-};
+}
 
 function GetBotNames ()
 	local bot_names = {}
-	table.insert(bot_names, "@42SiliconValley")
-	table.insert(bot_names, "@DOTA2")
-	table.insert(bot_names, "@Lyd")
-	table.insert(bot_names, "@QwolfBLG")
-	table.insert(bot_names, "@mschroed098")
+	table.insert(bot_names, "@42SiliconValley");
+	table.insert(bot_names, "@DOTA2");
+	table.insert(bot_names, "@Lyd");
+	table.insert(bot_names, "@QwolfBLG");
+	table.insert(bot_names, "@mschroed098");
 	return bot_names
 end
 
-local picks = {}
-local maxPlayerID = 15
-
+local picks = {};
+local maxPlayerID = 15;
+-- CHANGE THESE VALUES IF YOU'RE GETTING BUGS WITH BOTS NOT PICKING (or infinite loops)
+-- To find appropriate values, start a game, open a console, and observe which slots are
+-- being used by which players/teams. maxPlayerID shoulud just be the highest-numbered
+-- slot in use.
 
 local slots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
-local ListPickedHeroes = {}
-local AllHeroesSelected = false
-local BanCycle = 1
-local PickCycle = 1
-local NeededTime = 300
+local ListPickedHeroes = {};
+local AllHeroesSelected = false;
+local BanCycle = 1;
+local PickCycle = 1;
+local NeededTime = 300;
 
 function Think()
 	if GetGameMode() == GAMEMODE_CM then
-		CaptainModeLogic()
+		CaptainModeLogic();
 	end
 end
 
@@ -87,54 +91,54 @@ function PickCaptain()
 	end
 end
 
-----Get the first bot to be the captain----
+----Get the first bot to be the captain
 function GetFirstBot()
 	local BotId = nil
 	local Players = GetTeamPlayers(GetTeam())
     for _,id in pairs(Players) do
         if IsPlayerBot(id) then
-			BotId = id
-			return BotId
+			BotId = id;
+			return BotId;
         end
     end
-	return BotId
+	return BotId;
 end
 
-----Ban hero function----
+----Ban hero function
 function BansHero()
 	if not IsPlayerBot(GetCMCaptain()) or not IsPlayerInHeroSelectionControl(GetCMCaptain()) then
 		return
 	end
-	local BannedHero = SelectBan()
+	local BannedHero = RandomBan();
 	print(BannedHero.." is banned")
-	CMBanHero(BannedHero)
-	BanCycle = BanCycle + 1
+	CMBanHero(BannedHero);
+	BanCycle = BanCycle + 1;
 end
 
-----Pick hero function----
+----Pick hero function
 function PicksHero()
 	if not IsPlayerBot(GetCMCaptain()) or not IsPlayerInHeroSelectionControl(GetCMCaptain()) then
 		return
 	end
-	local PickedHero = ChooseHero()
+	local PickedHero = RandomHero();
 	if PickCycle == 1 then
-		PickedHero = ChooseHero()
+		PickedHero = RandomHero();
 	elseif	PickCycle == 2 then
-		PickedHero = ChooseHero()
+		PickedHero = RandomHero();
 	elseif	PickCycle == 3 then
-		PickedHero = ChooseHero()
+		PickedHero = RandomHero();
 	elseif	PickCycle == 4 then
-		PickedHero = ChooseHero()
+		PickedHero = RandomHero();
 	elseif	PickCycle == 5 then
-		PickedHero = ChooseHero()
+		PickedHero = RandomHero();
 	end
 	print(PickedHero.." is picked")
-	CMPickHero(PickedHero)
-	PickCycle = PickCycle + 1
+	CMPickHero(PickedHero);
+	PickCycle = PickCycle + 1;
 end
 
-----Chooses Hero from selectable hero pool----
-function ChooseHero()
+----Random hero which is non picked, non banned, or non human picked heroes if the human is the captain
+function RandomHero()
 	local hero = BotPicks[1]
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero))
 	do
@@ -144,8 +148,8 @@ function ChooseHero()
 	return hero
 end
 
-----Bans Hero from ban pool----
-function SelectBan()
+----Random ban
+function RandomBan()
 	local hero = BotBans[1]
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero))
 	do
@@ -155,16 +159,16 @@ function SelectBan()
 	return hero
 end
 
-----Select heroes----
+----Select the rest of the heroes that the human players don't pick in captain's mode
 function SelectsHero()
 	if not AllHeroesSelected and GetCMPhaseTimeRemaining() < 1 then
 		local Players = GetTeamPlayers(GetTeam())
-		local RestBotPlayers = {}
-		GetTeamSelectedHeroes()
+		local RestBotPlayers = {};
+		GetTeamSelectedHeroes();
 
 		for _,id in pairs(Players)
 		do
-			local hero_name = GetSelectedHeroName(id)
+			local hero_name =  GetSelectedHeroName(id)
 			if (hero_name ~= nil and hero_name ~= "") then
 				table.insert(RestBotPlayers, id)
 			end
@@ -172,19 +176,19 @@ function SelectsHero()
 
 		for i = 1, #RestBotPlayers
 		do
-			ChooseHero(RestBotPlayers[i], ListPickedHeroes[i])
+			SelectHero(RestBotPlayers[i], ListPickedHeroes[i])
 		end
 
-		AllHeroesSelected = true
+		AllHeroesSelected = true;
 	end
 end
 
-----Get the team picked heroes----
+----Get the team picked heroes
 function GetTeamSelectedHeroes()
 	for _,sName in pairs(BotPicks)
 	do
 		if IsCMPickedHero(GetTeam(), sName) then
-			table.insert(ListPickedHeroes, sName)
+			table.insert(ListPickedHeroes, sName);
 		end
 	end
 end

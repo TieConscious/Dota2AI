@@ -1,5 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
-local bot_generic = require(GetScriptDirectory().."/bot_generic")
+local behavior = require(GetScriptDirectory().."/behavior")
+local stateMachine = require(GetScriptDirectory().."/state_machine")
 
 local SKILL_Q = "crystal_maiden_crystal_nova"
 local SKILL_W = "crystal_maiden_frostbite"
@@ -46,11 +47,11 @@ local npcBot = GetBot()
 
 
 ----Function pointers----
-local AP_AttackUnit = npcBot.ActionPush_AttackUnit
-local AP_MoveDirectly = npcBot.ActionPush_MoveDirectly
-local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
-local UseAbilityEnemy = npcBot.ActionPush_UseAbilityOnEntity
-local UseAbility = npcBot.ActionPush_UseAbility
+--local AP_AttackUnit = npcBot.ActionPush_AttackUnit
+--local AP_MoveDirectly = npcBot.ActionPush_MoveDirectly
+--local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
+--local UseAbilityEnemy = npcBot.ActionPush_UseAbilityOnEntity
+--local UseAbility = npcBot.ActionPush_UseAbility
 
 ----Checks whether bot is in process of casting an ability----
 function IsBotCasting()
@@ -79,11 +80,12 @@ end
 
 
 ----Murder closest enemy hero----
-function Murder(eHero)
+function Murder()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local manaPer = module.CalcPerMana(npcBot)
-	local hRange = npcBot:GetAttackRange() - 50
-	--local spamSkill = comboList[npcBot:GetUnitName()]
+	local hRange = npcBot:GetAttackRange() - 25
+
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -91,81 +93,87 @@ function Murder(eHero)
 	local blink = module.ItemSlot(npcBot, "item_blink")
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, eHero) <= 1500) then
-		npcBot:ActionPush_UseAbility(abilityR)
-		npcBot:ActionPush_UseAbilityOnLocation(blink, eHero:GetLocation())
-	elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= 500) then
-		npcBot:ActionPush_UseAbility(abilityR)
-	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
-		if (GetUnitToUnitDistance(npcBot, eHero) <= abilityW:GetCastRange()) then
-			npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
-			npcBot:ActionPush_UseAbilityOnEntity(abilityW, eHero)
-		elseif (GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange()) then
-			npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
-		end
-	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, eHero) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
-		npcBot:ActionPush_UseAbilityOnLocation(abilityQ, eHero:GetLocation())
-	end
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		local target = module.GetWeakestUnit(eHeroList)
 
-	----Fuck'em up!----
-	if (not IsBotCasting()) then
-		if (GetUnitToUnitDistance(npcBot, eHero) <= hRange) then
-			AP_AttackUnit(npcBot, eHero, true)
-		else
-			AP_AttackUnit(npcBot, eHero, true)
-			AP_MoveToUnit(npcBot, eHero)
+		if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, target) <= 1500) then
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbilityOnLocation(blink, target:GetLocation())
+		elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and GetUnitToUnitDistance(npcBot, target) <= 300) then
+			npcBot:Action_UseAbility(abilityR)
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
+			if (GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
+				npcBot:ActionPush_UseAbilityOnLocation(abilityQ, target:GetLocation())
+				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+			elseif (GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
+				npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
+			end
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
+			npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
+		end
+
+		----Fuck'em up!----
+		if (not IsBotCasting()) then
+			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+				npcBot:Action_AttackUnit(target, true)
+			else
+				npcBot:Action_MoveToUnit(target)
+			end
 		end
 	end
 
 end
 
 ----Pokes hero if within range----
-function Poke(eHero)
-	local perHealth = module.CalcPerHealth(npcBot)
-	local eHeroClose = module.CalcPerHealth(eHero)
-	local hRange = npcBot:GetAttackRange() - 50
-
-	if (GetUnitToUnitDistance(npcBot, eHero) <= hRange and npcBot:NumQueuedActions() == 0) then
-		AP_AttackUnit(npcBot, eHero, true)
-	end
-end
-
-function Hunt()
-	local perHealth = module.CalcPerHealth(npcBot)
-
-	local aHero = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
-	local aTowers = npcBot:GetNearbyTowers(700, false)
-
-	local eHero = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-	local eTowers = npcBot:GetNearbyTowers(1000, true)
-
-	local powerRatio = module.CalcPowerRatio(npcBot, aHero, eHero)
-
-	if (eHero == nil or #eHero == 0) then
-		return
-	elseif (etowers ~= nil or #eTowers ~= 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 725) then
-			return
-		end
-	else
-		local ePerHealth = module.CalcPerHealth(eHero[1])
-		if ((ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) and eTowers == nil) then
-			Murder(eHero[1])
-			return
-		elseif (ePerHealth > 0.75) then
-			Poke(eHero[1])
-			return
-		end
-	end
-end
+--function Poke(target)
+--	local perHealth = module.CalcPerHealth(npcBot)
+--	local targetClose = module.CalcPerHealth(target)
+--	local hRange = npcBot:GetAttackRange() - 50
+--
+--	if (GetUnitToUnitDistance(npcBot, target) <= hRange and npcBot:NumQueuedActions() == 0) then
+--		npcBot:Action_AttackUnit(target, true)
+--	end
+--end
+--
+--function Hunt()
+--	local perHealth = module.CalcPerHealth(npcBot)
+--
+--	local aHero = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+--	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+--	local aTowers = npcBot:GetNearbyTowers(700, false)
+--
+--	local target = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+--	local eTowers = npcBot:GetNearbyTowers(1000, true)
+--
+--	local powerRatio = module.CalcPowerRatio(npcBot, aHero, target)
+--
+--	if (target == nil or #target == 0) then
+--		return
+--	elseif (etowers ~= nil or #eTowers ~= 0) then
+--		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 725) then
+--			return
+--		end
+--	else
+--		local ePerHealth = module.CalcPerHealth(target[1])
+--		if ((ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) and eTowers == nil) then
+--			Murder(target[1])
+--			return
+--		elseif (ePerHealth > 0.75) then
+--			Poke(target[1])
+--			return
+--		end
+--	end
+--end
 
 function Think()
-	----Level up Abilities in order----
+	npcBot = GetBot()
+	local state = stateMachine.calculateState(npcBot)
+
 	module.AbilityLevelUp(Ability)
-	----Determine and execute whether to poke or hunt the enemy----
-	Hunt()
-	----After executing Hunt, go back to generic state machines----
-	bot_generic.Think()
+	if state.state == "hunt" then
+		Murder()
+	else
+		behavior.generic(npcBot, state)
+	end
 end

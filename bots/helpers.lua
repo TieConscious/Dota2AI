@@ -26,33 +26,23 @@ function module.ItemPurchase(Items)
 
 	local list = Items[1]
 
+	if (npcBot:GetGold() >= GetItemCost(list)) then
+		if (IsItemPurchasedFromSecretShop(list) == true) then
+			--Finds which Secret Shop is closer and goes towards the nearest
+			npcBot:ActionImmediate_Chat("Secret Shop", true)
+			if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
+				MoveDirectly(npcBot, SS1)
+			else
+				MoveDirectly(npcBot, SS2)
+			end
+		end
 
-	if (npcBot:GetGold() >= GetItemCost(list) and IsItemPurchasedFromSecretShop(list) == false) then
 		PurchaseResult = npcBot:ActionImmediate_PurchaseItem(list)
 		--Confirm whether the item was purchased, then remove from table
 		if (PurchaseResult == PURCHASE_ITEM_SUCCESS) then
 			table.remove(Items, 1)
 			npcBot:ActionImmediate_Chat("Bought", true)
 			return
-		end
-	elseif (npcBot:GetGold() >= GetItemCost(list) and IsItemPurchasedFromSecretShop(list) == true) then
-			--Finds which Secret Shop is closer and goes towards the nearest
-		npcBot:ActionImmediate_Chat("Secret Shop", true)
-		if (GetUnitToLocationDistance(npcBot, SS1) <= GetUnitToLocationDistance(npcBot, SS2)) then
-			npcBot:ActionPush_MoveToLocation(SS1)
-		else
-			npcBot:ActionPush_MoveToLocation(SS2)
-		end
-		PurchaseResult = npcBot:ActionImmediate_PurchaseItem(list)
-		--Confirm whether the item was purchased, then remove from table
-		if (PurchaseResult == PURCHASE_ITEM_SUCCESS) then
-			table.remove(Items, 1)
-			npcBot:ActionImmediate_Chat("Bought", true)
-			if (npcBot:GetTeam() == 3) then
-				npcBot:ActionPush_MoveToLocation(Vector(6780, 6124, 512))
-			else
-				npcBot:ActionPush_MoveToLocation(Vector(-6750 ,-6550, 512))
-			end
 		end
 	end
 end
@@ -121,18 +111,18 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 end
 
 ----Calculate units percent health----
-function module.CalcPerHealth(Unit)
-	local Health = Unit:GetHealth()
-	local MaxHealth = Unit:GetMaxHealth()
+function module.CalcPerHealth(unit)
+	local Health = unit:GetHealth()
+	local MaxHealth = unit:GetMaxHealth()
 	local percentHealth = Health/MaxHealth
 
 	return percentHealth
 end
 
 ----Calculate units percent mana----
-function module.CalcPerMana(Unit)
-	local Mana = Unit:GetMana()
-	local MaxMana = Unit:GetMaxMana()
+function module.CalcPerMana(unit)
+	local Mana = unit:GetMana()
+	local MaxMana = unit:GetMaxMana()
 	local percentMana = Mana/MaxMana
 
 	return percentMana
