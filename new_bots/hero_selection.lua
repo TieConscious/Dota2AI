@@ -1,21 +1,22 @@
 
 local BotPicks = {
 	'npc_dota_hero_tidehunter',
-	'npc_dota_hero_medusa',
-	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_chaos_knight',
 	'npc_dota_hero_bane',
 	'npc_dota_hero_crystal_maiden',
 	'npc_dota_hero_juggernaut',
+	'npc_dota_hero_medusa',
+	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_abyssal_underlord',
+
 	'npc_dota_hero_pugna',
-	'npc_dota_hero_axe',
-	'npc_dota_hero_earthshaker',
-	'npc_dota_hero_skeleton_king',
-	'npc_dota_hero_furion',
-	'npc_dota_hero_bloodseeker',
-	'npc_dota_hero_phoenix'
-};
+	'npc_dota_hero_lich',
+	'npc_dota_hero_sven',
+	'npc_dota_hero_shadow_shaman',
+	'npc_dota_hero_dazzle',
+	'npc_dota_hero_tinker',
+	'npc_dota_hero_jakiro'
+}
 
 local BotBans = {
 	'npc_dota_hero_sniper',
@@ -30,7 +31,7 @@ local BotBans = {
     'npc_dota_hero_witch_doctor',
 	'npc_dota_hero_zuus',
 	'npc_dota_hero_slark'
-};
+}
 
 function GetBotNames ()
 	local bot_names = {}
