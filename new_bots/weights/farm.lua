@@ -24,8 +24,8 @@ function calcEnemyCreepDist(npcBot)
     local eCreepDist = GetUnitToUnitDistance(npcBot, eWeakestCreep)
     
     --if creeps are dead, they are not close
-    if #nearbyACreeps == 0 then
-        eCreepDist == 100000
+    if #nearbyECreeps == 0 then
+        eCreepDist = 100000
     end
 
     return RemapValClamped(eCreepDist - attackRange, 0, moveDist, 100, 0)

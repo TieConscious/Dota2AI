@@ -1,4 +1,6 @@
 local farm_weight = require(GetScriptDirectory().."/weights/farm")
+local retreat_weight = require(GetScriptDirectory().."/weights/retreat")
+
 
 local stateMachine = {}
 
@@ -10,8 +12,8 @@ local state =
 
 function stateMachine.calculateState(npcBot)
     stateMachine.calcWeight(npcBot, farm_weight.settings)
+    stateMachine.calcWeight(npcBot, retreat_weight.settings)
     --more weights
-
 
     stateMachine.getState()
     return state
@@ -54,6 +56,7 @@ end
 
 function stateMachine.getState()
     local maxWeight = 0
+    state.state = "idle"
     for name,weight in pairs(state.weights) do
         if weight > maxWeight then
             maxWeight = weight
