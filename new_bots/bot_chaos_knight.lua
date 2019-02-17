@@ -43,14 +43,77 @@ local Ability = {
 	TALENT7
 }
 
-function OnStart()
-	print("init")
+local npcBot = GetBot()
+
+
+function IsBotCasting()
+	return npcBot:IsChanneling()
+		  or npcBot:IsUsingAbility()
+		  or npcBot:IsCastingAbility()
+end
+
+function ConsiderItem(Item)
+	if (Item == nil or not Item:IsFullyCastable()) then
+		return 0
+	end
+
+		return 1
+end
+
+function ConsiderCast(ability)
+	if (not ability:IsFullyCastable()) then
+		return 0
+	end
+
+	return 1
+end
+
+----Murder closest enemy hero----
+function Murder(target)
+	local perHealth = module.CalcPerHealth(npcBot)
+	local manaPer = module.CalcPerMana(npcBot)
+	local hRange = npcBot:GetAttackRange() - 25
+
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+	local abilityW = npcBot:GetAbilityByName(SKILL_W)
+	local abilityE = npcBot:GetAbilityByName(SKILL_E)
+	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
+
+	if (eHeroList ~= nil or #eHeroList > 0) then
+		local target = module.GetWeakestUnit(eHeroList)
+	end
+
+	if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot,target) <= abilityW:GetCastRange()) then
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+			npcBot:ActionPush_UseAbility(abilityR)
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot,target) <= abilityW:GetCastRange() and manaPer >= 0.4) then
+		npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+		npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+	elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
+		npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+	elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange() and manaPer >= 0.3) then
+		npcBot:Action_UseAbilityOnEntity(abilityW, target)
+	end
+
+	----Fuck'em up!----
+	if (not IsBotCasting()) then
+		if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+			npcBot:Action_AttackUnit(target, true)
+		else
+			npcBot:Action_MoveToUnit(target)
+		end
+	end
+
 end
 
 function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
-	
+
 	stateMachine.printState(state)
 
 	module.AbilityLevelUp(Ability)
