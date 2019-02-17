@@ -24,6 +24,9 @@ function stateMachine.calcWeightedAvg(table)
         total = total + (component.v * component.w)
         denom = denom + component.w
     end
+    if denom = 0
+        return 0
+    end
     return total / denom
 end
 
