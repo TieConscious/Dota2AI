@@ -1,16 +1,17 @@
 firstBuyItems = {
-	["orb"] = "item_orb_of_venom",
-	["branch0"] = "item_branches"
+	--["orb"] = "item_orb_of_venom",
+	--["branch0"] = "item_branches"
+	["quelling"] = "item_quelling_blade"
 }
 
 function ItemPurchaseThink()
 	local npcBot = GetBot()
 
-	if (GetGameState() == 4) then
+	--if (GetGameState() == 4) then
 		firstbuy()
-	else
-		earlyGameBuy()
-	end
+	--else
+		--earlyGameBuy()
+	--end
 end
 
 function earlyGameBuy()

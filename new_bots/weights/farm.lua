@@ -1,9 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
 
-function beTrue(npcBot)
-    return true
-end
-
 local hitConsider = 2.5
 local moveDist = 300
 
@@ -28,7 +24,7 @@ function calcEnemyCreepHealth(npcBot)
     local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
     local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
 
-    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * hitConsider, 100, 0)
+    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * hitConsider, 80, 0)
 end
 
 function calcEnemyCreepDist(npcBot)
@@ -42,7 +38,7 @@ function calcEnemyCreepDist(npcBot)
         eCreepDist = 100000
     end
 
-    return RemapValClamped(eCreepDist - attackRange, 0, moveDist, 100, 0)
+    return RemapValClamped(eCreepDist - attackRange, 0, moveDist, 80, 0)
 end
 
 local farm_weight = {
@@ -52,9 +48,9 @@ local farm_weight = {
     
         components = {
             --{func=calcEnemies, weight=5},
-            {func=creepsAround, weight=3},
-            {func=calcEnemyCreepHealth, weight=5},
-            {func=calcEnemyCreepDist, weight=3}
+            {func=creepsAround, weight=2},
+            {func=calcEnemyCreepHealth, weight=4},
+            {func=calcEnemyCreepDist, weight=7}
         },
     
         conditionals = {

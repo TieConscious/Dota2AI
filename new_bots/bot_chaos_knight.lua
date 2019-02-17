@@ -1,6 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
-local stateMachine = require(GetScriptDirectory().."/next_gen_state_machine")
+local stateMachine = require(GetScriptDirectory().."/state_machine")
 
 local SKILL_Q = "chaos_knight_chaos_bolt"
 local SKILL_W = "chaos_knight_reality_rift"
