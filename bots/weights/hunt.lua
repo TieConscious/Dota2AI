@@ -71,7 +71,7 @@ local hunt_weight = {
         conditionals = {
             {func=zero, condition=isUnderTower, weight=25},
             {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=heroLevel, condition=enemyNear, weight=7}
+            {func=heroLevel, condition=enemyNear, weight=10}
         }
     }
 }

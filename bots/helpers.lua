@@ -84,7 +84,7 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 	--GetOffensivePower calculates a more accurate power level of heroes, but is only usable on allies
 	--GetRawOffensivePower calculates the "theoretical" power level of heroes
 
-	local aPower = npcBot:GetOffensivePower()
+	local aPower = 0.0--npcBot:GetRawOffensivePower()
 	local ePower = 0.0
 
 	----Get power level of allied heroes----
