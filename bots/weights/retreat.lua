@@ -69,9 +69,9 @@ function considerPowerRatio(npcBot)
 	return Clamp(100 * (powerRatio * 2 - 1), 0, 100)
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
-function hasEnemyCreepsNearby(npcBot)
+function hasEnemyCreepsNearbyLowLevel(npcBot)
 	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(500, true)
-	if #nearbyEnemyCreeps ~= 0 then
+	if #nearbyEnemyCreeps ~= 0 and npcBot:GetLevel() < 7 then
 		return true
 	end
 	return false
@@ -85,7 +85,7 @@ function considerEenmyCreepHits(npcBot)
 			table.insert(creepsTargetingMe, creep)
 		end
 	end
-	return Clamp(50 * #creepsTargetingMe, 0, 100)
+	return Clamp(30 * #creepsTargetingMe, 0, 100)
 end
 ------------------------------------------------------------------------------------
 local retreat_weight = {
