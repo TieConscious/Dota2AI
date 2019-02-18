@@ -40,12 +40,17 @@ end
 
 function heroLevel(npcBot)
     local level = npcBot:GetLevel()
-    return RemapValClamped(level, 1, 10, 0, 100)
+    return RemapValClamped(level, 1, 6, 0, 50)
 end
 
 function enemyNear(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     return nearbyEnemy ~= nil and #nearbyEnemy > 0
+end
+
+function enemyNearAndNotLevel(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    return nearbyEnemy ~= nil and #nearbyEnemy > 0 and npcBot:GetLevel() < 6
 end
 
 function isUnderTower(npcBot)
@@ -69,9 +74,9 @@ local hunt_weight = {
         },
     
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=25},
+            {func=zero, condition=isUnderTower, weight=30},
             {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=heroLevel, condition=enemyNear, weight=15}
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20}
         }
     }
 }
