@@ -5,6 +5,7 @@ local Items =
 	----arcane boots----
 	"item_boots",
 	"item_energy_booster",
+	"item_recipe_arcane_boots",
 
 	----blink dagger----
 	"item_blink"

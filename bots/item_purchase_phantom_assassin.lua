@@ -24,11 +24,13 @@ local Items = {
 	"item_stout_shield",
 	"item_slippers",
 	"item_slippers",
+	"item_recipe_poor_mans_shield",
 
 	----powerthreads----
 	"item_belt_of_strength",
 	"item_boots",
 	"item_gloves",
+	"item_recipe_power_treads",
 
 	----black king bar----
 	"item_mithril_hammer",

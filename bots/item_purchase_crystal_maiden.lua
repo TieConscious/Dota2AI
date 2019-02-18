@@ -5,6 +5,7 @@ local Items = {
 	"item_wind_lace",
 	"item_boots",
 	"item_ring_of_regen",
+	"item_recipe_tranquil_boots",
 
 	---- ----
 	"item_cloak",
@@ -18,6 +19,7 @@ local Items = {
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",
+	"item_recipe_ultimate_scepter",
 
 	----force staff----
 	"item_ring_of_regen",

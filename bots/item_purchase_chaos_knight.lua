@@ -5,12 +5,14 @@ local Items = {
 	"item_belt_of_strength",
 	"item_boots",
 	"item_gloves",
+	"item_recipe_power_treads",
 
 	----echo sabre----
 	"item_ogre_axe",
 	"item_quarterstaff",
 	"item_robe",
 	"item_sobi_mask",
+	"item_recipe_echo_sabre",
 
 	----manta style----
 	"item_ultimate_orb",
