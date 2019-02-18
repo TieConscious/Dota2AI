@@ -34,8 +34,18 @@ function enemyHealth(npcBot)
 end
 
 function numberCreeps(npcBot)
-    local nearbyEnemyCreeps = npcBot:GetNearbyH(1600, true, BOT_MODE_NONE)
+    local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
     return RemapValClamped(#nearbyEnemyCreeps, 0, 5 , 100, 0)
+end
+
+function heroLevel(npcBot)
+    local level = npcBot:GetLevel()
+    return RemapValClamped(level, 1, 10, 0, 100)
+end
+
+function enemyNear(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    return nearbyEnemy ~= nil and #nearbyEnemy > 0
 end
 
 function isUnderTower(npcBot)
@@ -53,16 +63,15 @@ local hunt_weight = {
         name = "hunt", 
     
         components = {
-            --{func=calcEnemies, weight=5},
-            --{func=numberCreeps, weight=3},
-            {func=enemyHealth, weight=8},
-            {func=powerRatio , weight=8},
+            {func=enemyHealth, weight=10},
+            {func=powerRatio , weight=9},
             {func=enemyDistance , weight=6}
         },
     
         conditionals = {
-            --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=zero, condition=isUnderTower, weight=15}
+            {func=zero, condition=isUnderTower, weight=25},
+            {func=numberCreeps, condition=enemyNear, weight=4},
+            {func=heroLevel, condition=enemyNear, weight=7}
         }
     }
 }
