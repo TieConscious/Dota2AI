@@ -27,7 +27,7 @@ local Items = {
 	----black king bar----
 	"item_mithril_hammer",
 	"item_ogre_axe",
-	"item_recipe_black_king_bar",
+	"item_recipe_black_king_bar"
 
 	--"item_mystic_staff",
 	--"item_ultimate_orb",

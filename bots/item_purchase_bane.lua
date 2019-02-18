@@ -23,7 +23,7 @@ local Items =
 
 	"item_mystic_staff",
 	"item_ultimate_orb",
-	"item_void_stone",
+	"item_void_stone"
 }
 
 return Items
