@@ -103,7 +103,7 @@ local retreat_weight = {
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=7},
 			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
 			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=4},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearbyLowLevel, weight=3}
 		}
     }
 }
