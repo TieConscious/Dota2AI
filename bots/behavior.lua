@@ -18,6 +18,8 @@ function behavior.generic(npcBot, stateMachine)
 		Farm()
 	elseif stateMachine.state == "buy" then
 		Buy()
+	elseif stateMachine.state == "Deaggro" then
+		Deaggro()
 	else
 		Farm()
 	end
@@ -102,7 +104,7 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2) then
+	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
 		if (eCreepHealth <= npcBot:GetAttackDamage() * 0.9 or #aCreeps == 0) then
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
 				npcBot:Action_AttackUnit(eWeakestCreep, false)
@@ -151,6 +153,30 @@ function Buy()
 	else
 		npcBot:ActionImmediate_PurchaseItem(nextItem) 
 		table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
+	end
+end
+
+function Deaggro()
+	local npcBot = GetBot()
+	local attackRange = npcBot:GetAttackRange()
+	local nearbyETowers = npcBot:GetNearbyTowers(700, true)
+	local AcreepsInRange = nearbyETowers[1]:GetNearbyLaneCreeps(700)
+	local closestAcreep = nil
+	local dist = 3000;
+
+	for _,creep in pairs(AcreepsInRange) do
+		if GetUnitToUnitDistance(npcBot, creep) < dist then
+			dist = GetUnitToUnitDistance(npcBot, creep) < dist
+			closestAcreep = creep
+		end
+	end
+
+	if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
+		if dist > attackRange then
+			npcBot:Action_MoveToUnit(closestAcreep)
+		else
+			npcBot:Action_AttackUnit(closestAcreep)
+		end
 	end
 end
 

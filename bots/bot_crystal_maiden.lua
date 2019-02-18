@@ -113,11 +113,14 @@ function Murder()
 		end
 
 		----Fuck'em up!----
+		--ranged, wait til attack finish
 		if (not IsBotCasting()) then
-			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-				npcBot:Action_AttackUnit(target, true)
-			else
-				npcBot:Action_MoveToUnit(target)
+			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
+				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+					npcBot:Action_AttackUnit(target, true)
+				else
+					npcBot:Action_MoveToUnit(target)
+				end
 			end
 		end
 	end
