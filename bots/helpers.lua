@@ -144,11 +144,11 @@ end
 ----Find weakest enemy unit (Creep or Hero) and their health----
 function module.GetWeakestUnit(Enemy)
 	if (Enemy == nil or #Enemy == 0) then
-		return nil, 10000
+		return nil, 0
 	end
 
-	local WeakestUnit = nil
-	local LowestHealth = 10000
+	local WeakestUnit = Enemy[1]
+	local LowestHealth = Enemy[1]:GetHealth()
 	for _,unit in pairs(Enemy)
 	do
 		if (unit ~= nil and unit:IsAlive()) then
