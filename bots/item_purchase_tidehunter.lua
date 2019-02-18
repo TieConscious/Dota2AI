@@ -8,7 +8,7 @@ local Items =
 	"item_recipe_arcane_boots",
 
 	----blink dagger----
-	"item_blink"
+	"item_blink",
 
 	----magic wand----
 	"item_branches",
