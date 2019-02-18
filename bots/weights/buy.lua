@@ -30,8 +30,7 @@ local buy_weight = {
 
 function isPurchaseableFromShop(npcBot)
 	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()]
-	if nextItem ~= nil and next(nextItem) ~= nil not IsItemPurchasedFromSecretShop(nextItem[1]) and
-		npcBot:GetGold() >= GetItemCost(nextItem[1]) then
+	if nextItem ~= nil and next(nextItem) ~= nil and not IsItemPurchasedFromSecretShop(nextItem[1]) and npcBot:GetGold() >= GetItemCost(nextItem[1]) then
 		return true;
 	end
 	return false;
@@ -44,8 +43,7 @@ end
 
 function isPurchaseableFromSecretShop(npcBot)
 	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()]
-	if nextItem ~= nil and next(nextItem) ~= nil and IsItemPurchasedFromSecretShop(nextItem[1]) and
-		npcBot:GetGold() >= GetItemCost(nextItem[1]) then
+	if nextItem ~= nil and next(nextItem) ~= nil and IsItemPurchasedFromSecretShop(nextItem[1]) and	npcBot:GetGold() >= GetItemCost(nextItem[1]) then
 		return true;
 	end
 	return false
