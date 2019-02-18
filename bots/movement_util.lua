@@ -32,6 +32,10 @@ NP = Vector(-3500, 3500, 0)
 NN = Vector(-3500, -3500, 0)
 PN = Vector(3500, -3500, 0)
 
+TCORNER = Vector(-6200, 6020, 0)
+BCORNER = Vector(6220, -6200, 0)
+
+
 ----Function Pointers----
 -- local GetLocation = npcBot.GetLocation
 -- local MoveTo = npcBot.Action_MoveToLocation
@@ -138,10 +142,27 @@ end
 
 function movement.Retreat(npcBot)
 	local team = npcBot:GetTeam()
+	local loc = npcBot:GetLocation()
 	if (team == 3) then
-		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+		--if bottom lane, bottom leg
+		if loc.x < 5400 and loc.y < -5650 then
+			npcBot:Action_MoveToLocation(BCORNER)
+		--if top lane, left leg
+		elseif loc.x < -6700 and loc.y < 5300 then
+			npcBot:Action_MoveToLocation(TCORNER)
+		else
+			npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+		end
 	else
-		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+		--if bottom lane, right leg
+		if loc.x > 5700 and loc.y > -5500 then
+			npcBot:Action_MoveToLocation(BCORNER)
+		--if top lane, top leg
+		elseif loc.x > -5200 and loc.y > 5500 then
+			npcBot:Action_MoveToLocation(TCORNER)
+		else
+			npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+		end
 	end
 end
 
