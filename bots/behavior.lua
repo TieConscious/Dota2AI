@@ -1,5 +1,6 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
+local buy_weight = require(GetScriptDirectory().."/weights/buy")
 
 local behavior = {}
 
@@ -15,6 +16,8 @@ function behavior.generic(npcBot, stateMachine)
 		Tower()
 	elseif stateMachine.state == "farm" then
 		Farm()
+	elseif stateMachine.state == "buy" then
+		Buy()
 	else
 		Farm()
 	end
@@ -124,6 +127,30 @@ function Farm()
 		end
 	else
 		movement.MTL_Farm(npcBot)
+	end
+end
+
+function Buy()
+	local npcBot = GetBot()
+	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()][1]
+	local SS1 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET)
+	local SS2 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET2)
+	local closerSecretShop = nil
+	if GetUnitToLocationDistance(npcBot, SS1) < GetUnitToLocationDistance(npcBot, SS2) then
+		closerSecretShop = SS1
+	else
+		closerSecretShop = SS2
+	end
+	if IsItemPurchasedFromSecretShop(nextItem) then
+		if npcBot:DistanceFromSecretShop() == 0 then
+			npcBot:ActionImmediate_PurchaseItem(nextItem) 
+			table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
+		else
+			npcBot:Action_MoveToLocation(closerSecretShop)
+		end
+	else
+		npcBot:ActionImmediate_PurchaseItem(nextItem) 
+		table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 	end
 end
 
