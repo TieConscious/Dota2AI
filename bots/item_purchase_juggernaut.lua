@@ -1,11 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 
 local Items = {
-	----poor man's shield----
-	"item_stout_shield",
-	"item_slippers",
-	"item_slippers",
-	"item_recipe_poor_mans_shield",
+
+	"item_quelling_blade",
 
 	----powerthreads----
 	"item_belt_of_strength",
@@ -13,6 +10,11 @@ local Items = {
 	"item_gloves",
 	"item_recipe_power_treads",
 
+	----battlefury----
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_demon_edge",
+	"item_recipe_bfury",
 
 	----battlefury----
 	"item_quelling_blade",
@@ -21,17 +23,38 @@ local Items = {
 	"item_demon_edge",
 	"item_recipe_bfury",
 
-	----Desolator----
-	"item_mithril_hammer",
-	"item_mithril_hammer",
-	"item_blight_stone",
-	"item_recipe_desolator",
+	----battlefury----
+	"item_quelling_blade",
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_demon_edge",
+	"item_recipe_bfury",
+
+	----battlefury----
+	"item_quelling_blade",
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_demon_edge",
+	"item_recipe_bfury",
+
+	----battlefury----
+	"item_quelling_blade",
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_demon_edge",
+	"item_recipe_bfury"
+
+	------Desolator----
+	--"item_mithril_hammer",
+	--"item_mithril_hammer",
+	--"item_blight_stone",
+	--"item_recipe_desolator",
 
 
-	----Vladmir's Offering----
-	"item_sobi_mask",
-	"item_ring_of_protection",
-	"item_lifesteal",
-	"item_recipe_vladmir"
+	------Vladmir's Offering----
+	--"item_sobi_mask",
+	--"item_ring_of_protection",
+	--"item_lifesteal",
+	--"item_recipe_vladmir"
 }
 return Items
