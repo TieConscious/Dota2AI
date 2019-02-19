@@ -120,7 +120,7 @@ function module.GetAllyCreepInTowerRange(npcBot, searchRange)
 		return empty
 	end
 	for i,creep in pairs(nearbyAllyCreeps) do
-		if GetUnitToUnitDistance(nearbyEnemyTower, creeps) > 600 then
+		if GetUnitToUnitDistance(nearbyEnemyTower, creep) > 700 then
 			nearbyAllyCreeps[i] = nil;
 		end
 	end
@@ -133,7 +133,7 @@ function module.GetAllyCreepInTowerRange(npcBot, searchRange)
         end
 	end
 	for i=n,j,-1 do
-			remove(nearbyAllyCreeps, i)
+			table.remove(nearbyAllyCreeps, i)
 	end
 	return nearbyAllyCreeps
 end
