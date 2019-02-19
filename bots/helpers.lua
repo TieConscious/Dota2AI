@@ -110,6 +110,34 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 
 end
 
+--nearbyTower is only usable by heroes, doesn't work with creeps. vise versa.
+----TowerRangeCreepSearch, order of distance to npcBot----
+function module.GetAllyCreepInTowerRange(npcBot, searchRange)
+	local nearbyAllyCreeps = npcBot:GetNearbyLaneCreeps(searchRange, false)
+	local nearbyEnemyTower = npcBot:GetNearbyTowers(searchRange, true)[1]
+	local empty = {}
+	if nearbyEnemyTower == nil then
+		return empty
+	end
+	for i,creep in pairs(nearbyAllyCreeps) do
+		if GetUnitToUnitDistance(nearbyEnemyTower, creeps) > 600 then
+			nearbyAllyCreeps[i] = nil;
+		end
+	end
+	local j=1
+	local n=#nearbyAllyCreeps
+	for i=1,n do
+        if nearbyAllyCreeps[i]~=nil then
+			nearbyAllyCreeps[j]=nearbyAllyCreeps[i]
+			j=j+1
+        end
+	end
+	for i=n,j,-1 do
+			remove(nearbyAllyCreeps, i)
+	end
+	return nearbyAllyCreeps
+end
+
 ----Calculate units percent health----
 function module.CalcPerHealth(unit)
 	local Health = unit:GetHealth()
