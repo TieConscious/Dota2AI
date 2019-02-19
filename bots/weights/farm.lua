@@ -1,12 +1,13 @@
 local module = require(GetScriptDirectory().."/helpers")
 
+local searchRadius = 1000
 local hitConsider = 2.5
 local moveDist = 300
 
 function creepsAround(npcBot)
     local creepCount = 0
-    local nearbyECreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-    local nearbyACreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+    local nearbyECreeps = npcBot:GetNearbyLaneCreeps(searchRadius, true)
+    local nearbyACreeps = npcBot:GetNearbyLaneCreeps(searchRadius, false)
 
     if nearbyECreeps ~= nil then
         creepCount = creepCount + #nearbyECreeps
@@ -45,6 +46,16 @@ function calcEnemyCreepDist(npcBot)
     return RemapValClamped(eCreepDist - attackRange, 0, moveDist, 50, 0)
 end
 
+function heroLevel(npcBot)
+    local level = npcBot:GetLevel()
+    return RemapValClamped(level, 1, 10, 60, 0)
+end
+
+function enemyNotLevel(npcBot)
+    local nearbyCreeps = npcBot:GetNearbyLaneCreeps(searchRadius, true)
+    return nearbyCreeps ~= nil and #nearbyCreeps > 0 and npcBot:GetLevel() < 10
+end
+
 local farm_weight = {
     settings =
     {
@@ -58,6 +69,7 @@ local farm_weight = {
     
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
+            {func=heroLevel, condition=enemyNotLevel, weight=5}
         }
     }
 }
