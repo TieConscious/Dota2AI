@@ -18,7 +18,7 @@ function behavior.generic(npcBot, stateMachine)
 		Farm()
 	elseif stateMachine.state == "buy" then
 		Buy()
-	elseif stateMachine.state == "Deaggro" then
+	elseif stateMachine.state == "deaggro" then
 		Deaggro()
 	else
 		Farm()
@@ -159,25 +159,15 @@ end
 function Deaggro()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
-	local nearbyETowers = npcBot:GetNearbyTowers(700, true)
-	local AcreepsInRange = nearbyETowers[1]:GetNearbyLaneCreeps(700)
-	local closestAcreep = nil
-	local dist = 3000;
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
 
-	for _,creep in pairs(AcreepsInRange) do
-		if GetUnitToUnitDistance(npcBot, creep) < dist then
-			dist = GetUnitToUnitDistance(npcBot, creep) < dist
-			closestAcreep = creep
-		end
+	print (#ACreepsInTowerRange)
+	if GetUnitToUnitDistance(ACreepsInTowerRange[1], npcBot) > attackRange then
+		npcBot:Action_MoveToUnit(ACreepsInTowerRange[1])
+	else
+		npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
 	end
 
-	if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-		if dist > attackRange then
-			npcBot:Action_MoveToUnit(closestAcreep)
-		else
-			npcBot:Action_AttackUnit(closestAcreep)
-		end
-	end
 end
 
 return behavior

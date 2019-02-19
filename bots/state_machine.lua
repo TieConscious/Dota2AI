@@ -3,6 +3,7 @@ local retreat_weight = require(GetScriptDirectory().."/weights/retreat")
 local hunt_weight = require(GetScriptDirectory().."/weights/hunt")
 local tower_weight = require(GetScriptDirectory().."/weights/tower")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
+local deaggro_weight = require(GetScriptDirectory().."/weights/deaggro")
 
 
 local stateMachine = {}
@@ -18,7 +19,8 @@ function stateMachine.calculateState(npcBot)
     stateMachine.calcWeight(npcBot, hunt_weight.settings)
     stateMachine.calcWeight(npcBot, farm_weight.settings)
     stateMachine.calcWeight(npcBot, tower_weight.settings)
-    stateMachine.calcWeight(npcBot, buy_weight.settings)
+	stateMachine.calcWeight(npcBot, buy_weight.settings)
+	stateMachine.calcWeight(npcBot, deaggro_weight.settings)
     --more weights
 
     stateMachine.getState()
