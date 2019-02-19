@@ -78,6 +78,16 @@ function module.AbilityLevelUp(Ability)
 	end
 end
 
+----Caluclate total mana cost of a combo----
+function module.CalcManaCombo(...)
+	local sum = 0
+    for k,v in pairs(...) do
+        sum = sum + v
+    end
+
+    return sum
+end
+
 --use percent health as another ratio unit
 ----Calculate power ratios----
 function module.CalcPowerRatio(npcBot, aHero, eHero)
