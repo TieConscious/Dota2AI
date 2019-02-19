@@ -58,7 +58,7 @@ function Tower()
 
 	local eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() / 2)) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eTowers[1], false)
 		else
 			npcBot:Action_MoveToUnit(eTowers[1])
@@ -68,7 +68,7 @@ function Tower()
 
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
 	if (eBarracks ~= nil and #eBarracks > 0) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() / 2)) then
+		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eBarracks[1], false)
 		else
 			npcBot:Action_MoveToUnit(eBarracks[1])
@@ -83,7 +83,7 @@ function Tower()
 		eAncient = GetAncient(2)
 	end
 	if (eAncient ~= nil and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
-		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() / 2)) then
+		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eAncient, false)
 		else
 			npcBot:Action_MoveToUnit(eAncient)
@@ -104,10 +104,10 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2.5) then
-		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) or #aCreeps < 0) then --number of enemies in the future
+	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
+		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
-				npcBot:Action_AttackUnit(eWeakestCreep, false)
+				npcBot:Action_AttackUnit(eWeakestCreep, true)
 			else
 				npcBot:Action_MoveToUnit(eWeakestCreep)
 			end
@@ -116,9 +116,9 @@ function Farm()
 			npcBot:Action_MoveToUnit(eWeakestCreep)
 		end
 	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL)) then
+	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
-			npcBot:Action_AttackUnit(aWeakestCreep, false)
+			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
 	----Wack nearest creep----
 	-- elseif (eCreeps[1] ~= nil) then
@@ -161,7 +161,6 @@ function Deaggro()
 	local attackRange = npcBot:GetAttackRange()
 	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
 
-	print (#ACreepsInTowerRange)
 	if GetUnitToUnitDistance(ACreepsInTowerRange[1], npcBot) > attackRange then
 		npcBot:Action_MoveToUnit(ACreepsInTowerRange[1])
 	else
