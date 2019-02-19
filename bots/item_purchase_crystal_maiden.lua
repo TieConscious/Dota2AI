@@ -7,7 +7,7 @@ local Items = {
 	"item_ring_of_regen",
 	"item_recipe_tranquil_boots",
 
-	---- ----
+	----glimmer cape----
 	"item_cloak",
 	"item_shadow_amulet",
 
