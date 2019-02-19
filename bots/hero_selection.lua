@@ -3,9 +3,9 @@ local BotPicks = {
 	'npc_dota_hero_tidehunter',
 	'npc_dota_hero_chaos_knight',
 	'npc_dota_hero_bane',
-	'npc_dota_hero_crystal_maiden',
-	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_medusa',
+	'npc_dota_hero_juggernaut',
+	'npc_dota_hero_crystal_maiden',
 	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_abyssal_underlord',
 
@@ -20,7 +20,7 @@ local BotPicks = {
 
 local BotBans = {
 	'npc_dota_hero_sniper',
-	'npc_dota_hero_treant',
+	'npc_dota_hero_axe',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_undying',
 	'npc_dota_hero_ursa',
