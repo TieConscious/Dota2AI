@@ -104,8 +104,8 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
-		if (eCreepHealth <= npcBot:GetAttackDamage() * 0.9 or #aCreeps == 0) then
+	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2.5) then
+		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) or #aCreeps < 0) then --number of enemies in the future
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
 				npcBot:Action_AttackUnit(eWeakestCreep, false)
 			else
@@ -116,18 +116,18 @@ function Farm()
 			npcBot:Action_MoveToUnit(eWeakestCreep)
 		end
 	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
+	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL)) then
 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
 			npcBot:Action_AttackUnit(aWeakestCreep, false)
 		end
 	----Wack nearest creep----
-	elseif (eCreeps[1] ~= nil) then
-		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eCreeps[1], true)
-		else
-			npcBot:Action_MoveToUnit(eCreeps[1])
-		end
-	else
+	-- elseif (eCreeps[1] ~= nil) then
+	-- 	if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+	-- 		npcBot:Action_AttackUnit(eCreeps[1], true)
+	-- 	else
+	-- 		npcBot:Action_MoveToUnit(eCreeps[1])
+	-- 	end
+	 else
 		movement.MTL_Farm(npcBot)
 	end
 end
