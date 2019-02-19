@@ -50,7 +50,7 @@ end
 
 function enemyNearAndNotLevel(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    return nearbyEnemy ~= nil and #nearbyEnemy > 0 and npcBot:GetLevel() < 6
+    return nearbyEnemy ~= nil and #nearbyEnemy > 0 and npcBot:GetLevel() < 7
 end
 
 function isUnderTower(npcBot)
@@ -70,11 +70,11 @@ local hunt_weight = {
         components = {
             {func=enemyHealth, weight=10},
             {func=powerRatio , weight=9},
-            {func=enemyDistance , weight=7}
+            {func=enemyDistance , weight=10}
         },
     
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=30},
+            {func=zero, condition=isUnderTower, weight=35},
             {func=numberCreeps, condition=enemyNear, weight=4},
             {func=heroLevel, condition=enemyNearAndNotLevel, weight=20}
         }

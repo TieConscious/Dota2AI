@@ -62,7 +62,7 @@ function module.AbilityLevelUp(Ability)
 	--If level up is "nil", delete nil
 	if (ability_name == "nil") then
 		table.remove(Ability, 1)
-		npcBot:ActionImmediate_Chat("nil removed", true)
+		--npcBot:ActionImmediate_Chat("nil removed", true)
 		return
 	end
 
