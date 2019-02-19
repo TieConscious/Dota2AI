@@ -17,25 +17,25 @@ end
 --tower-----------------------------------------------------------------------------
 --do not calc if EnemyTower is actually targeting me. use function below for that
 function willEnemyTowerTargetMe(npcBot)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 900)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(850, true)
 	if #ACreepsInTowerRange < 3 and
-		not npcBot:WasRecentlyDamagedByTower(0.8) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
+		not npcBot:WasRecentlyDamagedByTower(0.5) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
 		return true
 	end
 	return false
 end
 
 function enemyTowerShallTargetMe(npcBot)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 900)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
 	return Clamp((3 - #ACreepsInTowerRange) * 60, 0, 100)
 end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMeNoAlly(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
 	if #ACreepsInTowerRange == 0 and 
-		(npcBot:WasRecentlyDamagedByTower(0.8) or (nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot)) then
+		(npcBot:WasRecentlyDamagedByTower(0.5) or (nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot)) then
 		return true
 	end
 	return false
