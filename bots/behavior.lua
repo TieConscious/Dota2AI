@@ -1,10 +1,11 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
-
+local courier_think = require(GetScriptDirectory().."/courier_think")
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)
+	courier_think.Decide()
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
