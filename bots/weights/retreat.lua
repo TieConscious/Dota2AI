@@ -5,7 +5,7 @@ local module = require(GetScriptDirectory().."/helpers")
 function lowHealth(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	--100 on 0.1, 70 on 0.7
- 		return RemapValClamped(percentHealth, 0.1, 0.65, 100, 0)
+ 		return RemapValClamped(percentHealth, 0.1, 0.7, 100, 0)
 end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
@@ -17,25 +17,25 @@ end
 --tower-----------------------------------------------------------------------------
 --do not calc if EnemyTower is actually targeting me. use function below for that
 function willEnemyTowerTargetMe(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
-	if #nearbyEnemyTowers ~= 0 and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
-		AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
-		if AcreepsInTowerRange ~= nil and #AcreepsInTowerRange < 3 then
-			return true
-		end
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 900)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
+	if #ACreepsInTowerRange < 3 and
+		not npcBot:WasRecentlyDamagedByTower(0.8) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
+		return true
 	end
 	return false
 end
 
 function enemyTowerShallTargetMe(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(1000, true)
-	local AcreepsInTowerRange = nearbyEnemyTowers[1]:GetNearbyLaneCreeps(700, false)
-	return Clamp((3 - #AcreepsInTowerRange) * 60, 0, 100)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 900)
+	return Clamp((3 - #ACreepsInTowerRange) * 60, 0, 100)
 end
 ------------------------------------------------------------------------------------
-function isEnemyTowerTargetingMe(npcBot)
+function isEnemyTowerTargetingMeNoAlly(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
-	if npcBot:WasRecentlyDamagedByTower(1) or next(nearbyEnemyTowers) ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot then
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
+	if #ACreepsInTowerRange == 0 and 
+		(npcBot:WasRecentlyDamagedByTower(0.8) or (nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot)) then
 		return true
 	end
 	return false
@@ -69,9 +69,9 @@ function considerPowerRatio(npcBot)
 	return Clamp(100 * (powerRatio * 2 - 1), 0, 100)
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
-function hasEnemyCreepsNearbyLowLevel(npcBot)
+function hasEnemyCreepsNearby(npcBot)
 	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(500, true)
-	if #nearbyEnemyCreeps ~= 0 and npcBot:GetLevel() < 7 then
+	if #nearbyEnemyCreeps ~= 0 then
 		return true
 	end
 	return false
@@ -85,7 +85,7 @@ function considerEenmyCreepHits(npcBot)
 			table.insert(creepsTargetingMe, creep)
 		end
 	end
-	return Clamp(30 * #creepsTargetingMe, 0, 100)
+	return Clamp(50 * #creepsTargetingMe, 0, 100)
 end
 ------------------------------------------------------------------------------------
 local retreat_weight = {
@@ -94,16 +94,16 @@ local retreat_weight = {
         name = "retreat", 
     
         components = {
-            {func=lowHealth, weight=4},
+            {func=lowHealth, weight=6},
             {func=numberDifference, weight=0.5}
         },
     
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=7},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMe, weight=7},
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
 			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=4},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearbyLowLevel, weight=3}
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
+			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
 		}
     }
 }
