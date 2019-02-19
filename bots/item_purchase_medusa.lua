@@ -5,12 +5,10 @@ local Items = {
 	"item_belt_of_strength",
 	"item_boots",
 	"item_gloves",
-	"item_recipe_power_treads",
 
 	----mask of madness----
 	"item_lifesteal",
 	"item_quarterstaff",
-	"item_recipe_mask_of_madness",
 
 	----manta style----
 	"item_ultimate_orb",
@@ -23,19 +21,18 @@ local Items = {
 	"item_ultimate_orb",
 	"item_ultimate_orb",
 	"item_point_booster",
-	"item_recipe_skadi",
 
 	----butterfly----
 	"item_eagle",
 	"item_talisman_of_evasion",
 	"item_quarterstaff",
-	"item_recipe_butterfly",
 
-	----dragon lance----
-	"item_boots_of_elves",
-	"item_boots_of_elves",
-	"item_ogre_axe",
-	"item_recipe_dragon_lance"
+	----daedalus----
+	"item_blades_of_attack",
+	"item_broadsword",
+	"item_recipe_lesser_crit",
+	"item_demon_edge",
+	"item_recipe_greater_crit"
 }
 
 return Items
