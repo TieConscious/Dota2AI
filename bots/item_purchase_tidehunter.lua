@@ -15,13 +15,13 @@ local Items =
 	"item_void_stone",
 	"item_ring_of_health",
 	"item_void_stone",
-	"item_recipe_refresher"
+	"item_recipe_refresher",
 
 	----heart of tarrasque----
 	"item_reaver",
 	"item_vitality_booster",
 	"item_ring_of_tarrasque",
-	"item_recipe_heart"
+	"item_recipe_heart",
 
 	----magic wand----
 	"item_branches",
