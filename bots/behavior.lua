@@ -121,12 +121,12 @@ function Farm()
 			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
 	----Wack nearest creep----
-	-- elseif (eCreeps[1] ~= nil) then
-	-- 	if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
-	-- 		npcBot:Action_AttackUnit(eCreeps[1], true)
-	-- 	else
-	-- 		npcBot:Action_MoveToUnit(eCreeps[1])
-	-- 	end
+	elseif (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
+		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+			npcBot:Action_AttackUnit(eCreeps[1], true)
+		else
+			npcBot:Action_MoveToUnit(eCreeps[1])
+		end
 	 else
 		movement.MTL_Farm(npcBot)
 	end

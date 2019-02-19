@@ -116,6 +116,17 @@ function movement.MTL_Farm(npcBot)
 	local DIRE_TTOWER_FRONT = GetLaneFrontLocation(TEAM_DIRE, LANE_TOP, -50)
 	local DIRE_BTOWER_FRONT = GetLaneFrontLocation(TEAM_DIRE, LANE_BOT, -50)
 
+	--temp team play--
+	if DotaTime() > 1024 then
+		--if Dire--
+		if (team == 3) then
+			npcBot:Action_MoveToLocation(DIRE_MTOWER_FRONT)
+		--if Radiant--
+		elseif (team == 2) then
+			npcBot:Action_MoveToLocation(RADIANT_MTOWER_FRONT)
+		end
+		return
+	end
 	--if Dire--
 	if (team == 3) then
 		if (pID == 7 or pID == 8) then

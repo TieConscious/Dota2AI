@@ -69,14 +69,14 @@ local hunt_weight = {
     
         components = {
             {func=enemyHealth, weight=10},
-            {func=powerRatio , weight=9},
+            {func=powerRatio , weight=15},
             {func=enemyDistance , weight=10}
         },
     
         conditionals = {
             {func=zero, condition=isUnderTower, weight=35},
             {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20}
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=25}
         }
     }
 }
