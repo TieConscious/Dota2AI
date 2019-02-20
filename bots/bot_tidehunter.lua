@@ -57,25 +57,19 @@ function IsBotCasting()
 		  or npcBot:IsCastingAbility()
 end
 
-function ConsiderItem(Item)
-	if (Item == nil or not Item:IsFullyCastable()) then
-		return 0
+function ConsiderCast(...)
+	for k,v in pairs({...}) do
+		if (v == nil or not v:IsFullyCastable()) then
+			return false
+		end
 	end
-
-		return 1
-end
-
-function ConsiderCast(ability)
-	if (not ability:IsFullyCastable()) then
-		return 0
-	end
-
-	return 1
+	return true
 end
 
 ----Murder closest enemy hero----
 function Murder()
 	local perHealth = module.CalcPerHealth(npcBot)
+	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
 	local hRange = npcBot:GetAttackRange()
 
@@ -87,20 +81,46 @@ function Murder()
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local blink = module.ItemSlot(npcBot, "item_blink")
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
+	local refresh = module.ItemSlot(npcBot, "item_refresher")
+
+	local manaQ = abilityQ:GetManaCost()
+	local manaE = abilityE:GetManaCost()
+	local manaR = abilityR:GetManaCost()
+	local manaRefresh = 375
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.GetWeakestUnit(eHeroList)
 
+		if (not IsBotCasting() and ConsiderCast(arcane) and manaPer <= 0.75) then
+			npcBot:Action_UseAbility(arcane)
+		end
+
 		----Try various combos on weakened enemy unit----
-		if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.5 and GetUnitToUnitDistance(npcBot, target) <= 1500) then
+		if (not IsBotCasting() and refresh ~= nil and ConsiderCast(abilityQ, abilityR, blink, refresh)
+			and GetUnitToUnitDistance(npcBot, target) <= 1500 and currentMana >= module.CalcManaCombo(manaQ, manaR, manaRefresh, manaR)) then
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbility(refresh)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbilityOnLocation(blink, target:GetLocation())
-		elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, target) <= 800) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ, abilityR, blink)
+				and GetUnitToUnitDistance(npcBot, target) <= 1500 and currentMana >= module.CalcManaCombo(manaQ, manaR, manaRefresh)) then
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbility(refresh)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbilityOnLocation(blink, target:GetLocation())
+		elseif (not IsBotCasting() and refresh ~= nil and ConsiderCast(abilityR, refresh) == 1 and GetUnitToUnitDistance(npcBot, target) <= 800
+				and currentMana >= module.CalcManaCombo(manaR, refresh, manaR)) then
+			npcBot:ActionPush_UseAbility(abilityR)
+			npcBot:ActionPush_UseAbility(refresh)
+			npcBot:ActionPush_UseAbility(abilityR)
+		elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target) <= 800 and currentMana >= module.CalcManaCombo(manaR)) then
 			npcBot:Action_UseAbility(abilityR)
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaR)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
-		elseif (not IsBotCasting() and ConsiderCast(abilityE) == 1 and manaPer >= 0.3) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityE)) then
 			npcBot:Action_UseAbility(abilityE)
 		end
 		----Fuck'em up!----

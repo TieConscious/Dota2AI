@@ -1,7 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
 
 local Items = {
-	"item_stout_shield",
 
 	----boots of strength----
 	"item_belt_of_strength",
@@ -28,6 +27,11 @@ local Items = {
 	"item_vitality_booster",
 	"item_ring_of_tarrasque",
 	"item_recipe_heart",
+
+	----eye of skadi----
+	"item_ultimate_orb",
+	"item_ultimate_orb",
+	"item_point_booster",
 
 	----Assault Cuirass----
 	"item_chainmail",

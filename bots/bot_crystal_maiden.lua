@@ -60,22 +60,13 @@ function IsBotCasting()
 		  or npcBot:IsCastingAbility()
 end
 
-----Check whether an item is useable----
-function ConsiderItem(Item)
-	if (Item == nil or not Item:IsFullyCastable()) then
-		return 0
+function ConsiderCast(...)
+	for k,v in pairs({...}) do
+		if (v == nil or not v:IsFullyCastable()) then
+			return false
+		end
 	end
-
-	return 1
-end
-
-----Check whether we can use an ability or not----
-function ConsiderCast(ability)
-	if (not ability:IsFullyCastable()) then
-		return 0
-	end
-
-	return 1
+	return true
 end
 
 
@@ -96,19 +87,19 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.GetWeakestUnit(eHeroList)
 
-		if (not IsBotCasting() and ConsiderItem(blink) == 1 and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, target) <= 1500) then
+		if (not IsBotCasting() and ConsiderCast(blink, abilityR) and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot, target) <= 1500) then
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbilityOnLocation(blink, target:GetLocation())
-		elseif (not IsBotCasting() and ConsiderCast(abilityR) == 1 and GetUnitToUnitDistance(npcBot, target) <= 300) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target) <= 300) then
 			npcBot:Action_UseAbility(abilityR)
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and manaPer >= 0.3) then
 			if (GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
 				npcBot:ActionPush_UseAbilityOnLocation(abilityQ, target:GetLocation())
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 			elseif (GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
 				npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
 			end
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and manaPer >= 0.3) then
 			npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
 		end
 

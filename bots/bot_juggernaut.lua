@@ -59,20 +59,13 @@ function IsBotCasting()
 		  or npcBot:IsCastingAbility()
 end
 
-function ConsiderItem(Item)
-	if (Item == nil or not Item:IsFullyCastable()) then
-		return 0
+function ConsiderCast(...)
+	for k,v in pairs({...}) do
+		if (v == nil or not v:IsFullyCastable()) then
+			return false
+		end
 	end
-
-		return 1
-end
-
-function ConsiderCast(ability)
-	if (not ability:IsFullyCastable()) then
-		return 0
-	end
-
-	return 1
+	return true
 end
 
 ----Murder closest enemy hero----
@@ -88,11 +81,10 @@ function Murder()
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target,eHealth = module.GetWeakestUnit(eHeroList)
-	
+
 
 		if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, target)
