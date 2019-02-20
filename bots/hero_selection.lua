@@ -15,7 +15,7 @@ local BotPicks = {
 	'npc_dota_hero_bloodseeker',
 	'npc_dota_hero_phoenix',
 	'npc_dota_hero_phantom_assassin',
-	'npc_dota_hero_tinker',
+	'npc_dota_hero_tinker'
 };
 
 local BotBans = {
@@ -31,7 +31,17 @@ local BotBans = {
     'npc_dota_hero_witch_doctor',
 	'npc_dota_hero_zuus',
 	'npc_dota_hero_slark'
-};
+}
+
+function GetBotNames ()
+	local bot_names = {}
+	table.insert(bot_names, "@42SiliconValley");
+	table.insert(bot_names, "@mschroed098");
+	table.insert(bot_names, "@Lyd");
+	table.insert(bot_names, "@DOTA2");
+	table.insert(bot_names, "@QwolfBLG");
+	return bot_names
+end
 
 local picks = {};
 local maxPlayerID = 15;

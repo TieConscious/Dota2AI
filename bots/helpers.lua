@@ -81,7 +81,7 @@ end
 ----Caluclate total mana cost of a combo----
 function module.CalcManaCombo(...)
 	local sum = 0
-    for k,v in pairs(...) do
+    for k,v in pairs({...}) do
         sum = sum + v
     end
 

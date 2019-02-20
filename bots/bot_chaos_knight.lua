@@ -77,7 +77,7 @@ function Murder()
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local manta = module.ItemSlot(npcBot, "item_manta")
-	local armlet = module.ItemSlot(npcBot, "item_armlet")
+
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
@@ -108,8 +108,10 @@ function Murder()
 			npcBot:Action_UseAbilityOnEntity(abilityW, target)
 		end
 
-		if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta) then
-			npcBot:Action_UseAbility(manta)
+		if (manta ~= nil) then
+			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta) then
+				npcBot:Action_UseAbility(manta)
+			end
 		end
 
 		----Fuck'em up!----
@@ -135,7 +137,7 @@ function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 
-	stateMachine.printState(state)
+	----stateMachine.printState(state)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
