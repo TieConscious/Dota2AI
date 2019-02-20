@@ -32,8 +32,8 @@ NP = Vector(-3500, 3500, 0)
 NN = Vector(-3500, -3500, 0)
 PN = Vector(3500, -3500, 0)
 
-TCORNER = Vector(-6200, 6020, 0)
-BCORNER = Vector(6220, -6200, 0)
+TCORNER = Vector(-5500, 5700, 0)
+BCORNER = Vector(5500, -6200, 0)
 
 
 ----Function Pointers----

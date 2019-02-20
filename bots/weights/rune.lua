@@ -29,7 +29,7 @@ function firstRunes(npcBot)
 end
 
 function isEarlyGame(npcBot)
-    if (DotaTime() < 5) then
+    if (DotaTime() < 0) then
         return true
     else
         return false
