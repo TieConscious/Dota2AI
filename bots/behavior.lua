@@ -188,8 +188,8 @@ function Rune()
 	local runeLoc
     for _,rune in pairs(runes) do
         runeLoc = GetRuneSpawnLocation(rune)
-        if (GetRuneTimeSinceSeen(rune) < 1 and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
-			if GetUnitToLocationDistance(npcBot, runeLoc) < 100 then
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
 				npcBot:Action_PickUpRune(rune)
 			else
 				npcBot:Action_MoveToLocation(runeLoc)
