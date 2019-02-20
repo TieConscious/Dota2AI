@@ -21,6 +21,8 @@ function behavior.generic(npcBot, stateMachine)
 		Buy()
 	elseif stateMachine.state == "deaggro" then
 		Deaggro()
+	elseif stateMachine.state == "rune" then
+		Rune()
 	else
 		Farm()
 	end
@@ -131,6 +133,54 @@ function Farm()
 	 else
 		movement.MTL_Farm(npcBot)
 	end
+end
+
+local runes = {
+    RUNE_POWERUP_1,
+    RUNE_POWERUP_2,
+    RUNE_BOUNTY_1,
+    RUNE_BOUNTY_2,
+    RUNE_BOUNTY_3,
+    RUNE_BOUNTY_4
+}
+
+function Rune()
+	local npcBot = GetBot()
+	local pID = npcBot:GetPlayerID()
+	local team = npcBot:GetTeam()
+	local runeLoc
+    for _,rune in pairs(runes) do
+        runeLoc = GetRuneSpawnLocation(rune)
+        if (GetRuneTimeSinceSeen(rune) < 1 and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+			if GetUnitToLocationDistance(npcBot, runeLoc) < 100 then
+				npcBot:Action_PickUpRune(rune)
+			else
+				npcBot:Action_MoveToLocation(runeLoc)
+			end
+			return
+        end
+    end
+	--if Dire--
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+		elseif (pID == 9 or pID == 10) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+		elseif (pID == 11) then
+            Farm()
+		end
+	--if Radiant--
+	elseif (team == 2) then
+		if (pID == 2 or pID == 3) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
+		elseif (pID == 4 or pID == 5) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4))
+		elseif (pID == 6) then
+			Farm()
+		end
+	else
+		Farm()
+    end
 end
 
 function Buy()
