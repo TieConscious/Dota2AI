@@ -59,22 +59,23 @@ function Tower()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
 
-	local eTowers = npcBot:GetNearbyTowers(1600, true)
+	local eTowers = npcBot:GetNearbyTowers(800, true)
+	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
+	if (eBarracks ~= nil and #eBarracks > 0 and (eTowers == nil or #eTowers == 0)) then
+		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
+			npcBot:Action_AttackUnit(eBarracks[1], true)
+		else
+			npcBot:Action_MoveToUnit(eBarracks[1])
+		end
+		return
+	end
+
+	eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
 		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eTowers[1], true)
 		else
 			npcBot:Action_MoveToUnit(eTowers[1])
-		end
-		return
-	end
-
-	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
-	if (eBarracks ~= nil and #eBarracks > 0) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eBarracks[1], true)
-		else
-			npcBot:Action_MoveToUnit(eBarracks[1])
 		end
 		return
 	end
