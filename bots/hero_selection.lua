@@ -1,10 +1,10 @@
 
 local BotPicks = {
 	'npc_dota_hero_crystal_maiden',
-	'npc_dota_hero_bane',
+	'npc_dota_hero_chaos_knight',
 	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_tidehunter',
-	'npc_dota_hero_chaos_knight',
+	'npc_dota_hero_bane',
 	'npc_dota_hero_medusa',
 	'npc_dota_hero_pugna',
 	'npc_dota_hero_axe',
@@ -35,11 +35,11 @@ local BotBans = {
 
 function GetBotNames ()
 	local bot_names = {}
-	table.insert(bot_names, "@42SiliconValley");
-	table.insert(bot_names, "@mschroed098");
-	table.insert(bot_names, "@Lyd");
-	table.insert(bot_names, "@DOTA2");
-	table.insert(bot_names, "@QwolfBLG");
+	table.insert(bot_names, "@42SiliconValley")
+	table.insert(bot_names, "@QwolfBLG")
+	table.insert(bot_names, "@Lyd")
+	table.insert(bot_names, "@DOTA2")
+	table.insert(bot_names, "@mschroed098")
 	return bot_names
 end
 
