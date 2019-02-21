@@ -26,7 +26,7 @@ function behavior.generic(npcBot, stateMachine)
 	elseif stateMachine.state == "rune" then
 		Rune()
 	else
-		Farm()
+		Idle()
 	end
 end
 
