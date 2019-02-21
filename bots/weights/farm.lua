@@ -69,7 +69,7 @@ local farm_weight = {
     
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=5}
+            {func=heroLevel, condition=enemyNotLevel, weight=10}
         }
     }
 }
