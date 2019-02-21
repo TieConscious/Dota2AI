@@ -56,6 +56,16 @@ function enemyNotLevel(npcBot)
     return nearbyCreeps ~= nil and #nearbyCreeps > 0 and npcBot:GetLevel() < 10
 end
 
+function alone(npcBot)
+    local nearbyCreeps = npcBot:GetNearbyLaneCreeps(searchRadius, true)
+    local nearbyAllies = npcBot:GetNearbyHeroes(searchRadius, false, BOT_MODE_NONE)
+    return nearbyCreeps ~= nil and #nearbyCreeps > 0 and #nearbyAllies == 1
+end
+
+function moreFarm(npcBot)
+    return 100
+end
+
 local farm_weight = {
     settings =
     {
@@ -69,7 +79,8 @@ local farm_weight = {
     
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=10}
+            {func=heroLevel, condition=enemyNotLevel, weight=10},
+            {func=moreFarm, condition=alone, weight=5}
         }
     }
 }
