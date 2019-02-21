@@ -54,8 +54,21 @@ function enemyNearAndNotLevel(npcBot)
 end
 
 function isUnderTower(npcBot)
-    eTower = npcBot:GetNearbyTowers(750, true)
-    return eTower ~= nil and #eTower > 0
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local eTower = npcBot:GetNearbyTowers(900, true)
+	if #eTower == 0 or #nearbyEnemy == 0 then
+		return false
+	end
+	local distRequired = math.min(GetUnitToUnitDistance(nearbyEnemy[1], npcBot), npcBot:GetAttackRange())
+	local distToMove = GetUnitToUnitDistance(npcBot, nearbyEnemy[1]) - distRequired
+
+	local calculation = nearbyEnemy[1]:GetLocation()
+	local myLocation = npcBot:GetLocation()
+		calculation = calculation - myLocation
+		calculation = calculation / GetUnitToUnitDistance(npcBot, nearbyEnemy[1]) * distToMove 
+		calculation = calculation + myLocation
+	local val = PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())
+	return 	PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())["distance"] < 800
 end
 
 function zero(npcBot)
