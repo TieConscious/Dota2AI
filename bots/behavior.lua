@@ -25,36 +25,54 @@ function behavior.generic(npcBot, stateMachine)
 		Deaggro()
 	elseif stateMachine.state == "rune" then
 		Rune()
-	elseif stateMachine.state == "stall" then
-		Stall()
 	else
 		Farm()
 	end
 end
 
-function Retreat()
+function Idle()
 	local npcBot = GetBot()
-	local pID = GetBot()
+	local pID = npcBot:GetPlayerID()
 	local team = GetTeam()
-	local tango = module.ItemSlot(npcBot, "item_tango")
-	local nearbyTrees = npcBot:GetNearbyTrees(1200)
-	local healthPercent = module.CalcPerHealth(npcBot)
-	local distanceToLane = 0
-
-	if (pID == 2 or pID == 3 or pID == 7 or pID == 8) then
-		distanceToLane = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_TOP, dist))
-	elseif (pID == 9 or pID == 10) then
-		distanceToLane = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_BOTTOM, dist))
-	elseif (pID == 11) then
-        distanceToLane = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, dist))
+	local tower = nil
+	local lane = nil
+	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
+		lane = LANE_TOP
+		tower = GetTower(team, TOWER_TOP_1)
+	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
+		lane = LANE_BOT
+		tower = GetTower(team, TOWER_BOT_1)
+	elseif (pID == 11 or pID == 6) then
+		lane = LANE_MID
+		tower = GetTower(team, TOWER_MID_1)
 	end
-
-	if tango ~= nil and not npcBot:HasModifier("modifier_tango_heal") and distanceToLane < 1500 and
-			#npcBot:GetNearbyHeroes(500, true, BOT_MODE_NONE) == 0 and #npcBot:GetNearbyTowers(800, true) == 0 and
-			0.4 < healthPercent and healthPercent < 0.7 then
-		npcBot:Action_UseAbilityOnTree(tango, nearbyTrees[1])
+	
+	if npcBot:IsChanneling() then
 		return
 	end
+
+	local front = GetLaneFrontLocation(team, lane, 0)
+
+	local otherPlayers = GetTeamPlayers(team)
+	local isInPosition = false
+	for _,id in pairs(otherPlayers) do
+		local hero = GetTeamMember(id)
+		if hero ~= nil and GetUnitToLocationDistance(hero, front) < 2500 then
+			isInPosition = true
+		end
+	end
+	local time = DotaTime()
+
+	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
+	if time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
+		npcBot:Action_UseAbilityOnLocation(tpScroll, tower:GetLocation())
+	else
+		movement.MTL_Farm(npcBot)
+	end
+end
+
+function Retreat()
+	local npcBot = GetBot()
 	movement.Retreat(npcBot)
 end
 
@@ -84,22 +102,23 @@ function Tower()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
 
-	local eTowers = npcBot:GetNearbyTowers(1600, true)
+	local eTowers = npcBot:GetNearbyTowers(800, true)
+	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
+	if (eBarracks ~= nil and #eBarracks > 0 and (eTowers == nil or #eTowers == 0)) then
+		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
+			npcBot:Action_AttackUnit(eBarracks[1], true)
+		else
+			npcBot:Action_MoveToUnit(eBarracks[1])
+		end
+		return
+	end
+
+	eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
 		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eTowers[1], true)
 		else
 			npcBot:Action_MoveToUnit(eTowers[1])
-		end
-		return
-	end
-
-	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
-	if (eBarracks ~= nil and #eBarracks > 0) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eBarracks[1], true)
-		else
-			npcBot:Action_MoveToUnit(eBarracks[1])
 		end
 		return
 	end
@@ -156,7 +175,7 @@ function Farm()
 			npcBot:Action_MoveToUnit(eCreeps[1])
 		end
 	 else
-		movement.MTL_Farm(npcBot, -100)
+		movement.MTL_Farm(npcBot)
 	end
 end
 
@@ -213,8 +232,8 @@ function Rune()
 	local runeLoc
     for _,rune in pairs(runes) do
         runeLoc = GetRuneSpawnLocation(rune)
-        if (GetRuneTimeSinceSeen(rune) < 1 and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
-			if GetUnitToLocationDistance(npcBot, runeLoc) < 100 then
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
 				npcBot:Action_PickUpRune(rune)
 			else
 				npcBot:Action_MoveToLocation(runeLoc)
@@ -245,8 +264,4 @@ function Rune()
     end
 end
 
-function Stall()
-	local npcBot = GetBot()
-	movement.MTL_Farm(npcBot, -300)
-end
 return behavior
