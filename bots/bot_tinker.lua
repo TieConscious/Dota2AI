@@ -114,7 +114,7 @@ function Murder()
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityE, target2:GetLocation())
+			npcBot:ActionPush_UseAbilityOnLocation(abilityE, target2:GetLocation())
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()
@@ -141,7 +141,7 @@ function Murder()
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityE) and  GetUnitToUnitDistance(npcBot, target2) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE)) then
-			npcBot:Action_UseAbilityOnEntity(abilityE, target2:GetLocation())
+			npcBot:Action_UseAbilityOnLocation(abilityE, target2:GetLocation())
 		end
 		----Fuck'em up!----
 		--ranged, wait til attack finish

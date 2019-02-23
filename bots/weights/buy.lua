@@ -19,11 +19,11 @@ local buy_weight = {
 		['npc_dota_hero_phantom_assassin'] = require(GetScriptDirectory().."/item_purchase_phantom_assassin"),
 		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord"),
 		['npc_dota_hero_pugna'] = require(GetScriptDirectory().."/item_purchase_generic"),
-		['npc_dota_hero_lich'] = require(GetScriptDirectory().."/item_purchase_generic"),
+		['npc_dota_hero_lich'] = require(GetScriptDirectory().."/item_purchase_lich"),
 		['npc_dota_hero_sven'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_shadow_shaman'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_dazzle'] = require(GetScriptDirectory().."/item_purchase_generic"),
-		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/item_purchase_generic"),
+		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/item_purchase_tinker"),
 		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/item_purchase_generic")
 	}
 }
