@@ -89,20 +89,24 @@ local Ability = {
 
 
  	if (eHeroList ~= nil and #eHeroList > 0) then
- 		local target,eHealth = module.GetWeakestUnit(eHeroList)
- 		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
+		local target = module.SmartTarget()
+
  		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
  			npcBot:Action_UseAbility(arcane)
- 		end
- 		if (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
- 				and currentMana >= module.CalcManaCombo(manaW) and target ~= target2) then
- 			npcBot:Action_UseAbilityOnEntity(abilityW, target2)
+		 end
+
+ 		if (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+ 				and currentMana >= module.CalcManaCombo(manaW) and target ~= target) then
+			 npcBot:Action_UseAbilityOnEntity(abilityW, target)
+
  		--elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()
  		--		and currentMana >= module.CalcManaCombo(manaR)) then
- 		--	npcBot:Action_UseAbilityOnLocation(abilityR, target:GetLocation())
+		 --	npcBot:Action_UseAbilityOnLocation(abilityR, target:GetLocation())
+
  		elseif (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,target) <= abilityE:GetCastRange()
  				and currentMana >= module.CalcManaCombo(manaE)) then
- 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
+			 npcBot:Action_UseAbilityOnEntity(abilityE, target)
+
  		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()
  				and currentMana >= module.CalcManaCombo(manaQ)) then
  			npcBot:Action_UseAbilityOnEntity(abilityQ, target)

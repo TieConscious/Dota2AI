@@ -51,7 +51,7 @@ end
 function module.AbilityLevelUp(Ability)
 	local npcBot = GetBot()
 
-	if (#Ability == 0) then
+	if (npcBot:GetAbilityPoints() < 1 or #Ability == 0) then
 		return
 	end
 
@@ -220,6 +220,43 @@ function module.GetStrongestHero(Hero)
 	end
 
 	return PowUnit,PowHealth
+end
+
+--function module.IsDisabled()
+--
+--end
+
+----Smart Target----
+function module.SmartTarget()
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local target
+
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		if (aHeroList ~= nil and #aHeroList > 1) then
+			if (aHeroList[2]:GetAttackTarget() ~= nil) then
+				target = aHeroList[2]:GetAttackTarget()
+				return target
+			end
+		end
+
+		--or _,unit in pairs(eHeroList) do
+		--	if (unit:) then
+
+		--	end
+
+		---percent health
+		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
+		powHero,powHealth = module.GetStrongestHero(eHeroList)
+		if (lowHealth <= powHealth) then
+			target = lowHero
+			return target
+		else
+			target = powHero
+			return target
+		end
+	end
+
 end
 
 ----Last hit minions----
