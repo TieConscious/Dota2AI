@@ -19,19 +19,19 @@ local Ability = {
 	SKILL_Q,
 	SKILL_E,
 	SKILL_Q,
-	SKILL_W,
+	SKILL_E, --W
 	SKILL_Q,
 	SKILL_R,
 	SKILL_Q,
-	SKILL_W,
-	SKILL_W,
+	SKILL_E, --W
+	SKILL_E, --W
 	TALENT1,
-	SKILL_W,
+	SKILL_W, --E
 	SKILL_R,
-	SKILL_E,
-	SKILL_E,
+	SKILL_W, --E
+	SKILL_W, --E
 	TALENT4,
-	SKILL_E,
+	SKILL_W, --E
 	"nil",
 	SKILL_R,
 	"nil",
@@ -70,8 +70,8 @@ end
 
 ----Murder closest enemy hero----
 function Murder()
-	npcBot = GetBot()
 	local perHealth = module.CalcPerHealth(npcBot)
+	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
 	local hRange = npcBot:GetAttackRange() - 25
 
@@ -82,13 +82,19 @@ function Murder()
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 
+	local manaQ = abilityQ:GetManaCost()
+	local manaW = abilityW:GetManaCost()
+	local manaR = abilityR:GetManaCost()
+
+
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target,eHealth = module.GetWeakestUnit(eHeroList)
 
 
-		if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.3 and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
+		if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+				and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, target)
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) == 1 and manaPer >= 0.3 and target ~= nil) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
 			if (GetUnitToUnitDistance(npcBot,target) <= 150) then
 				npcBot:Action_UseAbility(abilityQ)
 			else

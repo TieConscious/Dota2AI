@@ -91,7 +91,7 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.GetWeakestUnit(eHeroList)
 
-		if (not IsBotCasting() and ConsiderCast(arcane) and manaPer <= 0.75) then
+		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
 			npcBot:Action_UseAbility(arcane)
 		end
 
@@ -110,7 +110,7 @@ function Murder()
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbilityOnLocation(blink, target:GetLocation())
-		elseif (not IsBotCasting() and refresh ~= nil and ConsiderCast(abilityR, refresh) == 1 and GetUnitToUnitDistance(npcBot, target) <= 800
+		elseif (not IsBotCasting() and refresh ~= nil and ConsiderCast(abilityR, refresh) and GetUnitToUnitDistance(npcBot, target) <= 800
 				and currentMana >= module.CalcManaCombo(manaR, refresh, manaR)) then
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbility(refresh)

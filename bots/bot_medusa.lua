@@ -64,10 +64,12 @@ end
 ----Murder closest enemy hero----
 function Murder(eHero)
 	local perHealth = module.CalcPerHealth(npcBot)
+	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
-	local hRange = npcBot:GetAttackRange() - 25
+    local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -75,17 +77,31 @@ function Murder(eHero)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local manta = module.ItemSlot(npcBot, "item_manta")
 
+	local manaQ = abilityQ:GetManaCost()
+	local manaW = abilityW:GetManaCost()
+	local manaE = abilityE:GetManaCost()
+	local manaR = abilityR:GetManaCost()
+	local manaManta = 125
+
 	if (eHeroList ~= nil or #eHeroList > 0) then
 		local target = module.GetWeakestUnit(eHeroList)
 
-		if (not IsBotCasting() and ConsiderCast(manta) == 1 and manaPer >= 0.1) then
-			npcBot:Action_UseAbility(manta)
+		if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+				and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()) then
+			npcBot:Action_UseAbility(abilityR)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
+				and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+
+		--elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)) then
+		--	npcBot:Action_UseAbilityOnEntity(abilityW)
 		end
 
-		if (not IsBotCasting() and ConsiderCast(abilityR) == 1 and manaPer >= 0.1 and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()) then
-			npcBot:Action_UseAbility(abilityR)
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) == 1 and manaPer >= 0.1 and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
-			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+		if (manta ~= nil) then
+			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta) then
+				npcBot:Action_UseAbility(manta)
+			end
 		end
 	end
 

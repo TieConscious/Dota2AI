@@ -1,6 +1,7 @@
 local module = require(GetScriptDirectory().."/helpers")
 
 local Items = {
+
 	----tranquil boots----
 	"item_wind_lace",
 	"item_boots",
@@ -14,6 +15,11 @@ local Items = {
 	----blink dagger----
 	"item_blink",
 
+	----black king bar----
+	"item_mithril_hammer",
+	"item_ogre_axe",
+	"item_recipe_black_king_bar",
+
 	----ag's scepter----
 	"item_point_booster",
 	"item_staff_of_wizardry",
@@ -24,12 +30,9 @@ local Items = {
 	----force staff----
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",
+	"item_recipe_force_staff"
 
-	----black king bar----
-	"item_mithril_hammer",
-	"item_ogre_axe",
-	"item_recipe_black_king_bar"
+
 
 	--"item_mystic_staff",
 	--"item_ultimate_orb",
