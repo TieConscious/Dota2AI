@@ -83,8 +83,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target,eHealth = module.GetWeakestUnit(eHeroList)
-		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
+		local target = module.SmartTarget()
 
 		if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaR)) then
@@ -94,22 +93,22 @@ function Murder()
 				and GetUnitToUnitDistance(eHeroList[1], aHeroList[2]) <= 200 and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, aHeroList[2])
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot,target2) <= abilityQ:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ)) then
-			npcBot:Action_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
-		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,target2) <= abilityE:GetCastRange()
+		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,target) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE)) then
-			npcBot:Action_UseAbilityOnEntity(abilityE, target2)
+			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 		end
 		----Fuck'em up!----
 				--melee, miss when over 350
 		if (not IsBotCasting()) then
 			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target2) <= hRange then
-					npcBot:Action_AttackUnit(target2, true)
+				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+					npcBot:Action_AttackUnit(target, true)
 				else
-					npcBot:Action_MoveToUnit(target2)
+					npcBot:Action_MoveToUnit(target)
 				end
 			end
 		end

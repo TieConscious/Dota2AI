@@ -100,57 +100,56 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target,eHealth = module.GetWeakestUnit(eHeroList)
-		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
+		local target = module.SmartTarget()
 
 		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
 			npcBot:Action_UseAbility(arcane)
 		end
 
 		----Try various combos on weakened enemy unit----
-		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ, abilityE) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()
+		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ, abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR, manaQ, manaW, manaE)) then
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnLocation(abilityE, target2:GetLocation())
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityE, target:GetLocation())
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR, manaQ, manaW)) then
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			npcBot:ActionPush_UseAbility(abilityR)
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbility(abilityW)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ, abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ, abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ, manaW)) then
 			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 
 			----add ag's combo----
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ)) then
-			npcBot:Action_UseAbilityOnEntity(abilityQ, target2)
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityE) and  GetUnitToUnitDistance(npcBot, target2) <= abilityE:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityE) and  GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE)) then
-			npcBot:Action_UseAbilityOnLocation(abilityE, target2:GetLocation())
+			npcBot:Action_UseAbilityOnEntity(abilityE, target:GetLocation())
 		end
 		----Fuck'em up!----
 		--ranged, wait til attack finish
 		if (not IsBotCasting()) then
 			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target2) <= hRange then
-					npcBot:Action_AttackUnit(target2, true)
+				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+					npcBot:Action_AttackUnit(target, true)
 				else
-					npcBot:Action_MoveToUnit(target2)
+					npcBot:Action_MoveToUnit(target)
 				end
 			end
 		end

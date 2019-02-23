@@ -2,46 +2,46 @@ local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
 local stateMachine = require(GetScriptDirectory().."/state_machine")
 
-local SKILL_Q = "ursa_earthshock"
-local SKILL_W = "ursa_overpower"
-local SKILL_E = "ursa_fury_swipes"
-local SKILL_R = "ursa_enrage"
-local TALENT1 = "special_bonus_mp_regen_3"
-local TALENT2 = "special_bonus_strength_8"
-local TALENT3 = "special_bonus_agility_14"
-local TALENT4 = "special_bonus_unique_ursa_4"
-local TALENT5 = "special_bonus_unique_ursa_3"
-local TALENT6 = "special_bonus_unique_ursa"
-local TALENT7 = "special_bonus_unique_ursa_5"
-local TALENT8 = "special_bonus_unique_ursa_6"
-
+local SKILL_Q = "ogre_magi_fireblast"
+local SKILL_W = "ogre_magi_ignite"
+local SKILL_E = "ogre_magi_bloodlust"
+local SKILL_R = "ogre_magi_multicast"
+local SKILL_UF = "ogre_magi_unrefined_fireblast"
+local TALENT1 = "special_bonus_gold_income_15"
+local TALENT2 = "special_bonus_cast_range_100"
+local TALENT3 = "special_bonus_attack_damage_90"
+local TALENT4 = "special_bonus_hp_300"
+local TALENT5 = "special_bonus_strength_40"
+local TALENT6 = "special_bonus_unique_ogre_magi"
+local TALENT7 = "special_bonus_movement_speed_75"
+local TALENT8 = "special_bonus_unique_ogre_magi_2"
 
 local Ability = {
-	SKILL_E,
 	SKILL_W,
-	SKILL_E,
+	SKILL_Q,
 	SKILL_W,
-	SKILL_E,
+	SKILL_Q,
+	SKILL_W,
 	SKILL_R,
-	SKILL_E,
 	SKILL_W,
-	SKILL_W,
+	SKILL_Q,
+	SKILL_Q,
 	TALENT2,
-	SKILL_Q,
+	SKILL_E,
 	SKILL_R,
-	SKILL_Q,
-	SKILL_Q,
-	TALENT3,
-	SKILL_Q,
+	SKILL_E,
+	SKILL_E,
+	TALENT4,
+	SKILL_E,
 	"nil",
 	SKILL_R,
 	"nil",
-	TALENT6,
+	TALENT5,
 	"nil",
 	"nil",
 	"nil",
 	"nil",
-	TALENT7
+	TALENT8
 }
 
 local npcBot = GetBot()
@@ -71,11 +71,6 @@ function ConsiderCast(...)
 	return true
 end
 
---function CompareEnemyHealth(eHero, )
---	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
---
---	return target
---end
 
 ----Murder closest enemy hero----
 function Murder()
@@ -84,42 +79,52 @@ function Murder()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local phase = module.ItemSlot(npcBot, "item_phase_boots")
-	local bkb = module.ItemSlot(npcBot, "item_black_king_bar")
-	local abyssal = module.ItemSlot(npcBot, "item_abyssal_blade")
+	local abilityUF = npcBot:GetAbilityByName(SKILL_UF)
+	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
-
+	local manaE = abilityE:GetManaCost()
+	if (abilityUF ~= nil) then
+		local manaUF = abilityUF:GetManaCost()
+	end
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-	local target = module.SmartTarget()
+		local target = module.SmartTarget()
 
-		if (not IsBotCasting() and phase ~= nil and ConsiderCast(phase)) then
-			npcBot:Action_UseAbility(phase)
+
+		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
+			npcBot:Action_UseAbility(arcane)
 		end
 
 		----Try various combos on weakened enemy unit----
-		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW) and GetUnitToUnitDistance(npcBot, target) <= 300
-				and currentMana >= module.CalcManaCombo(manaW)) then
-			npcBot:ActionPush_UseAbility(abilityW)
-			npcBot:ActionPush_UseAbility(abilityR)
+		if (not IsBotCasting() and ConsiderCast(abilityW, abilityQ, abilityUF) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaUF)) then
+			npcBot:ActionPush_UseAbilityOnEntity(abilityUF, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target) <= 300) then
-			npcBot:Action_UseAbility(abilityR)
-
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= 300
-				and currentMana >= module.CalcManaCombo(manaW)) then
-			npcBot:Action_UseAbility(abilityW)
-
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= 150
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ)) then
-			npcBot:Action_UseAbility(abilityQ)
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaW)) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityUF) and GetUnitToUnitDistance(npcBot, target) <= abilityUF:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaUF)) then
+			npcBot:Action_UseAbilityOnEntity(abilityUF, target)
+
+		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,aHeroList[2]) <= abilityE:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaE)) then
+			npcBot:Action_UseAbilityOnEntity(abilityE, aHeroList[2])
 		end
 		----Fuck'em up!----
 		--ranged, wait til attack finish

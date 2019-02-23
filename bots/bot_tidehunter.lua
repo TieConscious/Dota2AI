@@ -89,7 +89,7 @@ function Murder()
 	local manaRefresh = 375
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.GetWeakestUnit(eHeroList)
+		local target = module.SmartTarget()
 
 		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
 			npcBot:Action_UseAbility(arcane)

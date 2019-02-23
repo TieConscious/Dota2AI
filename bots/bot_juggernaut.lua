@@ -88,7 +88,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target,eHealth = module.GetWeakestUnit(eHeroList)
+		local target = module.SmartTarget()
 
 
 		if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)

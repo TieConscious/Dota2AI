@@ -85,30 +85,29 @@ function Murder()
 	local manaManta = 125
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target,eHealth = module.GetWeakestUnit(eHeroList)
-		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
+		local target = module.SmartTarget()
 
 		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR)) then
-			if (GetUnitToUnitDistance(npcBot,target2) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target2)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
-				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target2)
+			if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 				npcBot:ActionPush_UseAbility(abilityR)
-			elseif (GetUnitToUnitDistance(npcBot,target2) <= abilityQ:GetCastRange()) then
+			elseif (GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()) then
 				npcBot:ActionPush_UseAbility(abilityR)
-				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
+				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			end
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)
-				and	GetUnitToUnitDistance(npcBot,target2) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target2)) then
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target2)
+				and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityQ:GetCastRange()) then
-			npcBot:Action_UseAbilityOnEntity(abilityQ, target2)
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
-				and GetUnitToUnitDistance(npcBot,target2) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target2)) then
-			npcBot:Action_UseAbilityOnEntity(abilityW, target2)
+				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, target)
 
 		end
 
@@ -122,14 +121,14 @@ function Murder()
 		--melee, miss when over 350
 		if (not IsBotCasting()) then
 			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target2) > 350 then
-					npcBot:Action_MoveToUnit(target2)
+				if GetUnitToUnitDistance(npcBot, target) > 350 then
+					npcBot:Action_MoveToUnit(target)
 				end
 			else
-				if (GetUnitToUnitDistance(npcBot, target2) <= hRange) then
-					npcBot:Action_AttackUnit(target2, true)
+				if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+					npcBot:Action_AttackUnit(target, true)
 				else
-					npcBot:Action_MoveToUnit(target2)
+					npcBot:Action_MoveToUnit(target)
 				end
 			end
 		end

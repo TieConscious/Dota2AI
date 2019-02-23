@@ -170,7 +170,7 @@ function Farm()
 			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
 	----Push when no enemy heros around----
-	elseif (eCreeps[1] ~= nil and (npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) == nil or #(npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)) == 0)) then
+	elseif (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
