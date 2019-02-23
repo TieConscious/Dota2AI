@@ -9,15 +9,26 @@ runes = {
     RUNE_BOUNTY_4
 }
 
-function constFourty(npcBot)
-    return 40
+local runeCollectDist = 1500
+
+function distToRune(npcBot)
+    local nearestRuneLoc
+    local runeLoc
+    for _,rune in pairs(runes) do
+        runeLoc = GetRuneSpawnLocation(rune)
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and (nearestRuneLoc == nil or GetUnitToLocationDistance(npcBot, runeLoc) < GetUnitToLocationDistance(npcBot, nearestRuneLoc))) then
+            nearestRuneLoc = runeLoc
+        end
+    end
+    local dist = GetUnitToLocationDistance(npcBot, nearestRuneLoc)
+    return RemapValClamped(dist, 120, runeCollectDist, 100, 10)
 end
 
 function nextToRune(npcBot)
     local runeLoc
     for _,rune in pairs(runes) do
         runeLoc = GetRuneSpawnLocation(rune)
-        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < runeCollectDist) then
             return true
         end
     end
@@ -48,7 +59,7 @@ local rune_weight = {
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
             {func=firstRunes, condition=isEarlyGame, weight=1},
-            {func=constFourty, condition=nextToRune, weight=1}
+            {func=distToRune, condition=nextToRune, weight=1}
         }
     }
 }

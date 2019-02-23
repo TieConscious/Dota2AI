@@ -7,6 +7,19 @@ function numberCreeps(npcBot)
     return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
 end
 
+function towerHealth(npcBot)
+    local eTower = npcBot:GetNearbyTowers(searchRange, true)
+    local towerHealth = module.CalcPerHealth(eTower[1])
+    return RemapValClamped(towerHealth, 1, 0, 20, 100)
+end
+
+function towerNearby(npcBot)
+    local eTower = npcBot:GetNearbyTowers(searchRange, true)
+    if eTower ~= nil and #eTower > 0 then
+        return true
+    end
+end
+
 function buildingNearby(npcBot)
     local eTower = npcBot:GetNearbyTowers(searchRange, true)
     if eTower ~= nil and #eTower > 0 then
@@ -39,7 +52,8 @@ local tower_weight = {
     
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
-            {func=numberCreeps, condition=buildingNearby, weight=1}
+            {func=numberCreeps, condition=buildingNearby, weight=1},
+            {func=towerHealth, condition=towerNearby, weight=1}
         }
     }
 }
