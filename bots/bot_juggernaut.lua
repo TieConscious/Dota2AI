@@ -88,7 +88,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.SmartTarget()
+		local target = module.SmartTarget(npcBot)
 
 
 		if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)

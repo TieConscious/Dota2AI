@@ -85,7 +85,7 @@ function Murder()
 	local manaManta = 125
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.SmartTarget()
+		local target = module.SmartTarget(npcBot)
 
 		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR)) then
 			if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then

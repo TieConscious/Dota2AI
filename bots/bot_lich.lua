@@ -83,7 +83,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.SmartTarget()
+		local target = module.SmartTarget(npcBot)
 
 		if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaR)) then

@@ -98,7 +98,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-	local target = module.SmartTarget()
+	local target = module.SmartTarget(npcBot)
 
 		if (not IsBotCasting() and phase ~= nil and ConsiderCast(phase)) then
 			npcBot:Action_UseAbility(phase)

@@ -227,18 +227,16 @@ end
 --end
 
 ----Smart Target----
-function module.SmartTarget()
+function module.SmartTarget(npcBot)
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local target
+	local target = nil
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		if (aHeroList ~= nil and #aHeroList > 1) then
-			if (aHeroList[2]:GetAttackTarget() ~= nil) then
-				target = aHeroList[2]:GetAttackTarget()
-				return target
-			end
-		end
+		--if (aHeroList ~= nil and #aHeroList > 1 and aHeroList[2]:GetAttackTarget() ~= nil) then
+		--	target = aHeroList[2]:GetAttackTarget()
+		--	return target
+		--end
 
 		--or _,unit in pairs(eHeroList) do
 		--	if (unit:) then
@@ -246,6 +244,11 @@ function module.SmartTarget()
 		--	end
 
 		---percent health
+		if (#eHeroList == 1) then
+			target = eHeroList[1]
+			return target
+		end
+
 		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
 		powHero,powHealth = module.GetStrongestHero(eHeroList)
 		if (lowHealth <= powHealth) then

@@ -89,7 +89,7 @@ local Ability = {
 
 
  	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.SmartTarget()
+		local target = module.SmartTarget(npcBot)
 
  		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
  			npcBot:Action_UseAbility(arcane)

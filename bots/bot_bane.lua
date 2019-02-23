@@ -97,7 +97,7 @@ function Murder()
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = module.SmartTarget()
+		local target = module.SmartTarget(npcBot)
 		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
 
 		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
