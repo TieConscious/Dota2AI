@@ -3,11 +3,13 @@ local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
+local buyback_think = require(GetScriptDirectory().."/buyback_think")
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)
 	courier_think.Decide()
 	consumable_think.Decide()
+	buyback_think.Decide()
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
@@ -46,7 +48,7 @@ function Idle()
 		lane = LANE_MID
 		tower = GetTower(team, TOWER_MID_1)
 	end
-	
+
 	if npcBot:IsChanneling() then
 		return
 	end
@@ -123,7 +125,7 @@ function Tower()
 		return
 	end
 
-	local eAncient 
+	local eAncient
 	if npcBot:GetTeam() == 2 then
 		eAncient = GetAncient(3)
 	else
@@ -137,7 +139,7 @@ function Tower()
 		end
 		return
 	end
-	
+
 end
 
 function Farm()
@@ -192,13 +194,13 @@ function Buy()
 	end
 	if IsItemPurchasedFromSecretShop(nextItem) then
 		if npcBot:DistanceFromSecretShop() == 0 then
-			npcBot:ActionImmediate_PurchaseItem(nextItem) 
+			npcBot:ActionImmediate_PurchaseItem(nextItem)
 			table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 		else
 			npcBot:Action_MoveToLocation(closerSecretShop)
 		end
 	else
-		npcBot:ActionImmediate_PurchaseItem(nextItem) 
+		npcBot:ActionImmediate_PurchaseItem(nextItem)
 		table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 	end
 end
