@@ -165,6 +165,23 @@ function module.CalcPerMana(unit)
 	return percentMana
 end
 
+function module.GetLane(npcBot)
+	local team = GetTeam()
+	local lane = nil
+	local pID = npcBot:GetPlayerID()
+	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
+		lane = LANE_TOP
+		tower = GetTower(team, TOWER_TOP_1)
+	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
+		lane = LANE_BOT
+		tower = GetTower(team, TOWER_BOT_1)
+	elseif (pID == 11 or pID == 6) then
+		lane = LANE_MID
+		tower = GetTower(team, TOWER_MID_1)
+	end
+	return lane
+end
+
 ----Assign castable item so it can be used----
 function module.ItemSlot(npcBot, ItemName)
 	local Slot = npcBot:FindItemSlot(ItemName)
