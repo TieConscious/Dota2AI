@@ -7,9 +7,6 @@ local BotPicks = {
 	'npc_dota_hero_ogre_magi',
 	'npc_dota_hero_tinker',
 
-	'npc_dota_hero_ursa', --broken
-
-
 	'npc_dota_hero_medusa',
 
 
@@ -17,6 +14,7 @@ local BotPicks = {
 
 	'npc_dota_hero_tidehunter',
 
+	'npc_dota_hero_ursa', --broken
 	'npc_dota_hero_shadow_shaman', --broken
 
 	'npc_dota_hero_phantom_assassin',
@@ -51,8 +49,8 @@ function GetBotNames ()
 	table.insert(bot_names, "@42SiliconValley")
 	table.insert(bot_names, "@QwolfBLG")
 	table.insert(bot_names, "@Lyd")
-	table.insert(bot_names, "@DOTA2")
 	table.insert(bot_names, "@mschroed098")
+	table.insert(bot_names, "@2ne1ugly1")
 	return bot_names
 end
 
