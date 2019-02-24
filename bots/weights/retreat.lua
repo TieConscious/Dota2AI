@@ -11,7 +11,7 @@ end
 function numberDifference(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
-	return  20 * #nearbyEnemy/(#nearbyAlly + 1)
+	return  10 * #nearbyEnemy/(#nearbyAlly)
 end
 --conditionals--
 --tower-----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ end
 function isEnemyTowerTargetingMeNoAlly(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
 	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
-	if #ACreepsInTowerRange == 0 and 
+	if #ACreepsInTowerRange == 0 and
 		(npcBot:WasRecentlyDamagedByTower(0.5) or (nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot)) then
 		return true
 	end
@@ -77,7 +77,7 @@ function hasEnemyCreepsNearby(npcBot)
 	return false
 end
 
-function considerEenmyCreepHits(npcBot)
+function considerEnemyCreepHits(npcBot)
 	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(500, true)
 	local creepsTargetingMe = {}
 	for _,creep in pairs(nearbyEnemyCreeps) do
@@ -91,19 +91,19 @@ end
 local retreat_weight = {
     settings =
     {
-        name = "retreat", 
-    
+        name = "retreat",
+
         components = {
             {func=lowHealth, weight=6},
             {func=numberDifference, weight=0.5}
         },
-    
+
         conditionals = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
 			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
 			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
-			{func=considerEenmyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
 		}
     }
 }

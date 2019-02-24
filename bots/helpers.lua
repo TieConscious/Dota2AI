@@ -7,7 +7,6 @@ local MoveDirectly = npcBot.Action_MoveDirectly
 local AttackMove = npcBot.Action_AttackMove
 
 ----Item Purchasing Modules----
-
 function module.ItemPurchase(Items)
 	local PurchaseResult = -5
 	local npcBot = GetBot()
@@ -222,9 +221,30 @@ function module.GetStrongestHero(Hero)
 	return PowUnit,PowHealth
 end
 
---function module.IsDisabled()
+--funtion module.IsFacing()
 --
 --end
+
+function module.IsDisabled(unit)
+	if (unit:IsBlind() or
+	unit:IsBlockDisabled() or
+	unit:IsDisarmed() or
+	unit:IsEvadeDisabled() or
+	unit:IsHexed() or
+	unit:IsMuted() or
+	unit:IsRooted() or
+	unit:IsSilenced() or
+	unit:IsStunned()) then
+		return true
+	else
+		return false
+	end
+
+end
+
+--IsInvulnerable()
+--IsMagicImmune()
+--IsNightmared()
 
 ----Smart Target----
 function module.SmartTarget(npcBot)
@@ -233,15 +253,18 @@ function module.SmartTarget(npcBot)
 	local target = nil
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
-		--if (aHeroList ~= nil and #aHeroList > 1 and aHeroList[2]:GetAttackTarget() ~= nil) then
-		--	target = aHeroList[2]:GetAttackTarget()
-		--	return target
-		--end
+		if (aHeroList ~= nil and #aHeroList > 1 and aHeroList[2]:GetAttackTarget() ~= nil
+				and (aHeroList[2]:GetAttackTarget()):IsHero()) then
+			target = aHeroList[2]:GetAttackTarget()
+			return target
+		end
 
-		--or _,unit in pairs(eHeroList) do
-		--	if (unit:) then
-
-		--	end
+		for _,unit in pairs(eHeroList) do
+			if (module.IsDisabled(unit)) then
+				target = unit
+				return target
+			end
+		end
 
 		---percent health
 		if (#eHeroList == 1) then
