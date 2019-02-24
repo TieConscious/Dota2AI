@@ -97,6 +97,10 @@ function Murder()
 				and currentMana >= module.CalcManaCombo(manaQ)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(eHeroList[1], aHeroList[1]) <= 200
+				and currentMana >= module.CalcManaCombo(manaW)) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, aHeroList[1])
+
 		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,target) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)

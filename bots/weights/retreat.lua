@@ -1,12 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
 
 --components--
---health----------------------------------------------------------------------------
-function lowHealth(npcBot)
-	local percentHealth = module.CalcPerHealth(npcBot)
-	--100 on 0.1, 70 on 0.7
-		return 100 * Clamp(1.747 * math.exp(-2*percentHealth) - 0.431, 0, 100)
-end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
@@ -14,6 +8,35 @@ function numberDifference(npcBot)
 	return  10 * #nearbyEnemy/(#nearbyAlly)
 end
 --conditionals--
+--health----------------------------------------------------------------------------
+function lowHealth(npcBot)
+	local percentHealth = module.CalcPerHealth(npcBot)
+	--100 on 0.1, 70 on 0.7
+	return 100 * Clamp(1.747 * math.exp(-2*percentHealth) - 0.431, 0, 100)
+end
+--adjust numbers
+function hardRetreat(npcBot)
+	local percentHealth = module.CalcPerHealth(npcBot)
+	local level = npcBot:GetLevel()
+	return npcBot:DistanceFromFountain() < 4000 or (level < 6 and percentHealth < 0.25) or (level >= 6 and percentHealth < 0.2)
+end
+
+function lowHealthSoft(npcBot)
+	local percentHealth = module.CalcPerHealth(npcBot)
+	local enemyHero = npcBot:GetNearbyHeroes(800, true, BOT_MODE_NONE)
+	--100 on 0.1, 70 on 0.7
+	if #enemyHero == 0 then
+		return 0
+	else
+		return 100 * Clamp(1.747 * math.exp(-2*percentHealth) - 0.431, 0, 100)
+	end
+end
+
+function enemyRetreat(npcBot)
+	local percentHealth = module.CalcPerHealth(npcBot)
+	local level = npcBot:GetLevel()
+	return not hardRetreat(npcBot)
+end
 --tower-----------------------------------------------------------------------------
 --do not calc if EnemyTower is actually targeting me. use function below for that
 function willEnemyTowerTargetMe(npcBot)
@@ -87,6 +110,15 @@ function considerEnemyCreepHits(npcBot)
 	end
 	return Clamp(50 * #creepsTargetingMe, 0, 100)
 end
+
+function FountainMana(npcBot)
+	local percentMana = module.CalcPerMana(npcBot)
+	return npcBot:DistanceFromFountain() == 0 and percentMana < 0.8
+end
+
+function FillMana(npcBot)
+	return 20
+end
 ------------------------------------------------------------------------------------
 local retreat_weight = {
     settings =
@@ -94,7 +126,6 @@ local retreat_weight = {
         name = "retreat",
 
         components = {
-            {func=lowHealth, weight=6},
             {func=numberDifference, weight=0.5}
         },
 
@@ -103,7 +134,10 @@ local retreat_weight = {
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
 			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
 			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
-			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3}
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3},
+			{func=lowHealth, condition=hardRetreat, weight=6},
+			{func=lowHealthSoft, condition=enemyRetreat, weight=6},
+			{func=FillMana, condition=FountainMana, weight=3}
 		}
     }
 }

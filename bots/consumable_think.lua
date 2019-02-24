@@ -26,10 +26,9 @@ function consumable_think.Decide()
 	if npcBot:DistanceFromFountain() == 0 and tpScroll == nil and npcBot:GetGold() >= GetItemCost("item_tpscroll") then
 		npcBot:ActionImmediate_PurchaseItem("item_tpscroll")
 	end
-	local runTime = math.floor(DotaTime()) + 90
+	local runTime = math.floor(DotaTime()) + 80
 	if runTime <= 601 and bought_on[pID] ~= runTime and runTime % 300 == 0 then
 		bought_on[pID] = runTime
-		print(runTime)
 		npcBot:ActionImmediate_PurchaseItem ("item_flask")
 	end
 	-- local pID = npcBot:GetPlayerID()

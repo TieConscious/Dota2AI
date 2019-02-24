@@ -123,8 +123,11 @@ function Murder()
 			npcBot:Action_UseAbilityOnEntity(abilityUF, target)
 
 		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,aHeroList[2]) <= abilityE:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaE)) then
+				and GetUnitToUnitDistance(aHeroList[2],target) <= 250 and currentMana >= module.CalcManaCombo(manaE)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, aHeroList[2])
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(aHeroList[1],target) <= 250 and currentMana >= module.CalcManaCombo(manaE)) then
+			npcBot:Action_UseAbilityOnEntity(abilityE, aHeroList[1])
 		end
 
 		----Fuck'em up!----

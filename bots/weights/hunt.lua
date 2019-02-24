@@ -83,6 +83,8 @@ function isUnderTower(npcBot)
 	return 	PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())["distance"] < 800
 end
 
+--function weUnderTower(npcBot)
+
 function zero(npcBot)
     return 0
 end
