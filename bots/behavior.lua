@@ -1,10 +1,15 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
-
+local courier_think = require(GetScriptDirectory().."/courier_think")
+local consumable_think = require(GetScriptDirectory().."/consumable_think")
+local buyback_think = require(GetScriptDirectory().."/buyback_think")
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)
+	courier_think.Decide()
+	consumable_think.Decide()
+	buyback_think.Decide()
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
@@ -18,10 +23,53 @@ function behavior.generic(npcBot, stateMachine)
 		Farm()
 	elseif stateMachine.state == "buy" then
 		Buy()
-	elseif stateMachine.state == "Deaggro" then
+	elseif stateMachine.state == "deaggro" then
 		Deaggro()
+	elseif stateMachine.state == "rune" then
+		Rune()
 	else
-		Farm()
+		Idle()
+	end
+end
+
+function Idle()
+	local npcBot = GetBot()
+	local pID = npcBot:GetPlayerID()
+	local team = GetTeam()
+	local tower = nil
+	local lane = nil
+	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
+		lane = LANE_TOP
+		tower = GetTower(team, TOWER_TOP_1)
+	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
+		lane = LANE_BOT
+		tower = GetTower(team, TOWER_BOT_1)
+	elseif (pID == 11 or pID == 6) then
+		lane = LANE_MID
+		tower = GetTower(team, TOWER_MID_1)
+	end
+
+	if npcBot:IsChanneling() then
+		return
+	end
+
+	local front = GetLaneFrontLocation(team, lane, 0)
+
+	local otherPlayers = GetTeamPlayers(team)
+	local isInPosition = false
+	for _,id in pairs(otherPlayers) do
+		local hero = GetTeamMember(id)
+		if hero ~= nil and GetUnitToLocationDistance(hero, front) < 2500 then
+			isInPosition = true
+		end
+	end
+	local time = DotaTime()
+
+	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
+	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
+		npcBot:Action_UseAbilityOnLocation(tpScroll, tower:GetLocation())
+	else
+		movement.MTL_Farm(npcBot)
 	end
 end
 
@@ -32,7 +80,33 @@ end
 
 function Heal()
 	local npcBot = GetBot()
-	movement.RetreatToBase(npcBot)
+	local salve = module.ItemSlot(npcBot, "item_flask")
+	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)
+
+	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
+		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if #nearbyAllyTower ~= 0 then
+		npcBot:Action_MoveToUnit(nearbyAllyTower[1])
+		return
+	end
+	if salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
+		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	movement.Retreat(npcBot)
+
+	-- local tango = module.ItemSlot(npcBot, "item_tango")
+	-- local nearbyTrees = npcBot:GetNearbyTrees(1200)
+	-- local healthPercent = module.CalcPerHealth(npcBot)
+	-- if tango ~= nil and not npcBot:HasModifier("modifier_tango_heal") and
+	-- 		0.4 < healthPercent and healthPercent < 0.9 then
+	-- 	npcBot:Action_UseAbilityOnTree(tango, nearbyTrees[1])
+	-- 	return
+	-- else
+	-- 	movement.RetreatToBase(npcBot)
+	-- end
 end
 
 function Hunt()
@@ -43,7 +117,7 @@ function Hunt()
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	if (eHeros ~= nil and #eHeros > 0) then
 		if (GetUnitToUnitDistance(npcBot, eHeros[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eHeros[1], false)
+			npcBot:Action_AttackUnit(eHeros[1], true)
 		else
 			npcBot:Action_MoveToUnit(eHeros[1])
 		end
@@ -56,41 +130,42 @@ function Tower()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
 
-	local eTowers = npcBot:GetNearbyTowers(1600, true)
-	if (eTowers ~= nil and #eTowers > 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() / 2)) then
-			npcBot:Action_AttackUnit(eTowers[1], false)
-		else
-			npcBot:Action_MoveToUnit(eTowers[1])
-		end
-		return
-	end
-
+	local eTowers = npcBot:GetNearbyTowers(800, true)
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
-	if (eBarracks ~= nil and #eBarracks > 0) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() / 2)) then
-			npcBot:Action_AttackUnit(eBarracks[1], false)
+	if (eBarracks ~= nil and #eBarracks > 0 and (eTowers == nil or #eTowers == 0)) then
+		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
+			npcBot:Action_AttackUnit(eBarracks[1], true)
 		else
 			npcBot:Action_MoveToUnit(eBarracks[1])
 		end
 		return
 	end
 
-	local eAncient 
+	eTowers = npcBot:GetNearbyTowers(1600, true)
+	if (eTowers ~= nil and #eTowers > 0) then
+		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
+			npcBot:Action_AttackUnit(eTowers[1], true)
+		else
+			npcBot:Action_MoveToUnit(eTowers[1])
+		end
+		return
+	end
+
+	local eAncient
 	if npcBot:GetTeam() == 2 then
 		eAncient = GetAncient(3)
 	else
 		eAncient = GetAncient(2)
 	end
 	if (eAncient ~= nil and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
-		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() / 2)) then
-			npcBot:Action_AttackUnit(eAncient, false)
+		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
+			npcBot:Action_AttackUnit(eAncient, true)
 		else
 			npcBot:Action_MoveToUnit(eAncient)
 		end
 		return
 	end
-	
+
 end
 
 function Farm()
@@ -104,10 +179,10 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetAttackDamage() * 2.5) then
-		if (eCreepHealth <= npcBot:GetAttackDamage() * 0.9 or #aCreeps == 0) then
+	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
+		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
-				npcBot:Action_AttackUnit(eWeakestCreep, false)
+				npcBot:Action_AttackUnit(eWeakestCreep, true)
 			else
 				npcBot:Action_MoveToUnit(eWeakestCreep)
 			end
@@ -116,18 +191,18 @@ function Farm()
 			npcBot:Action_MoveToUnit(eWeakestCreep)
 		end
 	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetAttackDamage()) then
+	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
 		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
-			npcBot:Action_AttackUnit(aWeakestCreep, false)
+			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
-	----Wack nearest creep----
-	elseif (eCreeps[1] ~= nil) then
+	----Push when no enemy heros around----
+	elseif (eCreeps[1] ~= nil and (npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) == nil or #(npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)) == 0)) then
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
 			npcBot:Action_MoveToUnit(eCreeps[1])
 		end
-	else
+	 else
 		movement.MTL_Farm(npcBot)
 	end
 end
@@ -145,13 +220,13 @@ function Buy()
 	end
 	if IsItemPurchasedFromSecretShop(nextItem) then
 		if npcBot:DistanceFromSecretShop() == 0 then
-			npcBot:ActionImmediate_PurchaseItem(nextItem) 
+			npcBot:ActionImmediate_PurchaseItem(nextItem)
 			table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 		else
 			npcBot:Action_MoveToLocation(closerSecretShop)
 		end
 	else
-		npcBot:ActionImmediate_PurchaseItem(nextItem) 
+		npcBot:ActionImmediate_PurchaseItem(nextItem)
 		table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 	end
 end
@@ -159,25 +234,62 @@ end
 function Deaggro()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
-	local nearbyETowers = npcBot:GetNearbyTowers(700, true)
-	local AcreepsInRange = nearbyETowers[1]:GetNearbyLaneCreeps(700)
-	local closestAcreep = nil
-	local dist = 3000;
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
 
-	for _,creep in pairs(AcreepsInRange) do
-		if GetUnitToUnitDistance(npcBot, creep) < dist then
-			dist = GetUnitToUnitDistance(npcBot, creep) < dist
-			closestAcreep = creep
-		end
+	if GetUnitToUnitDistance(ACreepsInTowerRange[1], npcBot) > attackRange then
+		npcBot:Action_MoveToUnit(ACreepsInTowerRange[1])
+	else
+		npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
 	end
 
-	if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-		if dist > attackRange then
-			npcBot:Action_MoveToUnit(closestAcreep)
-		else
-			npcBot:Action_AttackUnit(closestAcreep)
+end
+
+local runes = {
+    RUNE_POWERUP_1,
+    RUNE_POWERUP_2,
+    RUNE_BOUNTY_1,
+    RUNE_BOUNTY_2,
+    RUNE_BOUNTY_3,
+    RUNE_BOUNTY_4
+}
+
+function Rune()
+	local npcBot = GetBot()
+	local pID = npcBot:GetPlayerID()
+	local team = npcBot:GetTeam()
+	local runeLoc
+    for _,rune in pairs(runes) do
+        runeLoc = GetRuneSpawnLocation(rune)
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
+				npcBot:Action_PickUpRune(rune)
+			else
+				npcBot:Action_MoveToLocation(runeLoc)
+			end
+			return
+        end
+    end
+	--if Dire--
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+		elseif (pID == 9 or pID == 10) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+		elseif (pID == 11) then
+            Farm()
 		end
-	end
+	--if Radiant--
+	elseif (team == 2) then
+		if (pID == 2 or pID == 3) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
+		elseif (pID == 4 or pID == 5) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+		elseif (pID == 6) then
+			Farm()
+		end
+	else
+		Farm()
+    end
 end
 
 return behavior
