@@ -95,18 +95,7 @@ function Heal()
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
 		return
 	end
-	movement.Retreat(npcBot)
-
-	-- local tango = module.ItemSlot(npcBot, "item_tango")
-	-- local nearbyTrees = npcBot:GetNearbyTrees(1200)
-	-- local healthPercent = module.CalcPerHealth(npcBot)
-	-- if tango ~= nil and not npcBot:HasModifier("modifier_tango_heal") and
-	-- 		0.4 < healthPercent and healthPercent < 0.9 then
-	-- 	npcBot:Action_UseAbilityOnTree(tango, nearbyTrees[1])
-	-- 	return
-	-- else
-	-- 	movement.RetreatToBase(npcBot)
-	-- end
+	movement.RetreatToBase(npcBot)
 end
 
 function Hunt()
@@ -196,7 +185,7 @@ function Farm()
 			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
 	----Push when no enemy heros around----
-	elseif (eCreeps[1] ~= nil and (npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) == nil or #(npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE)) == 0)) then
+	elseif (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
 		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
