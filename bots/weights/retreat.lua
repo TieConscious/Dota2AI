@@ -5,7 +5,7 @@ local module = require(GetScriptDirectory().."/helpers")
 function lowHealth(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	--100 on 0.1, 70 on 0.7
- 		return RemapValClamped(percentHealth, 0.1, 0.7, 100, 0)
+		return 100 * Clamp(1.747 * math.exp(-2*percentHealth) - 0.431, 0, 100)
 end
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)

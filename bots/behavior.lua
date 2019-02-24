@@ -80,6 +80,21 @@ end
 
 function Heal()
 	local npcBot = GetBot()
+	local salve = module.ItemSlot(npcBot, "item_flask")
+	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)
+
+	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
+		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if #nearbyAllyTower ~= 0 then
+		npcBot:Action_MoveToUnit(nearbyAllyTower[1])
+		return
+	end
+	if salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
+		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
 	movement.RetreatToBase(npcBot)
 end
 
