@@ -35,7 +35,7 @@ end
 function Idle()
 	local npcBot = GetBot()
 	local team = GetTeam()
-	local tower = nil
+	local tower = module.GetTower1(npcBot)
 	local lane = module.GetLane(npcBot)
 
 	if npcBot:IsChanneling() then
