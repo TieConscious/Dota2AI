@@ -126,11 +126,16 @@ function Murder()
 				and currentMana >= module.CalcManaCombo(manaE)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, aHeroList[2])
 		end
+
 		----Fuck'em up!----
-		--ranged, wait til attack finish
+		--melee, miss when over 350
 		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+				if GetUnitToUnitDistance(npcBot, target) > 350 then
+					npcBot:Action_MoveToUnit(target)
+				end
+			else
+				if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
 					npcBot:Action_AttackUnit(target, true)
 				else
 					npcBot:Action_MoveToUnit(target)

@@ -76,6 +76,7 @@ function Murder()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local eCreepList = npcBot:GetNearbyLaneCreeps(800, true)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -91,7 +92,7 @@ function Murder()
 		local target = module.SmartTarget(npcBot)
 
 
-		if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+		if (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
 				and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, target)
 		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
