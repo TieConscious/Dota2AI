@@ -27,6 +27,8 @@ function behavior.generic(npcBot, stateMachine)
 		Deaggro()
 	elseif stateMachine.state == "rune" then
 		Rune()
+	elseif stateMachine.state == "gank" then
+		Gank()
 	else
 		Idle()
 	end
@@ -268,6 +270,77 @@ function Rune()
 	else
 		Farm()
     end
+end
+
+function Rune()
+	local npcBot = GetBot()
+	local pID = npcBot:GetPlayerID()
+	local team = npcBot:GetTeam()
+	local runeLoc
+    for _,rune in pairs(runes) do
+        runeLoc = GetRuneSpawnLocation(rune)
+        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
+			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
+				npcBot:Action_PickUpRune(rune)
+			else
+				npcBot:Action_MoveToLocation(runeLoc)
+			end
+			return
+        end
+    end
+	--if Dire--
+	if (team == 3) then
+		if (pID == 7 or pID == 8) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+		elseif (pID == 9 or pID == 10) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+		elseif (pID == 11) then
+            Farm()
+		end
+	--if Radiant--
+	elseif (team == 2) then
+		if (pID == 2 or pID == 3) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
+		elseif (pID == 4 or pID == 5) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+		elseif (pID == 6) then
+			Farm()
+		end
+	else
+		Farm()
+    end
+end
+
+local pulledPushed = {
+	[LANE_TOP] = {0.42, 0.65},
+	[LANE_MID] = {0.52, 0.61},
+	[LANE_BOT] = {0.65, 0.7}
+}
+
+local midTargetLane = LANE_BOT
+
+function Gank()
+	local npcBot = GetBot()
+	local lane = module.GetLane(npcBot)
+	local team = GetTeam()
+	local targetLane = LANE_MID
+
+	if lane == LANE_MID then
+		local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
+		if  midDist < 2000 then
+			if pulledPushed[LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
+				midTargetLane = LANE_BOT
+			elseif pulledPushed[LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
+				midTargetLane = LANE_TOP
+			else
+				midTargetLane = LANE_BOT
+			end
+		end
+		targetLane = midTargetLane
+	else
+		targetLane = LANE_MID
+	end
+	npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
 end
 
 return behavior
