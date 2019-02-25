@@ -5,9 +5,18 @@ local module = require(GetScriptDirectory().."/helpers")
 --
 
 local pulledPushed = {
-	[LANE_TOP] = {0.42, 0.65},
-	[LANE_MID] = {0.52, 0.61},
-	[LANE_BOT] = {0.65, 0.7}
+	[TEAM_RADIANT] = 
+	{
+		[LANE_TOP] = {0.42, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.7}
+	},
+	[TEAM_DIRE] = 
+	{
+		[LANE_TOP] = {0.7, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.42}
+	},
 }
 
 local lane_state = {
@@ -38,10 +47,10 @@ function LanePushedPulledNotHealing(npcBot)
 		gankable[LANE_TOP] = nil
 	end
 
-	if GetLaneFrontAmount(team, myLane, false) > pulledPushed[myLane][2] then
+	if GetLaneFrontAmount(team, myLane, false) > pulledPushed[team][myLane][2] then
 		lane_state[myLane] = 1
 	end
-	if GetLaneFrontAmount(team, myLane, false) < pulledPushed[myLane][1] then
+	if GetLaneFrontAmount(team, myLane, false) < pulledPushed[team][myLane][1] then
 		lane_state[myLane] = 0
 	end
 
@@ -52,7 +61,7 @@ function LanePushedPulledNotHealing(npcBot)
 	if decided[pID] == nil or decided[pID] + 30 < DotaTime() then
 		local pulledLane = false
 		for lane,exist in pairs(gankable) do
-			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[lane][1] then
+			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1] then
 				pulledLane = true
 			end
 		end
