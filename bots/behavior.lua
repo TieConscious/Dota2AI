@@ -66,7 +66,8 @@ function Idle()
 	local time = DotaTime()
 
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
-	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
+	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady()
+		and tower:GetHealth() > 400 then
 		npcBot:Action_UseAbilityOnLocation(tpScroll, tower:GetLocation())
 	else
 		movement.MTL_Farm(npcBot)

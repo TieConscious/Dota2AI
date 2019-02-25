@@ -46,8 +46,13 @@ function enemyHealth(npcBot)
 end
 
 function numberCreeps(npcBot)
+    local level = npcBot:GetLevel()
     local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-    return RemapValClamped(#nearbyEnemyCreeps, 0, 5 , 100, 0)
+    if (level < 8) then
+        return RemapValClamped(#nearbyEnemyCreeps, 0, 5, 100, 0)
+    else
+        return RemapValClamped(#nearbyEnemyCreeps, 0, 10, 100, 0)
+    end
 end
 
 function heroLevel(npcBot)
@@ -83,10 +88,61 @@ function isUnderTower(npcBot)
 	return 	PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())["distance"] < 800
 end
 
---function weUnderTower(npcBot)
+function eUnderTower(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aTower = npcBot:GetNearbyTowers(1000, false)
+	if #aTower == 0 or #nearbyEnemy == 0 then
+		return false
+    end
+
+    dist = GetUnitToLocationDistance(nearbyEnemy[1], aTower[1]:GetLocation())
+    return RemapValClamped(dist, 200, 800, 100, 0)
+end
+ ----stunned enemy
+
+function EnemyDisabled(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+    if (#nearbyEnemy == 0) then
+        return false
+    end
+
+    for _,unit in pairs(nearbyEnemy) do
+        if (module.IsDisabled(unit)) then
+           return true
+        end
+    end
+
+    return false
+end
+
+function heroHealth(npcBot)
+    local perHealth = module.CalcPerHealth(npcBot)
+
+    return RemapValClamped(perHealth, 0.5, 0.9, 0, 100)
+end
+
+function punchBack(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) then
+		return true
+	end
+	return false
+end
+
+function weDisabled(npcBot)
+    if (module.IsDisabled(npcBot)) then
+        return true
+    end
+    return false
+end
 
 function zero(npcBot)
     return 0
+end
+
+function  onehundred(npcBot)
+    return 100
 end
 
 local hunt_weight = {
@@ -101,8 +157,12 @@ local hunt_weight = {
 
         conditionals = {
             {func=zero, condition=isUnderTower, weight=35},
+            {func=onehundred, condition=EnemyDisabled, weight=15},
+            {func=onehundred, condition=eUnderTower, weight=20},
             {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=30},
+            {func=zero, condition=weDisabled, weight=40},
+            --{func=heroHealth, condition=punchBack, weight=10},
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
             {func=heroMana , condition=under50ManaAndEnemyNear, weight=6}
         }
     }

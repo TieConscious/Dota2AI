@@ -14,11 +14,11 @@ function lowHealth(npcBot)
 	--100 on 0.1, 70 on 0.7
 	return 100 * Clamp(1.747 * math.exp(-2*percentHealth) - 0.431, 0, 100)
 end
---adjust numbers
+
 function hardRetreat(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	local level = npcBot:GetLevel()
-	return npcBot:DistanceFromFountain() < 4000 or (level < 6 and percentHealth < 0.25) or (level >= 6 and percentHealth < 0.2)
+	return npcBot:DistanceFromFountain() < 4000 or (level < 6 and percentHealth < 0.25) or (level >= 6 and percentHealth < 0.25)
 end
 
 function lowHealthSoft(npcBot)

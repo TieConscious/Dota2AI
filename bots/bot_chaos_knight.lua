@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
 local stateMachine = require(GetScriptDirectory().."/state_machine")
+local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
+local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
 
 local SKILL_Q = "chaos_knight_chaos_bolt"
 local SKILL_W = "chaos_knight_reality_rift"
@@ -146,5 +148,19 @@ function Think()
 		Murder()
 	else
 		behavior.generic(npcBot, state)
+	end
+end
+
+function MinionThink(hMinionUnit)
+	local state = minionStateMachine.calculateState(hMinionUnit)
+	local master = GetBot()
+	if (hMinionUnit == nil) then
+		return
+	end
+
+	if hMinionUnit:IsIllusion() then
+		minionBehavior.generic(hMinionUnit, master, state)
+	else
+		return
 	end
 end
