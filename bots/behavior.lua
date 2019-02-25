@@ -291,9 +291,9 @@ function Rune()
 	--if Dire--
 	if (team == 3) then
 		if (pID == 7 or pID == 8) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4))
 		elseif (pID == 9 or pID == 10) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
 		elseif (pID == 11) then
             Farm()
 		end
@@ -312,9 +312,18 @@ function Rune()
 end
 
 local pulledPushed = {
-	[LANE_TOP] = {0.42, 0.65},
-	[LANE_MID] = {0.52, 0.61},
-	[LANE_BOT] = {0.65, 0.7}
+	[TEAM_RADIANT] = 
+	{
+		[LANE_TOP] = {0.42, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.7}
+	},
+	[TEAM_DIRE] = 
+	{
+		[LANE_TOP] = {0.7, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.42}
+	},
 }
 
 local midTargetLane = LANE_BOT
@@ -328,9 +337,9 @@ function Gank()
 	if lane == LANE_MID then
 		local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
 		if  midDist < 2000 then
-			if pulledPushed[LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
+			if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
 				midTargetLane = LANE_BOT
-			elseif pulledPushed[LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
+			elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
 				midTargetLane = LANE_TOP
 			else
 				midTargetLane = LANE_BOT
