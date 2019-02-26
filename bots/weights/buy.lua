@@ -51,7 +51,7 @@ function isPurchaseableFromSecretShop(npcBot)
 end
 
 function secretItemIsPurchaseable(npcBot)
-	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 40, 30)
+	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 50, 30)
 end
 
 buy_weight.settings =
