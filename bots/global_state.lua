@@ -116,7 +116,7 @@ function globalState.calculateState(team)
 	state.calculationTime = currTime
 	globalState.getLaneInfo(team)
 	globalState.getEnemyInfo(team)
-	globalState.printState()
+	--globalState.printState()
 end
 
 function globalState.printLaneInfo(lanename, lane)
