@@ -61,6 +61,7 @@ function LanePushedPulledNotHealing(npcBot)
 	if decided[pID] == nil or decided[pID] + 30 < DotaTime() then
 		local pulledLane = false
 		for lane,exist in pairs(gankable) do
+			--and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0
 			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1] then
 				pulledLane = true
 			end
