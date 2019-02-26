@@ -36,6 +36,7 @@ end
 
 function Idle()
 	local npcBot = GetBot()
+	local manaPer = module.CalcPerMana(npcBot)
 	local team = GetTeam()
 	local tower = module.GetTower1(npcBot)
 	local lane = module.GetLane(npcBot)
@@ -233,45 +234,6 @@ local runes = {
     RUNE_BOUNTY_3,
     RUNE_BOUNTY_4
 }
-
-function Rune()
-	local npcBot = GetBot()
-	local pID = npcBot:GetPlayerID()
-	local team = npcBot:GetTeam()
-	local runeLoc
-    for _,rune in pairs(runes) do
-        runeLoc = GetRuneSpawnLocation(rune)
-        if (GetRuneStatus(rune) == RUNE_STATUS_AVAILABLE and GetUnitToLocationDistance(npcBot, runeLoc) < 1500) then
-			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
-				npcBot:Action_PickUpRune(rune)
-			else
-				npcBot:Action_MoveToLocation(runeLoc)
-			end
-			return
-        end
-    end
-	--if Dire--
-	if (team == 3) then
-		if (pID == 7 or pID == 8) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
-		elseif (pID == 9 or pID == 10) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
-		elseif (pID == 11) then
-            Farm()
-		end
-	--if Radiant--
-	elseif (team == 2) then
-		if (pID == 2 or pID == 3) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
-		elseif (pID == 4 or pID == 5) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
-		elseif (pID == 6) then
-			Farm()
-		end
-	else
-		Farm()
-    end
-end
 
 function Rune()
 	local npcBot = GetBot()

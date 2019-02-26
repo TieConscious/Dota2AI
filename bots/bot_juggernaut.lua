@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
 local stateMachine = require(GetScriptDirectory().."/state_machine")
+local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
+local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
 
 local SKILL_Q = "juggernaut_blade_fury"
 local SKILL_W = "juggernaut_healing_ward"
@@ -92,9 +94,10 @@ function Murder()
 		local target = module.SmartTarget(npcBot)
 
 
+
 		if (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
-				and GetUnitToUnitDistance(npcBot,target) <= abilityR:GetCastRange()) then
-			npcBot:Action_UseAbilityOnEntity(abilityR, target)
+				and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
 			if (GetUnitToUnitDistance(npcBot,target) <= 150) then
 				npcBot:Action_UseAbility(abilityQ)
@@ -171,5 +174,19 @@ function Think()
 		Murder()
 	else
 		behavior.generic(npcBot, state)
+	end
+end
+
+function MinionThink(hMinionUnit)
+	local state = minionStateMachine.calculateState(hMinionUnit)
+	local master = GetBot()
+	if (hMinionUnit == nil) then
+		return
+	end
+
+	if hMinionUnit:IsIllusion() then
+		minionBehavior.generic(hMinionUnit, master, state)
+	else
+		return
 	end
 end

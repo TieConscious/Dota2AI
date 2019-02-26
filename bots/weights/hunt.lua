@@ -25,7 +25,7 @@ function heroMana(npcBot)
     local perMana = module.CalcPerMana(npcBot)
     --local mana = npcBot:GetMana()
 
-    return RemapValClamped(perMana, 0.05, 0.5, 0, 100)
+    return RemapValClamped(perMana, 0.3, 0.8, 0, 100)
 end
 
 function under50ManaAndEnemyNear(npcBot)
@@ -96,7 +96,7 @@ function eUnderTower(npcBot)
     end
 
     dist = GetUnitToLocationDistance(nearbyEnemy[1], aTower[1]:GetLocation())
-    return RemapValClamped(dist, 200, 800, 100, 0)
+    return RemapValClamped(dist, 200, 600, 100, 0)
 end
  ----stunned enemy
 

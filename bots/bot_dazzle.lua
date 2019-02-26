@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
 local stateMachine = require(GetScriptDirectory().."/state_machine")
+local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
+local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
 
 local SKILL_Q = "dazzle_poison_touch"
 local SKILL_W = "dazzle_shallow_grave"

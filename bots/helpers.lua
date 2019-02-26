@@ -190,7 +190,7 @@ function module.GetTower1(npcBot)
 	elseif (pID == 11 or pID == 6) then
 		tower = GetTower(team, TOWER_MID_1)
 	end
-	return lane
+	return tower
 end
 
 ----Assign castable item so it can be used----

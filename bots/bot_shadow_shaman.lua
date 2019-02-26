@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 local behavior = require(GetScriptDirectory().."/behavior")
 local stateMachine = require(GetScriptDirectory().."/state_machine")
+local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
+local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
 
 local SKILL_Q = "shadow_shaman_ether_shock"
 local SKILL_W = "shadow_shaman_voodoo"
@@ -182,3 +184,17 @@ local Ability = {
  		print("check 5")
  	end
  end
+
+ function MinionThink(hMinionUnit)
+	local state = minionStateMachine.calculateState(hMinionUnit)
+	local master = GetBot()
+	if (hMinionUnit == nil) then
+		return
+	end
+
+	if hMinionUnit:IsIllusion() then
+		minionBehavior.generic(hMinionUnit, master, state)
+	else
+		return
+	end
+end

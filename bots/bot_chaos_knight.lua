@@ -142,6 +142,7 @@ function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 
+	stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
 		--implement custom hero hunting here

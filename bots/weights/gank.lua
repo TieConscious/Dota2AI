@@ -5,13 +5,13 @@ local module = require(GetScriptDirectory().."/helpers")
 --
 
 local pulledPushed = {
-	[TEAM_RADIANT] = 
+	[TEAM_RADIANT] =
 	{
 		[LANE_TOP] = {0.42, 0.65},
 		[LANE_MID] = {0.52, 0.61},
 		[LANE_BOT] = {0.65, 0.7}
 	},
-	[TEAM_DIRE] = 
+	[TEAM_DIRE] =
 	{
 		[LANE_TOP] = {0.7, 0.65},
 		[LANE_MID] = {0.52, 0.61},
@@ -74,7 +74,7 @@ function LanePushedPulledNotHealing(npcBot)
 end
 
 function GoGank(npcBot)
-	return 35
+	return 25
 end
 
 local gank_weight = {
