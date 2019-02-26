@@ -1,8 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
-
--- todo: adjust for dire
---1st tower top 0.42 under == pulled
---
+local globalState = require(GetScriptDirectory().."/global_state")
 
 local pulledPushed = {
 	[TEAM_RADIANT] =
@@ -54,15 +51,15 @@ function LanePushedPulledNotHealing(npcBot)
 		lane_state[myLane] = 0
 	end
 
-	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() == 0 or npcBot:HasModifier("modifier_flask_healing") then
+	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() < 10 or npcBot:HasModifier("modifier_flask_healing") then
 		return false
 	end
 
 	if decided[pID] == nil or decided[pID] + 30 < DotaTime() then
 		local pulledLane = false
 		for lane,exist in pairs(gankable) do
-			--and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0
-			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1] then
+			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1]
+				and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0 then
 				pulledLane = true
 			end
 		end
@@ -75,7 +72,7 @@ function LanePushedPulledNotHealing(npcBot)
 end
 
 function GoGank(npcBot)
-	return 25
+	return 35
 end
 
 local gank_weight = {
