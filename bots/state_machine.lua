@@ -6,6 +6,7 @@ local buy_weight = require(GetScriptDirectory().."/weights/buy")
 local deaggro_weight = require(GetScriptDirectory().."/weights/deaggro")
 local rune_weight = require(GetScriptDirectory().."/weights/rune")
 local heal_weight = require(GetScriptDirectory().."/weights/heal")
+local globalState = require(GetScriptDirectory().."/global_state")
 
 local stateMachine = {}
 
@@ -16,6 +17,7 @@ local state =
 }
 
 function stateMachine.calculateState(npcBot)
+    globalState.calculateState(npcBot:GetTeam())
     stateMachine.calcWeight(npcBot, retreat_weight.settings)
     stateMachine.calcWeight(npcBot, hunt_weight.settings)
     stateMachine.calcWeight(npcBot, farm_weight.settings)
