@@ -70,6 +70,31 @@ local NeededTime = 300
 function Think()
 	if GetGameMode() == GAMEMODE_CM then
 		CaptainModeLogic()
+	elseif GetGameMode() == GAMEMODE_AP then
+		AllPickModeLogic()
+	else
+		return
+	end
+end
+
+------------------------------------------ALL PICK MODE GAME MODE-------------------------------------------
+--Picking logic for All Pick Mode Game Mode
+
+function AllPickModeLogic()
+	if ( GetTeam() == TEAM_RADIANT ) then
+		print( "selecting radiant" );
+		SelectHero( 2, 'npc_dota_hero_bane')
+		SelectHero( 3, 'npc_dota_hero_chaos_knight')
+		SelectHero( 4, 'npc_dota_hero_juggernaut')
+		SelectHero( 5, 'npc_dota_hero_lich')
+		SelectHero( 6, 'npc_dota_hero_ogre_magi')
+	elseif ( GetTeam() == TEAM_DIRE ) then
+		print( "selecting dire" );
+		SelectHero( 7, 'npc_dota_hero_drow_ranger')
+		SelectHero( 8, 'npc_dota_hero_kunkka')
+		SelectHero( 9, 'npc_dota_hero_zuus')
+		SelectHero( 10, 'npc_dota_hero_earthshaker')
+		SelectHero( 11, 'npc_dota_hero_nevermore')
 	end
 end
 
