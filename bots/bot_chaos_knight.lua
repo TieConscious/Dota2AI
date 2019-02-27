@@ -138,6 +138,29 @@ function Murder()
 
 end
 
+function SpellRetreat()
+	npcBot = GetBot()
+	local perHealth = module.CalcPerHealth(npcBot)
+	local currentMana = npcBot:GetMana()
+	local manaPer = module.CalcPerMana(npcBot)
+
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+
+	local manaQ = abilityQ:GetManaCost()
+
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		local target = eHeroList[1]
+
+		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+		end
+
+	end
+
+end
+
 function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
@@ -147,6 +170,9 @@ function Think()
 	if state.state == "hunt" then
 		--implement custom hero hunting here
 		Murder()
+	elseif state.state == "retreat" then
+		behavior.generic(npcBot, state)
+		SpellRetreat()
 	else
 		behavior.generic(npcBot, state)
 	end

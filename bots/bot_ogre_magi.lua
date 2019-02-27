@@ -202,9 +202,23 @@ function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 
+	local currentMana = npcBot:GetMana()
+	local maxMana = npcBot:GetMaxMana()
+	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
+
+	if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and currentMana <= (maxMana - 180)) then
+		npcBot:Action_UseAbility(arcane)
+		return
+	end
+
+	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
+		--implement custom hero hunting here
 		Murder()
+	elseif state.state == "retreat" then
+		behavior.generic(npcBot, state)
+		SpellRetreat()
 	else
 		behavior.generic(npcBot, state)
 	end

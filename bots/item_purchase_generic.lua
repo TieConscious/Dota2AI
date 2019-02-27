@@ -1,10 +1,12 @@
+local module = require(GetScriptDirectory().."/helpers")
+
 firstBuyItems = {
 	--["orb"] = "item_orb_of_venom",
 	--["branch0"] = "item_branches"
 	["quelling"] = "item_quelling_blade"
 }
 
-local tableItemsToBuy = { 
+local tableItemsToBuy = {
 				"item_tango",
 				"item_tango",
 				"item_clarity",

@@ -15,6 +15,12 @@ local Items = {
 	"item_sobi_mask",
 	"item_recipe_echo_sabre",
 
+	----Assault Cuirass----
+	"item_chainmail",
+	"item_platemail",
+	"item_hyperstone",
+	"item_recipe_assault",
+
 	----manta style----
 	"item_ultimate_orb",
 	"item_boots_of_elves",
@@ -31,13 +37,9 @@ local Items = {
 	----eye of skadi----
 	"item_ultimate_orb",
 	"item_ultimate_orb",
-	"item_point_booster",
+	"item_point_booster"
 
-	----Assault Cuirass----
-	"item_chainmail",
-	"item_platemail",
-	"item_hyperstone",
-	"item_recipe_assault"
+
 
 }
 
