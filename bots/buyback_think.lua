@@ -4,7 +4,11 @@ local buy_weight = require(GetScriptDirectory().."/weights/buy")
 function buyback_think.Decide()
 	local npcBot = GetBot()
 	local gold = npcBot:GetGold()
-	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()][1]
+	if (buy_weight.itemTree[npcBot:GetUnitName()] == nil) then
+		nextItem = require(GetScriptDirectory().."/item_purchase_generic")[1]
+	else
+		local nextItem = buy_weight.itemTree[npcBot:GetUnitName()][1]
+	end
 
 	if (npcBot:IsAlive()) then
 		return
