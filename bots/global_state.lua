@@ -1,23 +1,5 @@
 
-local globalState = {
-	state =
-	{
-		calculationTime = 0.0,	
-
-		enemiesAlive = 0,
-		enemiesMissing = 0,
-		enemiesInBase = 0,
-	
-		furthestLane = 0,
-		furthestLaneAmount = 0,
-		laneInfo = 
-		{
-			[LANE_TOP] = {numEnemies = 0, numAllies = 0},
-			[LANE_MID] = {numEnemies = 0, numAllies = 0},
-			[LANE_BOT] = {numEnemies = 0, numAllies = 0}
-		}
-	}
-}
+local globalState = {}
 
 local lanes = 
 {
@@ -26,7 +8,24 @@ local lanes =
 	LANE_BOT
 }
 
+local state =
+{
+	calculationTime = 0.0,
 
+	enemiesAlive = 0,
+	enemiesMissing = 0,
+	enemiesInBase = 0,
+	
+	furthestLane = 0,
+	furthestLaneAmount = 0,
+	laneInfo = 
+	{
+		[LANE_TOP] = {numEnemies = 0, numAllies = 0},
+		[LANE_MID] = {numEnemies = 0, numAllies = 0},
+		[LANE_BOT] = {numEnemies = 0, numAllies = 0}
+	}
+
+}
 
 local maxLaneDist = 1000
 local timeUntilMissing = 7
@@ -54,18 +53,18 @@ function globalState.getEnemyInfo(team)
 			end
 		end
 	end
-	globalState.state.enemiesAlive = livingEnemies
-	globalState.state.enemiesMissing = missingEnemies
-	globalState.state.enemiesInBase = baseEnemies
+	state.enemiesAlive = livingEnemies
+	state.enemiesMissing = missingEnemies
+	state.enemiesInBase = baseEnemies
 end
 
 function globalState.getLaneInfo(team)
 	for _,lane in pairs(lanes) do
-		globalState.state.laneInfo[lane].numAllies = 0
-		globalState.state.laneInfo[lane].numEnemies = 0
+		state.laneInfo[lane].numAllies = 0
+		state.laneInfo[lane].numEnemies = 0
 		local pushDist = GetLaneFrontAmount(team, lane, false)
-		if pushDist > globalState.state.furthestLaneAmount then
-			globalState.state.furthestLane = lane
+		if pushDist > state.furthestLaneAmount then
+			state.furthestLane = lane
 		end
 	end
 
@@ -85,7 +84,7 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
-			globalState.state.laneInfo[closestLane].numEnemies = globalState.state.laneInfo[closestLane].numEnemies + 1
+			state.laneInfo[closestLane].numEnemies = state.laneInfo[closestLane].numEnemies + 1
 		end
 	end
 
@@ -104,7 +103,7 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
-			globalState.state.laneInfo[closestLane].numAllies = globalState.state.laneInfo[closestLane].numAllies + 1
+			state.laneInfo[closestLane].numAllies = state.laneInfo[closestLane].numAllies + 1
 		end
 	end
 
@@ -112,10 +111,10 @@ end
 
 function globalState.calculateState(team)
 	local currTime = DotaTime()
-	if currTime <= globalState.state.calculationTime then
+	if currTime <= state.calculationTime then
 		return
 	end
-	globalState.state.calculationTime = currTime
+	state.calculationTime = currTime
 	globalState.getLaneInfo(team)
 	globalState.getEnemyInfo(team)
 	--globalState.printState()
@@ -123,7 +122,7 @@ end
 
 function globalState.printLaneInfo(lanename, lane)
 	local str = string.format("  %s:\n", lanename)
-	for name,value in pairs(globalState.state.laneInfo[lane]) do
+	for name,value in pairs(state.laneInfo[lane]) do
 		str = str..string.format("  %s=%03d\n", name, value)
 	end
 	return str

@@ -165,15 +165,31 @@ function module.CalcPerMana(unit)
 	return percentMana
 end
 
+local TopPicks = {
+	['npc_dota_hero_bane'] = 1,
+	['npc_dota_hero_chaos_knight'] = 1
+}
+
+local MidPicks = {
+	['npc_dota_hero_ogre_magi'] = 1
+}
+
+local BotPicks = {
+	['npc_dota_hero_juggernaut'] = 1,
+	['npc_dota_hero_lich'] = 1
+}
+
 function module.GetLane(npcBot)
 	local team = GetTeam()
 	local lane = nil
-	local pID = npcBot:GetPlayerID()
-	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
+	local hero = npcBot:GetUnitName()
+
+
+	if (TopPicks[hero] ~= nil) then
 		lane = LANE_TOP
-	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
+	elseif (BotPicks[hero] ~= nil) then
 		lane = LANE_BOT
-	elseif (pID == 11 or pID == 6) then
+	elseif (MidPicks[hero] ~= nil) then
 		lane = LANE_MID
 	end
 	return lane
@@ -182,12 +198,13 @@ end
 function module.GetTower1(npcBot)
 	local team = GetTeam()
 	local tower = nil
+	local myLane = module.GetLane(npcBot)
 	local pID = npcBot:GetPlayerID()
-	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
+	if (myLane == LANE_TOP) then
 		tower = GetTower(team, TOWER_TOP_1)
-	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
+	elseif (myLane == LANE_BOT) then
 		tower = GetTower(team, TOWER_BOT_1)
-	elseif (pID == 11 or pID == 6) then
+	else
 		tower = GetTower(team, TOWER_MID_1)
 	end
 	return tower
@@ -249,6 +266,25 @@ function module.GetStrongestHero(Hero)
 	return PowUnit,PowHealth
 end
 
+function module.GetSpecificTargetedProjectiles(npcBot, damageType)
+	local projectiles = npcBot:GetIncomingTrackingProjectiles()
+	local output = {}
+	for k,v in pairs(projectiles) do
+		if v.is_attack == true and ((v.ability ~= nil and v.ability:GetDamageType() == damageType) or
+			(v.ability == nil and (damageType == DAMAGE_TYPE_PHYSICAL or damageType == DAMAGE_TYPE_ALL))) then
+			v.distance = GetUnitToLocationDistance(npcBot, v.location)
+			if v.ability ~= nil then
+				v.damage = npcBot:GetActualIncomingDamage(v.ability:GetAbilityDamage(), v.ability:GetDamageType())
+			else
+				v.damage = npcBot:GetActualIncomingDamage(v.caster:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) 
+			end
+			table.insert(output, v)
+		end
+	end
+	table.sort(output, function(a, b) return a.distance < b.distance end)
+	return output
+end
+
 --funtion module.IsFacing()
 --
 --end
@@ -270,6 +306,14 @@ function module.IsDisabled(unit)
 
 end
 
+
+function module.IsEnhanced(unit)
+	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsNightmared()) then
+		return false
+	else
+		return true
+	end
+end
 --IsInvulnerable()
 --IsMagicImmune()
 --IsNightmared()

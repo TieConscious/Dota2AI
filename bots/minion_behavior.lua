@@ -91,19 +91,19 @@ function minionBehavior.Farm(minion)
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
-		if (eCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
-			if (GetUnitToUnitDistance(minion,WeakestCreep) <= attackRange) then
-				minion:Action_AttackUnit(eWeakestCreep, true)
-			else
-				minion:Action_MoveToUnit(eWeakestCreep)
-			end
-		end
-		if (GetUnitToUnitDistance(minion,WeakestCreep) > attackRange) then
-			minion:Action_MoveToUnit(eWeakestCreep)
-		end
+	--if (eWeakestCreep ~= nil and eCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
+	--	if (eCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
+	--		if (GetUnitToUnitDistance(minion,WeakestCreep) <= attackRange) then
+	--			minion:Action_AttackUnit(eWeakestCreep, true)
+	--		else
+	--			minion:Action_MoveToUnit(eWeakestCreep)
+	--		end
+	--	end
+	--	if (GetUnitToUnitDistance(minion,WeakestCreep) > attackRange) then
+	--		minion:Action_MoveToUnit(eWeakestCreep)
+	--	end
 	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
+	if (aWeakestCreep ~= nil and aCreepHealth <= minion:GetEstimatedDamageToTarget(true, eWeakestCreep, minion:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
 		if (GetUnitToUnitDistance(minion,aWeakestCreep) <= attackRange) then
 			minion:Action_AttackUnit(aWeakestCreep, true)
 		end

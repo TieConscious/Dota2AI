@@ -80,22 +80,23 @@ BCORNER = Vector(5500, -6200, 0)
 function movement.MTL_Start(npcBot)
 	local pID = npcBot:GetPlayerID()
 	local team = npcBot:GetTeam()
+	local myLane = module.GetLane(npcBot)
 	--if Dire--
 	if (team == 3) then
-		if (pID == 7 or pID == 8) then
+		if (myLane == LANE_TOP) then
             npcBot:Action_MoveToLocation(DIRE_TTOWER1)
-		elseif (pID == 9 or pID == 10) then
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(DIRE_BTOWER1)
-		elseif (pID == 11) then
+		else
             npcBot:Action_MoveToLocation(DIRE_MTOWER1)
 		end
 	--if Radiant--
 	elseif (team == 2) then
-		if (pID == 2 or pID == 3) then
+		if (myLane == LANE_TOP) then
             npcBot:Action_MoveToLocation(RADIANT_TTOWER1)
-		elseif (pID == 4 or pID == 5) then
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(RADIANT_BTOWER1)
-		elseif (pID == 6) then
+		else
             npcBot:Action_MoveToLocation(RADIANT_MTOWER1)
 		end
 	else
@@ -108,6 +109,7 @@ end
 function movement.MTL_Farm(npcBot)
 	local pID = npcBot:GetPlayerID()
 	local team = npcBot:GetTeam()
+	local myLane = module.GetLane(npcBot)
 	local RADIANT_MTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_MID, -300)
 	local RADIANT_TTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_TOP, -300)
 	local RADIANT_BTOWER_FRONT = GetLaneFrontLocation(TEAM_RADIANT, LANE_BOT, -300)
@@ -129,20 +131,20 @@ function movement.MTL_Farm(npcBot)
 	-- end
 	--if Dire--
 	if (team == 3) then
-		if (pID == 7 or pID == 8) then
+		if (myLane == LANE_TOP) then
             npcBot:Action_MoveToLocation(DIRE_TTOWER_FRONT)
-		elseif (pID == 9 or pID == 10) then
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(DIRE_BTOWER_FRONT)
-		elseif (pID == 11) then
+		else
             npcBot:Action_MoveToLocation(DIRE_MTOWER_FRONT)
 		end
 	--if Radiant--
 	elseif (team == 2) then
-		if (pID == 2 or pID == 3) then
+		if (myLane == LANE_TOP) then
             npcBot:Action_MoveToLocation(RADIANT_TTOWER_FRONT)
-		elseif (pID == 4 or pID == 5) then
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(RADIANT_BTOWER_FRONT)
-		elseif (pID == 6) then
+		else
             npcBot:Action_MoveToLocation(RADIANT_MTOWER_FRONT)
 		end
 	else

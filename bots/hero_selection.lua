@@ -1,33 +1,47 @@
 
-local BotPicks = {
+-- local BotPicks = {
+-- 	'npc_dota_hero_bane',
+-- 	'npc_dota_hero_chaos_knight',
+-- 	'npc_dota_hero_juggernaut',
+-- 	'npc_dota_hero_lich',
+-- 	'npc_dota_hero_ogre_magi',
+-- 	'npc_dota_hero_tinker',
+
+-- 	'npc_dota_hero_medusa',
+
+
+-- 	'npc_dota_hero_crystal_maiden',
+
+-- 	'npc_dota_hero_tidehunter',
+
+-- 	'npc_dota_hero_ursa', --broken
+-- 	'npc_dota_hero_shadow_shaman', --broken
+
+-- 	'npc_dota_hero_phantom_assassin',
+-- 	'npc_dota_hero_abyssal_underlord',
+
+-- 	'npc_dota_hero_pugna',
+
+-- 	'npc_dota_hero_sven',
+
+-- 	'npc_dota_hero_dazzle',
+
+-- 	'npc_dota_hero_jakiro'
+-- };
+
+local TopPicks = {
 	'npc_dota_hero_bane',
-	'npc_dota_hero_chaos_knight',
+	'npc_dota_hero_chaos_knight'
+}
+
+local MidPicks = {
+	'npc_dota_hero_ogre_magi'
+}
+
+local BotPicks = {
 	'npc_dota_hero_juggernaut',
-	'npc_dota_hero_lich',
-	'npc_dota_hero_ogre_magi',
-	'npc_dota_hero_tinker',
-
-	'npc_dota_hero_medusa',
-
-
-	'npc_dota_hero_crystal_maiden',
-
-	'npc_dota_hero_tidehunter',
-
-	'npc_dota_hero_ursa', --broken
-	'npc_dota_hero_shadow_shaman', --broken
-
-	'npc_dota_hero_phantom_assassin',
-	'npc_dota_hero_abyssal_underlord',
-
-	'npc_dota_hero_pugna',
-
-	'npc_dota_hero_sven',
-
-	'npc_dota_hero_dazzle',
-
-	'npc_dota_hero_jakiro'
-};
+	'npc_dota_hero_lich'
+}
 
 local BotBans = {
 	'npc_dota_hero_sniper',
@@ -55,13 +69,13 @@ function GetBotNames ()
 end
 
 local picks = {};
-local maxPlayerID = 15;
+local maxPlayerID = 20;
 -- CHANGE THESE VALUES IF YOU'RE GETTING BUGS WITH BOTS NOT PICKING (or infinite loops)
 -- To find appropriate values, start a game, open a console, and observe which slots are
 -- being used by which players/teams. maxPlayerID shoulud just be the highest-numbered
 -- slot in use.
 
-local slots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}
+local slots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 16, 17, 18,19,20}
 local ListPickedHeroes = {};
 local AllHeroesSelected = false
 local BanCycle = 1
@@ -112,7 +126,8 @@ function CaptainModeLogic()
 	elseif GetHeroPickState() >= HEROPICK_STATE_CM_SELECT1 and GetHeroPickState() <= HEROPICK_STATE_CM_SELECT10 and GetCMPhaseTimeRemaining() <= NeededTime then
 		PicksHero()
 	elseif GetHeroPickState() == HEROPICK_STATE_CM_PICK then
-		SelectsHero()
+		--SelectsHero()
+		return
 	end
 end
 
@@ -180,11 +195,34 @@ end
 
 --Random hero which is non picked, non banned, or non human picked heroes if the human is the captain
 function PickHero()
-	local hero = BotPicks[1]
+	local hero = nil
+	if PickCycle == 1 or PickCycle == 2 then
+		hero = TopPicks[1]
+	elseif	PickCycle == 3 then
+		hero = MidPicks[1]
+	elseif	PickCycle == 4 or PickCycle == 5 then
+		hero = BotPicks[1]
+	end
+
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero)) do
+		if PickCycle == 1 or PickCycle == 2 then
+			hero = TopPicks[1]
+			table.remove(TopPicks, 1)
+		elseif	PickCycle == 3 then
+			hero = MidPicks[1]
+			table.remove(MidPicks, 1)
+		elseif	PickCycle == 4 or PickCycle == 5 then
+			hero = BotPicks[1]
+			table.remove(BotPicks, 1)
+		end
+	end
+	if PickCycle == 1 or PickCycle == 2 then
+		table.remove(TopPicks, 1)
+	elseif	PickCycle == 3 then
+		table.remove(MidPicks, 1)
+	elseif	PickCycle == 4 or PickCycle == 5 then
 		table.remove(BotPicks, 1)
-        hero = BotPicks[1]
-    end
+	end
 	return hero
 end
 
@@ -199,22 +237,23 @@ function PickBan()
 end
 
 --Select the rest of the heroes
-function SelectsHero()
-	if not AllHeroesSelected and GetCMPhaseTimeRemaining() < 10  then
-		--local RestBotPlayers = {}
-		local Bots = GetTeam()
-
-		--for i = 1, #RestBotPlayers do
-		if (Bots == TEAM_RADIANT) then
-			for pID = 2, 6  do
-				SelectHero(pID, ListPickedHeroes[pID-1])
-			end
-		elseif (Bots == TEAM_DIRE) then
-			for pID = 7, 11 do
-				SelectHero(pID, ListPickedHeroes[pID-6])
-			end
-		end
-
-		AllHeroesSelected = true
-	end
-end
+--function SelectsHero()
+--	if not AllHeroesSelected and GetCMPhaseTimeRemaining() < 30  then
+--		--local RestBotPlayers = {}
+--		local Bots = GetTeam()
+--
+--		--for i = 1, #RestBotPlayers do
+--		if (Bots == TEAM_RADIANT) then
+--			for i = 1, 5 do
+--				SelectHero(ListPickedHeroes[i])
+--			end
+--		elseif (Bots == TEAM_DIRE) then
+--			for i = 1, 5 do
+--
+--			SelectHero(ListPickedHeroes[i])
+--			end
+--		end
+--
+--		AllHeroesSelected = true
+--	end
+--end
