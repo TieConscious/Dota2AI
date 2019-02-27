@@ -27,6 +27,9 @@ local state =
 
 }
 
+local maxLaneDist = 1000
+local timeUntilMissing = 7
+
 function globalState.getEnemyInfo(team)
 	local enemyIDs = GetTeamPlayers(GetOpposingTeam())
 	local livingEnemies = 0
@@ -40,11 +43,11 @@ function globalState.getEnemyInfo(team)
 		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 then
 			livingEnemies = livingEnemies + 1
 			--missing enemies
-			if (lsi[1].time_since_seen > 7) then
+			if (lsi[1].time_since_seen > timeUntilMissing) then
 				missingEnemies = missingEnemies + 1
 			end
 			--enemies in base
-			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
+			if (lsi[1].time_since_seen < timeUntilMissing and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
 					baseEnemies = baseEnemies + 1
 					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
 			end
@@ -54,8 +57,6 @@ function globalState.getEnemyInfo(team)
 	state.enemiesMissing = missingEnemies
 	state.enemiesInBase = baseEnemies
 end
-
-local maxLaneDist = 1000
 
 function globalState.getLaneInfo(team)
 	for _,lane in pairs(lanes) do
@@ -73,7 +74,7 @@ function globalState.getLaneInfo(team)
 		--living enemies
 		local lsi = GetHeroLastSeenInfo(eID)
 		local closestLane = 0
-		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 and lsi[1].time_since_seen < 2 then  --nil value
+		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 and lsi[1].time_since_seen < timeUntilMissing then  --nil value
 			local smallestDist = maxLaneDist
 			for _,lane in pairs(lanes) do
 				local o = GetAmountAlongLane(lane, lsi[1].location)
