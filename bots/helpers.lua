@@ -266,6 +266,25 @@ function module.GetStrongestHero(Hero)
 	return PowUnit,PowHealth
 end
 
+function module.GetSpecificTargetedProjectiles(npcBot, damageType)
+	local projectiles = npcBot:GetIncomingTrackingProjectiles()
+	local output = {}
+	for k,v in pairs(projectiles) do
+		if v.is_attack == true and ((v.ability ~= nil and v.ability:GetDamageType() == damageType) or
+			(v.ability == nil and (damageType == DAMAGE_TYPE_PHYSICAL or damageType == DAMAGE_TYPE_ALL))) then
+			v.distance = GetUnitToLocationDistance(npcBot, v.location)
+			if v.ability ~= nil then
+				v.damage = npcBot:GetActualIncomingDamage(v.ability:GetAbilityDamage(), v.ability:GetDamageType())
+			else
+				v.damage = npcBot:GetActualIncomingDamage(v.caster:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) 
+			end
+			table.insert(output, v)
+		end
+	end
+	table.sort(output, function(a, b) return a.distance < b.distance end)
+	return output
+end
+
 --funtion module.IsFacing()
 --
 --end
