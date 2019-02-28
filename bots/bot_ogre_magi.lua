@@ -150,6 +150,37 @@ function Murder()
 	end
 end
 
+function SpellRetreat()
+	npcBot = GetBot()
+	local perHealth = module.CalcPerHealth(npcBot)
+	local currentMana = npcBot:GetMana()
+	local manaPer = module.CalcPerMana(npcBot)
+
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+	local abilityW = npcBot:GetAbilityByName(SKILL_W)
+
+	local manaQ = abilityQ:GetManaCost()
+	local manaW = abilityW:GetManaCost()
+
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		local target = eHeroList[1]
+
+		if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaQ)) then
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaW)) then
+			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+
+		end
+
+	end
+
+end
+
 ----Pokes hero if within range----
 --function Poke(eHero)
 --	local perHealth = module.CalcPerHealth(npcBot)
