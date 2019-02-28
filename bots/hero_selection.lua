@@ -86,6 +86,8 @@ function Think()
 		CaptainModeLogic()
 	elseif GetGameMode() == GAMEMODE_AP then
 		AllPickModeLogic()
+	elseif GetGameMode() == 0 then
+		ZeroPickLogic()
 	else
 		return
 	end
@@ -94,9 +96,25 @@ end
 ------------------------------------------ALL PICK MODE GAME MODE-------------------------------------------
 --Picking logic for All Pick Mode Game Mode
 
+function ZeroPickLogic()
+	if ( GetTeam() == TEAM_RADIANT ) then
+		SelectHero( 0, 'npc_dota_hero_bane')
+		SelectHero( 1, 'npc_dota_hero_chaos_knight')
+		SelectHero( 2, 'npc_dota_hero_juggernaut')
+		SelectHero( 3, 'npc_dota_hero_lich')
+		SelectHero( 4, 'npc_dota_hero_ogre_magi')
+	elseif ( GetTeam() == TEAM_DIRE ) then
+		SelectHero( 5, 'npc_dota_hero_drow_ranger')
+		SelectHero( 6, 'npc_dota_hero_kunkka')
+		SelectHero( 7, 'npc_dota_hero_zuus')
+		SelectHero( 8, 'npc_dota_hero_earthshaker')
+		SelectHero( 9, 'npc_dota_hero_nevermore')
+	end
+end
+
 function AllPickModeLogic()
 	if ( GetTeam() == TEAM_RADIANT ) then
-		print( "selecting radiant" );
+		print( "selecting radiant" )
 		SelectHero( 2, 'npc_dota_hero_bane')
 		SelectHero( 3, 'npc_dota_hero_chaos_knight')
 		SelectHero( 4, 'npc_dota_hero_juggernaut')

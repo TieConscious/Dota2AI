@@ -181,7 +181,7 @@ local BotPicks = {
 
 function module.GetLane(npcBot)
 	local team = GetTeam()
-	local lane = nil
+	local lane = LANE_MID--nil (default is mid lane instead of no lane to avoid errors and crashes, this needs to be better)
 	local hero = npcBot:GetUnitName()
 
 
