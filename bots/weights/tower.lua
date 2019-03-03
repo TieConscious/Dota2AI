@@ -2,11 +2,6 @@ local module = require(GetScriptDirectory().."/helpers")
 
 local searchRange = 1200
 
-function numberCreeps(npcBot)
-    local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
-end
-
 function towerHealth(npcBot)
     local eTower = npcBot:GetNearbyTowers(searchRange, true)
     local towerHealth = module.CalcPerHealth(eTower[1])
@@ -20,6 +15,11 @@ function towerNearby(npcBot)
     end
 end
 
+function numberCreeps(npcBot)
+    local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
+end
+
 function buildingNearby(npcBot)
     local eTower = npcBot:GetNearbyTowers(searchRange, true)
     if eTower ~= nil and #eTower > 0 then
@@ -29,7 +29,7 @@ function buildingNearby(npcBot)
     if (eBarracks ~= nil and #eBarracks > 0) then
         return true
     end
-    local eAncient 
+    local eAncient
 	if npcBot:GetTeam() == 2 then
 		eAncient = GetAncient(3)
 	else
@@ -41,17 +41,34 @@ function buildingNearby(npcBot)
     return false
 end
 
+function ratioEnemy(npcBot)
+    local enemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    local allies = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+
+    if (#enemy >= #allies) then
+        return 0
+    else
+        return 1
+    end
+end
+
+function enemyNearby(npcBot)
+    local enemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    return enemy ~= nil and #enemy > 0
+end
+
 local tower_weight = {
     settings =
     {
-        name = "tower", 
-    
+        name = "tower",
+
         components = {
             --{func=<calculate>, weight=<n>},
         },
-    
+
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
+            --{func=ratioEnemy, condition=enemyNearby, weight=1},
             {func=numberCreeps, condition=buildingNearby, weight=1},
             {func=towerHealth, condition=towerNearby, weight=1}
         }

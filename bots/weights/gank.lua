@@ -1,8 +1,11 @@
 local module = require(GetScriptDirectory().."/helpers")
+local globalState = require(GetScriptDirectory().."/global_state")
 
 -- todo: adjust for dire
 --1st tower top 0.42 under == pulled
 --
+
+--globalState.state.furthestLane = penis
 
 local pulledPushed = {
 	[TEAM_RADIANT] =
@@ -16,7 +19,7 @@ local pulledPushed = {
 		[LANE_TOP] = {0.7, 0.65},
 		[LANE_MID] = {0.52, 0.61},
 		[LANE_BOT] = {0.65, 0.42}
-	},
+	}
 }
 
 local lane_state = {
@@ -61,8 +64,9 @@ function LanePushedPulledNotHealing(npcBot)
 	if decided[pID] == nil or decided[pID] + 30 < DotaTime() then
 		local pulledLane = false
 		for lane,exist in pairs(gankable) do
-			--and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0
-			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1] then
+
+			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1]
+				and globalState.state.laneInfo[lane][1] > 0 and globalState.state.laneInfo[lane][2] > 0 then
 				pulledLane = true
 			end
 		end
@@ -73,6 +77,14 @@ function LanePushedPulledNotHealing(npcBot)
 	decided[pID] = DotaTime()
 	return true
 end
+
+--function EnemiesInLane()
+--	local enemiesTop = globalState.state.laneInfo[1].numEnemies
+--	local alliesTop = globalState.state.laneInfo[1].numAllies
+--end
+--
+--function AlliesInLane()
+--end
 
 function GoGank(npcBot)
 	return 25

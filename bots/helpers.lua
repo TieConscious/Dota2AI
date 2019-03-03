@@ -181,7 +181,7 @@ local BotPicks = {
 
 function module.GetLane(npcBot)
 	local team = GetTeam()
-	local lane = LANE_MID--nil (default is mid lane instead of no lane to avoid errors and crashes, this needs to be better)
+	local lane = nil
 	local hero = npcBot:GetUnitName()
 
 
@@ -266,25 +266,6 @@ function module.GetStrongestHero(Hero)
 	return PowUnit,PowHealth
 end
 
-function module.GetSpecificTargetedProjectiles(npcBot, damageType)
-	local projectiles = npcBot:GetIncomingTrackingProjectiles()
-	local output = {}
-	for k,v in pairs(projectiles) do
-		if v.is_attack == true and ((v.ability ~= nil and v.ability:GetDamageType() == damageType) or
-			(v.ability == nil and (damageType == DAMAGE_TYPE_PHYSICAL or damageType == DAMAGE_TYPE_ALL))) then
-			v.distance = GetUnitToLocationDistance(npcBot, v.location)
-			if v.ability ~= nil then
-				v.damage = npcBot:GetActualIncomingDamage(v.ability:GetAbilityDamage(), v.ability:GetDamageType())
-			else
-				v.damage = npcBot:GetActualIncomingDamage(v.caster:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) 
-			end
-			table.insert(output, v)
-		end
-	end
-	table.sort(output, function(a, b) return a.distance < b.distance end)
-	return output
-end
-
 --funtion module.IsFacing()
 --
 --end
@@ -355,6 +336,25 @@ function module.SmartTarget(npcBot)
 		end
 	end
 
+end
+
+function module.BounceSpells(npcBot, bounceRadius)
+	local bounceCount = 0
+	local bouncer = npcBot
+	local bounceList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	if (#bounceList <= 1) then
+		return bounceCount
+	end
+
+	--hit heroes that are close to us
+	for _,unit in pairs(bounceList) do
+		if (GetUnitToLocationDistance(bouncer, unit:GetLocation()) <= bounceRadius - 25) then
+			bounceCount = bounceCount + 1
+		end
+		bouncer = unit
+	end
+	return bounceCount
 end
 
 ----Last hit minions----

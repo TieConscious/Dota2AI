@@ -100,11 +100,6 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
-
-		if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and manaPer <= 0.75) then
-			npcBot:Action_UseAbility(arcane)
-		end
-
 		----Try various combos on weakened enemy unit----
 		if (not IsBotCasting() and ConsiderCast(abilityW, abilityQ, abilityUF) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaUF)) then
@@ -151,7 +146,6 @@ function Murder()
 end
 
 function SpellRetreat()
-	npcBot = GetBot()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
@@ -160,12 +154,28 @@ function SpellRetreat()
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
+	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
+	local sCharges = stick:GetCurrentCharges()
+	local wCharges = wand:GetCurrentCharges()
+
+
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = eHeroList[1]
+
+		if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and sCharges >= 5) then
+			npcBot:Action_UseAbility(stick)
+			return
+		end
+
+		if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wCharges >= 5) then
+			npcBot:Action_UseAbility(wand)
+			return
+		end
 
 		if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ)) then
@@ -242,7 +252,7 @@ function Think()
 		return
 	end
 
-	--stateMachine.printState(state)
+	stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
 		--implement custom hero hunting here

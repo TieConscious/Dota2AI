@@ -59,7 +59,7 @@ function Idle()
 
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
 	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady()
-		and tower:GetHealth() > 400 then
+		and tower:GetHealth() > 400 and manaPer >= 0.85 then
 		npcBot:Action_UseAbilityOnLocation(tpScroll, tower:GetLocation())
 	else
 		movement.MTL_Farm(npcBot)
@@ -74,10 +74,15 @@ end
 function Heal()
 	local npcBot = GetBot()
 	local salve = module.ItemSlot(npcBot, "item_flask")
+	local clarity = module.ItemSlot(npcBot, "item_clarity")
 	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)
 
 	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
+		npcBot:Action_UseAbilityOnEntity(clrity, npcBot)
 		return
 	end
 	if #nearbyAllyTower ~= 0 then
@@ -86,6 +91,10 @@ function Heal()
 	end
 	if salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
+		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
 	end
 	movement.RetreatToBase(npcBot)

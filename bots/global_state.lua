@@ -1,34 +1,32 @@
 
-local globalState = {}
+local globalState = {
+	state =
+	{
+		calculationTime = 0.0,
 
-local lanes = 
+		enemiesAlive = 0,
+		enemiesMissing = 0,
+		enemiesInBase = 0,
+
+		furthestLane = 0,
+		furthestLaneAmount = 0,
+		laneInfo =
+		{
+			[LANE_TOP] = {numEnemies = 0, numAllies = 0},
+			[LANE_MID] = {numEnemies = 0, numAllies = 0},
+			[LANE_BOT] = {numEnemies = 0, numAllies = 0}
+		}
+	}
+}
+
+local lanes =
 {
 	LANE_TOP,
 	LANE_MID,
 	LANE_BOT
 }
 
-local state =
-{
-	calculationTime = 0.0,
 
-	enemiesAlive = 0,
-	enemiesMissing = 0,
-	enemiesInBase = 0,
-	
-	furthestLane = 0,
-	furthestLaneAmount = 0,
-	laneInfo = 
-	{
-		[LANE_TOP] = {numEnemies = 0, numAllies = 0},
-		[LANE_MID] = {numEnemies = 0, numAllies = 0},
-		[LANE_BOT] = {numEnemies = 0, numAllies = 0}
-	}
-
-}
-
-local maxLaneDist = 1000
-local timeUntilMissing = 7
 
 function globalState.getEnemyInfo(team)
 	local enemyIDs = GetTeamPlayers(GetOpposingTeam())
@@ -43,28 +41,30 @@ function globalState.getEnemyInfo(team)
 		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 then
 			livingEnemies = livingEnemies + 1
 			--missing enemies
-			if (lsi[1].time_since_seen > timeUntilMissing) then
+			if (lsi[1].time_since_seen > 7) then
 				missingEnemies = missingEnemies + 1
 			end
 			--enemies in base
-			if (lsi[1].time_since_seen < timeUntilMissing and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
+			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
 					baseEnemies = baseEnemies + 1
 					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
 			end
 		end
 	end
-	state.enemiesAlive = livingEnemies
-	state.enemiesMissing = missingEnemies
-	state.enemiesInBase = baseEnemies
+	globalState.state.enemiesAlive = livingEnemies
+	globalState.state.enemiesMissing = missingEnemies
+	globalState.state.enemiesInBase = baseEnemies
 end
+
+local maxLaneDist = 1000
 
 function globalState.getLaneInfo(team)
 	for _,lane in pairs(lanes) do
-		state.laneInfo[lane].numAllies = 0
-		state.laneInfo[lane].numEnemies = 0
+		globalState.state.laneInfo[lane].numAllies = 0
+		globalState.state.laneInfo[lane].numEnemies = 0
 		local pushDist = GetLaneFrontAmount(team, lane, false)
-		if pushDist > state.furthestLaneAmount then
-			state.furthestLane = lane
+		if pushDist > globalState.state.furthestLaneAmount then
+			globalState.state.furthestLane = lane
 		end
 	end
 
@@ -74,7 +74,7 @@ function globalState.getLaneInfo(team)
 		--living enemies
 		local lsi = GetHeroLastSeenInfo(eID)
 		local closestLane = 0
-		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 and lsi[1].time_since_seen < timeUntilMissing then  --nil value
+		if IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 and lsi[1].time_since_seen < 2 then  --nil value
 			local smallestDist = maxLaneDist
 			for _,lane in pairs(lanes) do
 				local o = GetAmountAlongLane(lane, lsi[1].location)
@@ -84,7 +84,7 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
-			state.laneInfo[closestLane].numEnemies = state.laneInfo[closestLane].numEnemies + 1
+			globalState.state.laneInfo[closestLane].numEnemies = globalState.state.laneInfo[closestLane].numEnemies + 1
 		end
 	end
 
@@ -103,7 +103,7 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
-			state.laneInfo[closestLane].numAllies = state.laneInfo[closestLane].numAllies + 1
+			globalState.state.laneInfo[closestLane].numAllies = globalState.state.laneInfo[closestLane].numAllies + 1
 		end
 	end
 
@@ -111,10 +111,10 @@ end
 
 function globalState.calculateState(team)
 	local currTime = DotaTime()
-	if currTime <= state.calculationTime then
+	if currTime <= globalState.state.calculationTime then
 		return
 	end
-	state.calculationTime = currTime
+	globalState.state.calculationTime = currTime
 	globalState.getLaneInfo(team)
 	globalState.getEnemyInfo(team)
 	--globalState.printState()
@@ -122,7 +122,7 @@ end
 
 function globalState.printLaneInfo(lanename, lane)
 	local str = string.format("  %s:\n", lanename)
-	for name,value in pairs(state.laneInfo[lane]) do
+	for name,value in pairs(globalState.state.laneInfo[lane]) do
 		str = str..string.format("  %s=%03d\n", name, value)
 	end
 	return str
@@ -142,4 +142,4 @@ function globalState.printState()
 	print(str)
 end
 
-return globalState 
+return globalState

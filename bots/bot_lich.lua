@@ -86,9 +86,10 @@ function Murder()
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
+		local bounce = module.BounceSpells(npcBot, 600)
 
 		if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaR)) then
+				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 
 		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot,aHeroList[2]) <= abilityW:GetCastRange()
@@ -162,13 +163,47 @@ end
 -- --	end
 -- --end
 
+function SpellRetreat()
+	local manaPer = module.CalcPerMana(npcBot)
+	local currentMana = npcBot:GetMana()
+	local hRange = npcBot:GetAttackRange() - 25
+
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+
+	local manaQ = abilityQ:GetManaCost()
+	local manaR = abilityR:GetManaCost()
+
+	if (eHeroList ~= nil and #eHeroList > 0) then
+		local target = eHeroList[1]
+		local bounce = module.BounceSpells(npcBot, 600)
+
+		if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
+				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
+			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaQ)) then
+			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+		end
+
+	end
+
+end
+
 function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
+		--implement custom hero hunting here
 		Murder()
+	elseif state.state == "retreat" then
+		behavior.generic(npcBot, state)
+		SpellRetreat()
 	else
 		behavior.generic(npcBot, state)
 	end
