@@ -82,7 +82,7 @@ function Heal()
 		return
 	end
 	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
-		npcBot:Action_UseAbilityOnEntity(clrity, npcBot)
+		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
 	end
 	if #nearbyAllyTower ~= 0 then

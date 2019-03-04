@@ -126,7 +126,7 @@ local retreat_weight = {
         name = "retreat",
 
         components = {
-            {func=numberDifference, weight=0.5}
+            {func=numberDifference, weight=1}
         },
 
         conditionals = {

@@ -83,18 +83,33 @@ function Murder()
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
+	----abilities----
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local abilityUF = npcBot:GetAbilityByName(SKILL_UF)
-	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
+	----items----
+	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
+	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+
+	----cost of mana/items----
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
 	local manaE = abilityE:GetManaCost()
 	if (abilityUF ~= nil) then
 		local manaUF = abilityUF:GetManaCost()
+	end
+
+	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5) then
+		npcBot:Action_UseAbility(stick)
+		print("stick used")
+	end
+
+	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5) then
+		npcBot:Action_UseAbility(wand)
 	end
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
@@ -154,28 +169,17 @@ function SpellRetreat()
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
-	local stick = module.ItemSlot(npcBot, "item_magic_stick")
-	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
-	local sCharges = stick:GetCurrentCharges()
-	local wCharges = wand:GetCurrentCharges()
+
 
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = eHeroList[1]
 
-		if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and sCharges >= 5) then
-			npcBot:Action_UseAbility(stick)
-			return
-		end
 
-		if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wCharges >= 5) then
-			npcBot:Action_UseAbility(wand)
-			return
-		end
 
 		if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaQ)) then

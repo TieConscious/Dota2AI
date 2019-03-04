@@ -66,7 +66,7 @@ function LanePushedPulledNotHealing(npcBot)
 		for lane,exist in pairs(gankable) do
 
 			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1]
-				and globalState.state.laneInfo[lane][1] > 0 and globalState.state.laneInfo[lane][2] > 0 then
+				and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0 then
 				pulledLane = true
 			end
 		end
