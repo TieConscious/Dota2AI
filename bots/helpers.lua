@@ -373,6 +373,73 @@ function module.lastHit(WeakestCreep, CreepHealth, npcBot)
 	end
 end
 
+function module.dot(vec1, vec2)
+	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z
+end
+
+function module.length(vec1)
+	return math.sqrt(module.dot(vec1, vec1))
+end
+
+function PointInRect(p, a, b, c, d)
+	local ap = p - a
+	local ab = b - a
+	local ad = d - a
+	return 0 <= module.dot(ap, ab) and module.dot(ap, ab) <= module.dot(ab, ab) and
+		0 <= module.dot(ap, ad) and module.dot(ap, ad) <= module.dot(ad, ad)
+	-- local ap = Vector(p.x - a.x, p.y - a.y, 0)
+	-- local ab = Vector(b.x - a.x, b.y - a.y, 0)
+	-- local ad = Vector(d.x - a.x, d.y - a.y, 0)
+	-- return 0 <= ap.x * ab.x + ap.y * ab.y and
+	-- 	ap.x * ab.x + ap.y * ab.y <= ab.x^2 + ab.y^2 and
+	-- 	0 <= ap.x * ad.x + ap.y * ad.y and
+	-- 	ap.x * ad.x + ap.y * ad.y <= ad.x^2 + ad.y^2 and
+end
+
+function IntersectCR(circleCenter, r, a, b, c, d)
+	circleCenter.z = 0
+	a.z = 0
+	b.z = 0
+	c.z = 0
+	d.z = 0
+	return PointInRect(circleCenter, a, b, c, d) or
+		PointToLineDistance(a, b, circleCenter).distance <= r or
+		PointToLineDistance(b, c, circleCenter).distance <= r or
+		PointToLineDistance(c, d, circleCenter).distance <= r or
+		PointToLineDistance(d, a, circleCenter).distance <= r
+end
+
+function VectorNormalize(vec)
+	return vec / math.sqrt(vec.x^2 + vec.y^2 + vec.z^2)
+end
+
+function module.GetDodgableIncomingLinearProjectiles(npcBot)
+	local projectiles = GetLinearProjectiles()
+	local bounding = npcBot:GetBoundingRadius()
+	local output = {}
+	for k,v in pairs(projectiles) do
+		if GetUnitToLocationDistance(npcBot, v.location) < 1200 then
+			local prepVec = VectorNormalize(Vector(v.velocity.y, -v.velocity.x, 0))
+			local normalVelocity = VectorNormalize(v.velocity)
+			prepVec = prepVec * v.radius * 1.05
+			if IntersectCR(npcBot:GetLocation(), bounding,
+				v.location + prepVec,
+				v.location + prepVec + normalVelocity,
+				v.location - prepVec + normalVelocity,
+				v.location - prepVec) then
+				--little bit conservative.
+				local timeToDodge = GetUnitToLocationDistance(npcBot, v.location) /
+					(math.sqrt(v.velocity.x^2 + v.velocity.y^2 + v.velocity.z^2))
+				local distanceToDodge = v.radius + bounding - PointToLineDistance(v.location, v.location + v.velocity * timeToDodge, npcBot:GetLocation()).distance
+				if distanceToDodge / npcBot:GetCurrentMovementSpeed() < timeToDodge then
+					table.insert(output, v)
+				end
+			end
+		end
+	end
+	return output
+end
+
 ----Retreat Function----
 function module.BTFO(npcBot)
 	local Health = npcBot:GetHealth()

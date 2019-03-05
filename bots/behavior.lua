@@ -29,6 +29,8 @@ function behavior.generic(npcBot, stateMachine)
 		Rune()
 	elseif stateMachine.state == "gank" then
 		Gank()
+	elseif stateMachine.state == "dodge" then
+		Dodge()
 	else
 		Idle()
 	end
@@ -68,6 +70,9 @@ end
 
 function Retreat()
 	local npcBot = GetBot()
+	if npcBot:IsChanneling() then
+		return
+	end
 	movement.Retreat(npcBot)
 end
 
@@ -307,6 +312,10 @@ function Gank()
 	local team = GetTeam()
 	local targetLane = LANE_MID
 
+	if npcBot:IsChanneling() then
+		return
+	end
+
 	if lane == LANE_MID then
 		local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
 		if  midDist < 2000 then
@@ -323,6 +332,19 @@ function Gank()
 		targetLane = LANE_MID
 	end
 	npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
+end
+
+function Dodge()
+	local npcBot = GetBot()
+	local myLocation = npcBot:GetLocation()
+	local projectile = module.GetDodgableIncomingLinearProjectiles(npcBot)[1]
+	local perp = Vector(projectile.velocity.y, -projectile.velocity.x, 0)
+	local angle = math.acos(module.dot(myLocation, projectile.location) / (module.length(myLocation) * module.length(projectile.location)))
+	if math.pi < angle or angle < 0 then
+		npcBot:Action_MoveDirectly(myLocation - perp)
+	else
+		npcBot:Action_MoveDirectly(myLocation + perp)	
+	end
 end
 
 return behavior

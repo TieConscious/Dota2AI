@@ -7,6 +7,7 @@ local deaggro_weight = require(GetScriptDirectory().."/weights/deaggro")
 local rune_weight = require(GetScriptDirectory().."/weights/rune")
 local heal_weight = require(GetScriptDirectory().."/weights/heal")
 local gank_weight = require(GetScriptDirectory().."/weights/gank")
+local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local globalState = require(GetScriptDirectory().."/global_state")
 
 local stateMachine = {}
@@ -28,7 +29,8 @@ function stateMachine.calculateState(npcBot)
 	stateMachine.calcWeight(npcBot, rune_weight.settings)
     stateMachine.calcWeight(npcBot, heal_weight.settings)
     stateMachine.calcWeight(npcBot, gank_weight.settings)
-
+	stateMachine.calcWeight(npcBot, dodge_weight.settings)
+	
     --more weights
 
     stateMachine.getState()
