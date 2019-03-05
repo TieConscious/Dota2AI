@@ -27,6 +27,10 @@ function behavior.generic(npcBot, stateMachine)
 		Deaggro()
 	elseif stateMachine.state == "rune" then
 		Rune()
+	elseif stateMachine.state == "gank" then
+		Gank()
+	elseif stateMachine.state == "dodge" then
+		Dodge()
 	else
 		Idle()
 	end
@@ -34,20 +38,10 @@ end
 
 function Idle()
 	local npcBot = GetBot()
-	local pID = npcBot:GetPlayerID()
+	local manaPer = module.CalcPerMana(npcBot)
 	local team = GetTeam()
-	local tower = nil
-	local lane = nil
-	if (pID == 7 or pID == 8 or pID == 2 or pID == 3) then
-		lane = LANE_TOP
-		tower = GetTower(team, TOWER_TOP_1)
-	elseif (pID == 9 or pID == 10 or pID == 4 or pID == 5) then
-		lane = LANE_BOT
-		tower = GetTower(team, TOWER_BOT_1)
-	elseif (pID == 11 or pID == 6) then
-		lane = LANE_MID
-		tower = GetTower(team, TOWER_MID_1)
-	end
+	local tower = module.GetTower1(npcBot)
+	local lane = module.GetLane(npcBot)
 
 	if npcBot:IsChanneling() then
 		return
@@ -66,7 +60,8 @@ function Idle()
 	local time = DotaTime()
 
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
-	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
+	if tower ~= nil and time > 0 and not isInPosition and npcBot:DistanceFromFountain() == 0 and tpScroll ~= nil and tpScroll:IsCooldownReady()
+		and tower:GetHealth() > 400 and manaPer >= 0.85 then
 		npcBot:Action_UseAbilityOnLocation(tpScroll, tower:GetLocation())
 	else
 		movement.MTL_Farm(npcBot)
@@ -75,16 +70,24 @@ end
 
 function Retreat()
 	local npcBot = GetBot()
+	if npcBot:IsChanneling() then
+		return
+	end
 	movement.Retreat(npcBot)
 end
 
 function Heal()
 	local npcBot = GetBot()
 	local salve = module.ItemSlot(npcBot, "item_flask")
+	local clarity = module.ItemSlot(npcBot, "item_clarity")
 	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)
 
 	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
+		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
 	end
 	if #nearbyAllyTower ~= 0 then
@@ -93,6 +96,10 @@ function Heal()
 	end
 	if salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
+		return
+	end
+	if clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
+		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
 	end
 	movement.RetreatToBase(npcBot)
@@ -259,26 +266,85 @@ function Rune()
         end
     end
 	--if Dire--
+	local myLane = module.GetLane(npcBot)
 	if (team == 3) then
-		if (pID == 7 or pID == 8) then
+		if (myLane == LANE_TOP) then
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4))
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
-		elseif (pID == 9 or pID == 10) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
-		elseif (pID == 11) then
+		else
             Farm()
 		end
 	--if Radiant--
 	elseif (team == 2) then
-		if (pID == 2 or pID == 3) then
+		if (myLane == LANE_TOP) then
             npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
-		elseif (pID == 4 or pID == 5) then
+		elseif (myLane == LANE_BOT) then
             npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
-		elseif (pID == 6) then
+		else
 			Farm()
 		end
 	else
 		Farm()
     end
+end
+
+local pulledPushed = {
+	[TEAM_RADIANT] =
+	{
+		[LANE_TOP] = {0.42, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.7}
+	},
+	[TEAM_DIRE] =
+	{
+		[LANE_TOP] = {0.7, 0.65},
+		[LANE_MID] = {0.52, 0.61},
+		[LANE_BOT] = {0.65, 0.42}
+	},
+}
+
+local midTargetLane = LANE_BOT
+
+function Gank()
+	local npcBot = GetBot()
+	local lane = module.GetLane(npcBot)
+	local team = GetTeam()
+	local targetLane = LANE_MID
+
+	if npcBot:IsChanneling() then
+		return
+	end
+
+	if lane == LANE_MID then
+		local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
+		if  midDist < 2000 then
+			if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
+				midTargetLane = LANE_BOT
+			elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
+				midTargetLane = LANE_TOP
+			else
+				midTargetLane = LANE_BOT
+			end
+		end
+		targetLane = midTargetLane
+	else
+		targetLane = LANE_MID
+	end
+	npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
+end
+
+function Dodge()
+	local npcBot = GetBot()
+	local myLocation = npcBot:GetLocation()
+	local projectile = module.GetDodgableIncomingLinearProjectiles(npcBot)[1]
+	local perp = Vector(projectile.velocity.y, -projectile.velocity.x, 0)
+	local angle = math.acos(module.dot(myLocation, projectile.location) / (module.length(myLocation) * module.length(projectile.location)))
+	if math.pi < angle or angle < 0 then
+		npcBot:Action_MoveDirectly(myLocation - perp)
+	else
+		npcBot:Action_MoveDirectly(myLocation + perp)	
+	end
 end
 
 return behavior
