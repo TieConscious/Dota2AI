@@ -4,6 +4,7 @@ local buy_weight = require(GetScriptDirectory().."/weights/buy")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
 local buyback_think = require(GetScriptDirectory().."/buyback_think")
+local globalState = require(GetScriptDirectory().."/global_state")
 local behavior = {}
 
 function behavior.generic(npcBot, stateMachine)
@@ -31,6 +32,8 @@ function behavior.generic(npcBot, stateMachine)
 		Gank()
 	elseif stateMachine.state == "dodge" then
 		Dodge()
+	elseif stateMachine.state == "defend" then
+		Defend()
 	else
 		Idle()
 	end
@@ -208,11 +211,16 @@ function Buy()
 	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()][1]
 	local SS1 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET)
 	local SS2 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET2)
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 	local closerSecretShop = nil
 	if GetUnitToLocationDistance(npcBot, SS1) < GetUnitToLocationDistance(npcBot, SS2) then
 		closerSecretShop = SS1
 	else
 		closerSecretShop = SS2
+	end
+	if (npcBot:GetItemInSlot(5) ~= nil and wand ~= nil) then
+		npcBot:Action_DropItem(wand, npcBot:GetLocation())
+		return
 	end
 	if IsItemPurchasedFromSecretShop(nextItem) then
 		if npcBot:DistanceFromSecretShop() == 0 then
@@ -343,7 +351,39 @@ function Dodge()
 	if math.pi < angle or angle < 0 then
 		npcBot:Action_MoveDirectly(myLocation - perp)
 	else
-		npcBot:Action_MoveDirectly(myLocation + perp)	
+		npcBot:Action_MoveDirectly(myLocation + perp)
+	end
+end
+
+function Defend()
+	local npcBot = GetBot()
+	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
+	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local ancient
+	local defendLane = LANE_TOP
+
+	for lane,laneInfo in pairs(globalState.state.laneInfo) do
+		if (laneInfo.numEnemies >  globalState.state.laneInfo[defendLane].numEnemies) then
+			defendLane = lane
+		end
+	end
+
+	npcBot:ActionImmediate_Chat("DEFEND DEFEND DEFEND DEFEND DEFEND",true)
+
+	if (npcBot:GetTeam() == 2) then
+		ancient = GetAncient(2)
+	else
+		ancient = GetAncient(3)
+	end
+
+	if npcBot:IsChanneling() then
+		return
+	end
+
+	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
+		npcBot:Action_UseAbilityOnLocation(tpScroll, ancient:GetLocation())
+	else
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), defendLane, 0))
 	end
 end
 

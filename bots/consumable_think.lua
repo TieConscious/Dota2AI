@@ -14,7 +14,7 @@ function consumable_think.Decide()
 	local time = DotaTime()
 
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
-	if npcBot:DistanceFromFountain() == 0 and tpScroll == nil and npcBot:GetGold() >= GetItemCost("item_tpscroll") then
+	if npcBot:DistanceFromFountain() == 0 and (tpScroll == nil or (time > 600 and tpScroll:GetCurrentCharges() < 2)) and npcBot:GetGold() >= GetItemCost("item_tpscroll") then
 		npcBot:ActionImmediate_PurchaseItem("item_tpscroll")
 	end
 	local runTime = math.floor(DotaTime()) + 80

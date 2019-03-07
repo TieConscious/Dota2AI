@@ -284,20 +284,26 @@ function module.IsDisabled(unit)
 	else
 		return false
 	end
-
 end
 
+function module.IsHardCC(unit)
+	if (unit:IsHexed() or
+	unit:IsRooted() or
+	unit:IsStunned()) then
+		return true
+	else
+		return false
+	end
+end
 
 function module.IsEnhanced(unit)
-	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsNightmared()) then
+	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsAttackImmune()) then
 		return false
 	else
 		return true
 	end
 end
---IsInvulnerable()
---IsMagicImmune()
---IsNightmared()
+
 
 ----Smart Target----
 function module.SmartTarget(npcBot)

@@ -21,19 +21,19 @@ local Ability = {
 	SKILL_Q,
 	SKILL_E,
 	SKILL_Q,
-	SKILL_E, --W
+	SKILL_W, --W
 	SKILL_Q,
 	SKILL_R,
 	SKILL_Q,
-	SKILL_E, --W
-	SKILL_E, --W
+	SKILL_W, --W
+	SKILL_W, --W
 	TALENT1,
-	SKILL_W, --E
+	SKILL_E, --E
 	SKILL_R,
-	SKILL_W, --E
-	SKILL_W, --E
+	SKILL_E, --E
+	SKILL_E, --E
 	TALENT4,
-	SKILL_W, --E
+	SKILL_E, --E
 	"nil",
 	SKILL_R,
 	"nil",
@@ -72,6 +72,8 @@ end
 
 ----Murder closest enemy hero----
 function Murder()
+	local currentHealth = npcBot:GetHealth()
+	local maxHealth = npcBot:GetMaxHealth()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
@@ -84,11 +86,22 @@ function Murder()
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
 	local manaR = abilityR:GetManaCost()
 
+	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(stick)
+		return
+	end
+
+	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(wand)
+		return
+	end
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
@@ -104,6 +117,8 @@ function Murder()
 			else
 				npcBot:Action_MoveToUnit(target)
 			end
+		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)) then
+			npcBot:Action_UseAbilityOnLocation(abilityW, npcBot:GetLocation())
 		end
 
 		----Fuck'em up!----

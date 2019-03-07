@@ -13,9 +13,21 @@ local Items =
 	"item_magic_stick",
 	"item_recipe_magic_wand",
 
+	"item_orb_of_venom",
+
 	----arcane boots----
 	"item_boots",
 	"item_energy_booster",
+
+	----force staff----
+	"item_staff_of_wizardry",
+	"item_ring_of_regen",
+	"item_recipe_force_staff",
+
+	----scythe of vyse----
+	"item_mystic_staff",
+	"item_ultimate_orb",
+	"item_void_stone",
 
 	----aether lens----
 	"item_void_stone",
@@ -28,20 +40,7 @@ local Items =
 	"item_ogre_axe",
 	"item_blade_of_alacrity",
 
-	----glimmer cape----
-	"item_cloak",
-	"item_shadow_amulet",
 
-	----eul's scepter----
-	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_wind_lace",
-	"item_recipe_cyclone",
-
-	----scythe of vyse----
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone"
 }
 
 return Items

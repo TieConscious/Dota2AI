@@ -66,7 +66,8 @@ end
 
 ----Murder closest enemy hero----
 function Murder()
-	npcBot = GetBot()
+	local currentHealth = npcBot:GetHealth()
+	local maxHealth = npcBot:GetMaxHealth()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
@@ -79,6 +80,8 @@ function Murder()
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local manta = module.ItemSlot(npcBot, "item_manta")
+	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 
 	local manaQ = abilityQ:GetManaCost()
@@ -86,10 +89,20 @@ function Murder()
 	local manaR = abilityR:GetManaCost()
 	local manaManta = 125
 
+	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(stick)
+		return
+	end
+
+	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(wand)
+		return
+	end
+
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
-		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR)) then
+		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target)) then
 			if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
 				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
@@ -99,12 +112,19 @@ function Murder()
 				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			end
 
+		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW) and currentMana >= module.CalcManaCombo(manaW, manaR)
+				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+			npcBot:ActionPush_UseAbility(abilityR)
+
 		elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)
-				and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+				and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)
+				and not module.IsHardCC(target)) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)
+				and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
@@ -153,7 +173,8 @@ function SpellRetreat()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = eHeroList[1]
 
-		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
+		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+			and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 		end
 

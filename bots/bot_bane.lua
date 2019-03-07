@@ -80,6 +80,8 @@ end
 
 ----Murder closest enemy hero----
 function Murder()
+	local currentHealth = npcBot:GetHealth()
+	local maxHealth = npcBot:GetMaxHealth()
 	local manaPer = module.CalcPerMana(npcBot)
 	local currentMana = npcBot:GetMana()
 	local maxMana = npcBot:GetMaxMana()
@@ -91,20 +93,31 @@ function Murder()
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
 	local manaE = abilityE:GetManaCost()
 	local manaR = abilityR:GetManaCost()
 
+	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(stick)
+		return
+	end
+
+	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
+		npcBot:Action_UseAbility(wand)
+		return
+	end
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
 
 		----Try various combos on weakened enemy unit----
-		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR)) then
+		if (not IsBotCasting() and target2 ~= nil and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target2)) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityR, target2)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target2)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
@@ -123,7 +136,7 @@ function Murder()
 			npcBot:Action_UseAbilityOnEntity(abilityW, target2)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityE) and  GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2) then
+				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 		end
 		----Fuck'em up!----
@@ -206,7 +219,7 @@ function SpellRetreat()
 
 
 		if (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2) then
+				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()

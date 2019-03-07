@@ -10,6 +10,8 @@ local globalState = {
 
 		furthestLane = 0,
 		furthestLaneAmount = 0,
+		closestLane = 0,
+		closestLaneAmount = 0,
 		laneInfo =
 		{
 			[LANE_TOP] = {numEnemies = 0, numAllies = 0},
@@ -103,6 +105,8 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
+			globalState.state.closestLane = closestLane
+			globalState.state.closestLaneAmount = GetLaneFrontLocation(team, closestLane, 0)
 			globalState.state.laneInfo[closestLane].numAllies = globalState.state.laneInfo[closestLane].numAllies + 1
 		end
 	end
