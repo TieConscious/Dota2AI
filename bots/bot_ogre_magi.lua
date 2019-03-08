@@ -121,6 +121,7 @@ function Murder()
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
+		local forceTarget = module.UseForceStaff(npcBot)
 
 		----Try various combos on weakened enemy unit----
 		if (not IsBotCasting() and ConsiderCast(abilityW, abilityQ, abilityUF) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
@@ -145,10 +146,9 @@ function Murder()
 				and currentMana >= module.CalcManaCombo(manaUF) and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityUF, target)
 
-		elseif (not IsBotCasting() and force ~= nil and ConsiderCast(force) and GetUnitToUnitDistance(npcBot, target) <= force:GetCastRange()
-				and GetUnitToUnitDistance(npcBot, target) >= 400 and currentMana >= module.CalcManaCombo(manaForce)
-				and target:IsFacingLocation(npcBot:GetLocation(), 30)) then
-			npcBot:Action_UseAbilityOnEntity(force, target)
+		elseif (forceTarget ~= nil and not IsBotCasting() and force ~= nil and ConsiderCast(force) and GetUnitToUnitDistance(npcBot, forceTarget) <= force:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaForce)) then
+			npcBot:Action_UseAbilityOnEntity(force, forceTarget)
 
 		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,aHeroList[2]) <= abilityE:GetCastRange()
 				and GetUnitToUnitDistance(aHeroList[2],target) <= 250 and currentMana >= module.CalcManaCombo(manaE)) then
@@ -203,15 +203,15 @@ function SpellRetreat()
 		ancient = GetAncient(3)
 	end
 
-	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 2 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
-		npcBot:Action_UseAbility(stick)
-		return
-	end
+	--if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 2 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
+	--	npcBot:Action_UseAbility(stick)
+	--	return
+	--end
 
-	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 2 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
-		npcBot:Action_UseAbility(wand)
-		return
-	end
+	--if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 2 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
+	--	npcBot:Action_UseAbility(wand)
+	--	return
+	--end
 
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
@@ -303,7 +303,9 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		SpellRetreat()
+		if (not npcBot:IsSilenced()) then
+			SpellRetreat()
+		end
 	else
 		behavior.generic(npcBot, state)
 	end

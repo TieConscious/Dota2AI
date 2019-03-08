@@ -6,7 +6,7 @@ function isSalveSafe(npcBot)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(800, true)
 	local salve = module.ItemSlot(npcBot, "item_flask")
 	if npcBot:HasModifier("modifier_flask_healing") or (salve ~= nil and #nearbyEnemyHeroes == 0 and #nearbyEnemyTowers == 0 and
-		neededHealth - npcBot:GetHealthRegen() * 10 - 500 > 0 and npcBot:DistanceFromFountain() > 4000) then
+		neededHealth - npcBot:GetHealthRegen() * 10 - 400 > 0 and npcBot:DistanceFromFountain() > 4000) then
 		return true
 	end
 	return false

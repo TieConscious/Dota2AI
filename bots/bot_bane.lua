@@ -95,6 +95,8 @@ function Murder()
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local stick = module.ItemSlot(npcBot, "item_magic_stick")
 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+	local sheepStick = module.ItemSlot(npcBot, "item_sheepstick")
+	local manaSheepStick = 250
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
@@ -114,18 +116,25 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
+		local targetFastAttack = module.HighestAttackSpeed(eHeroList)
 
 		----Try various combos on weakened enemy unit----
-		if (not IsBotCasting() and target2 ~= nil and ConsiderCast(abilityR, abilityW, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target2)) then
+		if (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
+			npcBot:Action_UseAbilityOnEntity(abilityE, target)
+
+		elseif (not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaSheepStick) and not module.IsHardCC(target)) then
+			npcBot:Action_UseAbilityOnEntity(sheepStick, target)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, targetFastAttack) <= abilityQ:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaQ) and targetFastAttack ~= target2 and not module.IsHardCC(targetFastAttack)) then
+			npcBot:Action_UseAbilityOnEntity(abilityQ, targetFastAttack)
+
+		elseif (not IsBotCasting() and target2 ~= nil and ConsiderCast(abilityR, abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaW, manaR) and not module.IsHardCC(target2)) then
 			npcBot:ActionPush_UseAbilityOnEntity(abilityR, target2)
 			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target2)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
-
-		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityQ) and GetUnitToUnitDistance(npcBot, target2) <= abilityR:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaR, manaQ)) then
-			npcBot:Action_UseAbilityOnEntity(abilityR, target2)
-			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target2)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target2) <= abilityR:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaR)) then
@@ -135,9 +144,7 @@ function Murder()
 				and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, target2)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityE) and  GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
-			npcBot:Action_UseAbilityOnEntity(abilityE, target)
+
 		end
 		----Fuck'em up!----
 		--ranged, wait til attack finish
@@ -210,15 +217,19 @@ function SpellRetreat()
 
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
+	local glimmer = module.ItemSlot(npcBot, "item_glimmer_cape")
 
 	local manaW = abilityW:GetManaCost()
 	local manaE = abilityE:GetManaCost()
+	local manaGlimmer = 90
 
-	if (eHeroList ~= nil and #eHeroList > 0) then
+	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible()) then
 		local target = eHeroList[1]
 
+		if (not IsBotCasting() and glimmer ~= nil and ConsiderCast(glimmer) and currentMana >= module.CalcManaCombo(manaGlimmer)) then
+			npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
 
-		if (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
+		elseif (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 
@@ -251,7 +262,9 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		SpellRetreat()
+		if (not npcBot:IsSilenced()) then
+			SpellRetreat()
+		end
 	else
 		behavior.generic(npcBot, state)
 	end

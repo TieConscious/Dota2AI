@@ -25,22 +25,22 @@ local Items =
 	"item_cloak",
 	"item_shadow_amulet",
 
+	----scythe of vyse----
+	"item_mystic_staff",
+	"item_ultimate_orb",
+	"item_void_stone",
+
 	----ag's scepter----
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",
 
-	----scythe of vyse----
-	"item_mystic_staff",
+	----linkens----
 	"item_ultimate_orb",
+	"item_ring_of_health",
 	"item_void_stone",
-
-	----eul's scepter----
-	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_wind_lace",
-	"item_recipe_cyclone"
+	"item_recipe_sphere"
 
 
 }

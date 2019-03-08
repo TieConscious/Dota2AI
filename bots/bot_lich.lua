@@ -106,6 +106,7 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 		local bounce = module.BounceSpells(npcBot, 600)
+		local forceTarget = module.UseForceStaff(npcBot)
 
 		if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
 				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
@@ -131,10 +132,9 @@ function Murder()
 				and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, aHeroList[1])
 
-		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and force ~= nil and ConsiderCast(force) and GetUnitToUnitDistance(npcBot, target) <= force:GetCastRange()
-				and GetUnitToUnitDistance(npcBot, target) >= 400 and currentMana >= module.CalcManaCombo(manaForce)
-				and target:IsFacingLocation(npcBot:GetLocation(), 30)) then
-			npcBot:Action_UseAbilityOnEntity(force, target)
+		elseif (aHeroList ~= nil and #aHeroList > 1 and forceTarget ~= nil and not IsBotCasting() and force ~= nil and ConsiderCast(force) and GetUnitToUnitDistance(npcBot, forceTarget) <= force:GetCastRange()
+				and currentMana >= module.CalcManaCombo(manaForce)) then
+			npcBot:Action_UseAbilityOnEntity(force, forceTarget)
 
 		elseif (aHeroList ~= nil and #aHeroList > 1 and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot,target) <= abilityE:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaE) and not module.IsHardCC(target)) then
@@ -219,16 +219,15 @@ function SpellRetreat()
 		ancient = GetAncient(3)
 	end
 
-	if (not IsBotCasting() and glimmer ~= nil and ConsiderCast(glimmer) and currentMana >= module.CalcManaCombo(manaGlimmer) and not npcBot:IsInvisible()) then
-		npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
-		return
-	end
 
 	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible()) then
 		local target = eHeroList[1]
 		local bounce = module.BounceSpells(npcBot, 600)
 
-		if (not IsBotCasting() and force ~= nil and ConsiderCast(force) and currentMana >= module.CalcManaCombo(manaForce)
+		if (not IsBotCasting() and glimmer ~= nil and ConsiderCast(glimmer) and currentMana >= module.CalcManaCombo(manaGlimmer)) then
+			npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
+
+		elseif (not IsBotCasting() and force ~= nil and ConsiderCast(force) and currentMana >= module.CalcManaCombo(manaForce)
 				and npcBot:IsFacingLocation(ancient:GetLocation(), 30)) then
 			npcBot:Action_UseAbilityOnEntity(force, npcBot)
 
@@ -255,7 +254,9 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		SpellRetreat()
+		if (not npcBot:IsSilenced()) then
+			SpellRetreat()
+		end
 	else
 		behavior.generic(npcBot, state)
 	end

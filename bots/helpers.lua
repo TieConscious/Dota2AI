@@ -87,6 +87,33 @@ function module.CalcManaCombo(...)
     return sum
 end
 
+function module.UseForceStaff(npcBot)
+	local nearbyEnemies = npcBot:GetNearbyHeroes(750, true, BOT_MODE_NONE)
+	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)[1]
+	local myPerHealth = module.CalcPerHealth(npcBot)
+	for k,v in pairs(nearbyEnemies) do
+		if not v:IsNightmared() and myPerHealth > 0.3 then
+			local movementVector = Vector(0, 0, 0)
+			local direction = math.pi * v:GetFacing() / 180
+			movementVector.x = math.cos(direction)
+			movementVector.y = math.sin(direction)
+			local estimatedPosition = v:GetLocation() + movementVector * 600
+			local enemyPerHealth = module.CalcPerHealth(v)
+			if nearbyAllyTower ~= nil and GetUnitToLocationDistance(nearbyAllyTower, estimatedPosition) then
+				return v
+			elseif GetUnitToLocationDistance(npcBot, estimatedPosition) < 300 then
+				local enemyAttackRange = v:GetAttackRange()
+				if enemyAttackRange <= 200 and enemyPerHealth < 0.15 then
+					return v
+				elseif enemyPerHealth < 0.2 then
+					return v
+				end
+			end
+		end
+	end
+	return nil
+end
+
 --use percent health as another ratio unit
 ----Calculate power ratios----
 function module.CalcPowerRatio(npcBot, aHero, eHero)
@@ -223,6 +250,42 @@ function module.ItemSlot(npcBot, ItemName)
 	return nil
 end
 
+
+
+function module.IsDisabled(unit)
+	if (unit:IsBlind() or
+	unit:IsBlockDisabled() or
+	unit:IsDisarmed() or
+	unit:IsEvadeDisabled() or
+	unit:IsHexed() or
+	unit:IsMuted() or
+	unit:IsRooted() or
+	unit:IsSilenced() or
+	unit:IsStunned()) then
+		return true
+	else
+		return false
+	end
+end
+
+function module.IsHardCC(unit)
+	if (unit:IsHexed() or
+	unit:IsRooted() or
+	unit:IsStunned()) then
+		return true
+	else
+		return false
+	end
+end
+
+function module.IsEnhanced(unit)
+	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsAttackImmune()) then
+		return false
+	else
+		return true
+	end
+end
+
 ----Find weakest enemy unit (Creep or Hero) and their health----
 function module.GetWeakestUnit(Enemy)
 	if (Enemy == nil or #Enemy == 0) then
@@ -266,44 +329,20 @@ function module.GetStrongestHero(Hero)
 	return PowUnit,PowHealth
 end
 
---funtion module.IsFacing()
---
---end
 
-function module.IsDisabled(unit)
-	if (unit:IsBlind() or
-	unit:IsBlockDisabled() or
-	unit:IsDisarmed() or
-	unit:IsEvadeDisabled() or
-	unit:IsHexed() or
-	unit:IsMuted() or
-	unit:IsRooted() or
-	unit:IsSilenced() or
-	unit:IsStunned()) then
-		return true
-	else
-		return false
+function module.HighestAttackSpeed(HeroList)
+	if (HeroList ~= nil and #HeroList > 0) then
+		local target = HeroList[1]
+		for _,unit in pairs(HeroList) do
+			if (unit:GetAttackSpeed() >= target:GetAttackSpeed()) then
+				target = unit
+			end
+		end
+		return target
 	end
-end
 
-function module.IsHardCC(unit)
-	if (unit:IsHexed() or
-	unit:IsRooted() or
-	unit:IsStunned()) then
-		return true
-	else
-		return false
-	end
+	return nil
 end
-
-function module.IsEnhanced(unit)
-	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsAttackImmune()) then
-		return false
-	else
-		return true
-	end
-end
-
 
 ----Smart Target----
 function module.SmartTarget(npcBot)

@@ -134,7 +134,7 @@ function Murder()
 		end
 
 		if (manta ~= nil) then
-			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta) then
+			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
 				npcBot:Action_UseAbility(manta)
 			end
 		end
@@ -193,7 +193,9 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		SpellRetreat()
+		if (not npcBot:IsSilenced()) then
+			SpellRetreat()
+		end
 	else
 		behavior.generic(npcBot, state)
 	end

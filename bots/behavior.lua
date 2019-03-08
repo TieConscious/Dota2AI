@@ -178,16 +178,23 @@ function Farm()
 
 
 	----Last-hit Creep----
-	if (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
+	if (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
+		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+			npcBot:Action_AttackUnit(eCreeps[1], true)
+		else
+			npcBot:Action_MoveToUnit(eCreeps[1])
+		end
+	elseif (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
 		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
 			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
 				npcBot:Action_AttackUnit(eWeakestCreep, true)
 			else
 				npcBot:Action_MoveToUnit(eWeakestCreep)
 			end
-		end
-		if (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
+		elseif (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
 			npcBot:Action_MoveToUnit(eWeakestCreep)
+		else
+			npcBot:Action_ClearActions(true)
 		end
 	----Deny creep----
 	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
@@ -195,13 +202,7 @@ function Farm()
 			npcBot:Action_AttackUnit(aWeakestCreep, true)
 		end
 	----Push when no enemy heros around----
-	elseif (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
-		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eCreeps[1], true)
-		else
-			npcBot:Action_MoveToUnit(eCreeps[1])
-		end
-	 else
+	else
 		movement.MTL_Farm(npcBot)
 	end
 end
@@ -367,8 +368,6 @@ function Defend()
 			defendLane = lane
 		end
 	end
-
-	npcBot:ActionImmediate_Chat("DEFEND DEFEND DEFEND DEFEND DEFEND",true)
 
 	if (npcBot:GetTeam() == 2) then
 		ancient = GetAncient(2)

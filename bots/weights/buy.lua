@@ -32,9 +32,9 @@ local buy_weight = {
 function isPurchaseableFromShop(npcBot)
 	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()]
 	if nextItem ~= nil and next(nextItem) ~= nil and not IsItemPurchasedFromSecretShop(nextItem[1]) and npcBot:GetGold() >= GetItemCost(nextItem[1]) then
-		return true;
+		return true
 	end
-	return false;
+	return false
 end
 
 function itemIsPurchaseable(npcBot)
@@ -45,13 +45,21 @@ end
 function isPurchaseableFromSecretShop(npcBot)
 	local nextItem = buy_weight.itemTree[npcBot:GetUnitName()]
 	if nextItem ~= nil and next(nextItem) ~= nil and IsItemPurchasedFromSecretShop(nextItem[1]) and	npcBot:GetGold() >= GetItemCost(nextItem[1]) then
-		return true;
+		return true
 	end
 	return false
 end
 
 function secretItemIsPurchaseable(npcBot)
-	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 50, 30)
+	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 50, 20)
+end
+
+function TowerNearMe(npcBot)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(850, true)
+end
+
+function zero()
+	return 0
 end
 
 buy_weight.settings =
@@ -59,6 +67,7 @@ buy_weight.settings =
 	name = "buy",
 
     components = {
+		{func=zero, condition=TowerNearMe, weight=0}
     },
 
     conditionals = {

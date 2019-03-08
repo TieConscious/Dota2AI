@@ -13,11 +13,23 @@ local Items = {
 	"item_magic_stick",
 	"item_recipe_magic_wand",
 
-	----powerthreads----
-	"item_belt_of_strength",
+	----phase boots----
+	"item_blades_of_attack",
 	"item_boots",
-	"item_gloves",
-	"item_recipe_power_treads",
+	"item_chainmail",
+
+	----manta style----
+	"item_boots_of_elves",
+	"item_blade_of_alacrity",
+	"item_recipe_yasha",
+	"item_ultimate_orb",
+	"item_recipe_manta",
+
+	----mjollnir----
+	"item_javelin",
+	"item_mithril_hammer",
+	"item_hyperstone",
+	"item_recipe_mjollnir",
 
 	----battlefury----
 	"item_ring_of_health",
@@ -25,33 +37,19 @@ local Items = {
 	"item_demon_edge",
 	"item_recipe_bfury",
 
-	----battlefury----
-	"item_quelling_blade",
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",
-	"item_recipe_bfury",
+	----butterfly----
+	"item_eagle",
+	"item_talisman_of_evasion",
+	"item_quarterstaff",
+	"item_recipe_butterfly",
 
-	----battlefury----
-	"item_quelling_blade",
+	----abyssal blade----
+	"item_belt_of_strength",
+	"item_mithril_hammer",
+	"item_recipe_basher",
 	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",
-	"item_recipe_bfury",
-
-	----battlefury----
-	"item_quelling_blade",
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",
-	"item_recipe_bfury",
-
-	----battlefury----
-	"item_quelling_blade",
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",
-	"item_recipe_bfury"
+	"item_vitality_booster",
+	"item_recipe_abyssal_blade"
 
 	------Desolator----
 	--"item_mithril_hammer",

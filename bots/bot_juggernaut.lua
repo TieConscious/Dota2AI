@@ -88,10 +88,17 @@ function Murder()
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local stick = module.ItemSlot(npcBot, "item_magic_stick")
 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+	local phase = module.ItemSlot(npcBot, "item_phase_boots")
+	local manta = module.ItemSlot(npcBot, "item_manta")
+	local mjol = module.ItemSlot(npcBot, "item_mjollnir")
+	local abyssal = module.ItemSlot(npcBot, "item_abyssal_blade")
 
 	local manaQ = abilityQ:GetManaCost()
 	local manaW = abilityW:GetManaCost()
 	local manaR = abilityR:GetManaCost()
+	local manaManta = 125
+	local manaMjol = 50
+	local manaAbyssal = 75
 
 	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
 		npcBot:Action_UseAbility(stick)
@@ -106,19 +113,36 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
+		if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
+			npcBot:Action_UseAbility(phase)
+		end
 
+		if (abyssal ~= nil and not IsBotCasting() and ConsiderCast(abyssal) and currentMana >= manaAbyssal and GetUnitToUnitDistance(npcBot, target) <= abyssal:GetCastRange()
+				and not module.IsHardCC(target) ) then
+				npcBot:Action_UseAbilityOnEntity(abyssal, target)
 
-		if (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+		elseif (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
 				and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
+
 		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
 			if (GetUnitToUnitDistance(npcBot,target) <= 150) then
 				npcBot:Action_UseAbility(abilityQ)
 			else
 				npcBot:Action_MoveToUnit(target)
 			end
+
+		elseif (mjol ~= nil and not IsBotCasting() and ConsiderCast(mjol) and currentMana >= manaMjol and GetUnitToUnitDistance(npcBot, target) <= 200) then
+			npcBot:Action_UseAbilityOnEntity(mjol, npcBot)
+
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnLocation(abilityW, npcBot:GetLocation())
+		end
+
+		if (manta ~= nil) then
+			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
+				npcBot:Action_UseAbility(manta)
+			end
 		end
 
 		----Fuck'em up!----
@@ -188,12 +212,16 @@ function SpellRetreat()
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+	local phase = module.ItemSlot(npcBot, "item_phase_boots")
 
 	local manaQ = abilityQ:GetManaCost()
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 
-		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
+		if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
+			npcBot:Action_UseAbility(phase)
+
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
 			npcBot:Action_UseAbility(abilityQ)
 		end
 
@@ -211,7 +239,9 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		SpellRetreat()
+		if (not npcBot:IsSilenced()) then
+			SpellRetreat()
+		end
 	else
 		behavior.generic(npcBot, state)
 	end

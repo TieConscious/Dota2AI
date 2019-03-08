@@ -18,7 +18,7 @@ end
 function hardRetreat(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	local level = npcBot:GetLevel()
-	return npcBot:DistanceFromFountain() < 4000 or (level < 6 and percentHealth < 0.25) or (level >= 6 and percentHealth < 0.25)
+	return npcBot:DistanceFromFountain() < 4000 or percentHealth < 0.25 or npcBot:GetHealth() < 300
 end
 
 function lowHealthSoft(npcBot)

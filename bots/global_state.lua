@@ -8,6 +8,9 @@ local globalState = {
 		enemiesMissing = 0,
 		enemiesInBase = 0,
 
+		alliesAlive = 0,
+		alliesInBase = 0,
+
 		furthestLane = 0,
 		furthestLaneAmount = 0,
 		closestLane = 0,
@@ -28,7 +31,7 @@ local lanes =
 	LANE_BOT
 }
 
-
+local deadEnemies = {}
 
 function globalState.getEnemyInfo(team)
 	local enemyIDs = GetTeamPlayers(GetOpposingTeam())
@@ -47,15 +50,41 @@ function globalState.getEnemyInfo(team)
 				missingEnemies = missingEnemies + 1
 			end
 			--enemies in base
-			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
+			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) and deadEnemies[eID] == nil then
 					baseEnemies = baseEnemies + 1
 					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
 			end
+			deadEnemies[eID] = nil
+		elseif not IsHeroAlive(eID) and lsi ~= nil and #lsi > 0 then
+			deadEnemies[eID] = true
 		end
 	end
 	globalState.state.enemiesAlive = livingEnemies
 	globalState.state.enemiesMissing = missingEnemies
 	globalState.state.enemiesInBase = baseEnemies
+end
+
+function globalState.getAllyInfo(team)
+	local allyIDs = GetTeamPlayers(GetTeam())
+	local livingAllies = 0
+	local baseAllies = 0
+	local ancient = GetAncient(team)
+	--DebugDrawCircle(ancient:GetLocation(), 2500, 0, 255, 0)
+	for _,aID in pairs(enemyIDs) do
+		--living enemies
+		local lsi = GetHeroLastSeenInfo(aID)
+		if IsHeroAlive(aID) and lsi ~= nil and #lsi > 0 then
+			livingAllies = livingAllies + 1
+			--missing enemies
+			--enemies in base
+			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) then
+					baseAllies = baseAllies + 1
+					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
+			end
+		end
+	end
+	globalState.state.alliesAlive = livingAllies
+	globalState.state.alliesInBase = baseAllies
 end
 
 local maxLaneDist = 1000
