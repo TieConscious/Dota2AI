@@ -1,15 +1,40 @@
 local module = require(GetScriptDirectory().."/helpers")
 local globalState = require(GetScriptDirectory().."/global_state")
 
-function powerRatio(npcBot)
+function PowerRatioNoHunt(npcBot)
+    -- local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    -- local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+    -- local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+
+    -- return RemapValClamped(powerRatio, 0, 0.8 , 0, 100)
+    return 0
+end
+
+function EnemyPowerful(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-
-    if nearbyEnemy == nil or #nearbyEnemy == 0 then
-        return 0
+    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.8) then
+        return false
     end
-    return RemapValClamped(powerRatio, 1.2, 0.5 , 0, 100)
+    return true
+end
+
+function Fuckem(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+    return RemapValClamped(powerRatio, 0, -0.5, 10, 100)
+end
+
+function EnemyWeak(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio >= 0) then
+        return false
+    end
+    return true
 end
 
 function enemyDistance(npcBot)
@@ -215,7 +240,6 @@ local hunt_weight = {
 
         components = {
             {func=enemyHealth, weight=20},
-            {func=powerRatio, weight=15},
             {func=enemyDistance, weight=12}
             --our health
             --our mana
@@ -227,7 +251,11 @@ local hunt_weight = {
             --{func=zero, condition=enemyOutlevels, weight=10},
             {func=onehundred, condition=eUnderTower, weight=20},
             --{func=heroHealth, condition=eDissapeared, weight=20},
+
             {func=numberCreeps, condition=enemyNear, weight=4},
+            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
+
+            {func=Fuckem, condition=EnemyWeak, weight=30},
             {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
             {func=heroHealth, condition=EnemyDisabled, weight=20},
             {func=heroHealth, condition=punchBack, weight=60},

@@ -119,47 +119,6 @@ function Murder(eHero)
 	end
 end
 
-----Pokes hero if within range----
---function Poke(eHero)
---	local perHealth = module.CalcPerHealth(npcBot)
---	local eHeroClose = module.CalcPerHealth(eHero)
---	local hRange = npcBot:GetAttackRange() - 50
---
---	if (GetUnitToUnitDistance(npcBot, eHero) <= hRange and npcBot:NumQueuedActions() == 0) then
---		AP_AttackUnit(npcBot, eHero, true)
---	end
---end
---
---function Hunt()
---	local perHealth = module.CalcPerHealth(npcBot)
---
---	local aHero = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
---	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
---	local aTowers = npcBot:GetNearbyTowers(700, false)
---
---	local eHero = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
---	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
---	local eTowers = npcBot:GetNearbyTowers(1000, true)
---
---
---	local powerRatio = module.CalcPowerRatio(npcBot, aHero, eHero)
---
---	if (eHero == nil or #eHero == 0) then
---		return
---	elseif (etowers ~= nil or #eTowers ~= 0) then
---		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= 725) then
---			return
---		end
---	else
---		local ePerHealth = module.CalcPerHealth(eHero[1])
---		if ((ePerHealth <= 0.75 or powerRatio <= 1 or #aTowers ~= 0) and eTowers == nil) then
---			Murder(eHero[1])
---		elseif (ePerHealth > 0.75) then
---			Poke(eHero[1])
---		end
---	end
---end
-
 function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)

@@ -122,6 +122,7 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 
 	local aPower = 0.0--npcBot:GetRawOffensivePower()
 	local ePower = 0.0
+	local powerRatio = 0
 
 	----Get power level of allied heroes----
 	if (aHero ~= nil or #aHero ~= 0) then
@@ -140,8 +141,11 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 	end
 
 	----Calculate power ratio----
-	local powerRatio = ePower / aPower
-
+	if aPower < ePower then
+		powerRatio = ePower / aPower - 1
+	else
+		powerRatio = (-aPower / ePower) + 1
+	end
 	return powerRatio
 
 end
