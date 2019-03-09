@@ -122,6 +122,7 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 
 	local aPower = 0.0--npcBot:GetRawOffensivePower()
 	local ePower = 0.0
+	local powerRatio = 0
 
 	----Get power level of allied heroes----
 	if (aHero ~= nil or #aHero ~= 0) then
@@ -140,8 +141,11 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 	end
 
 	----Calculate power ratio----
-	local powerRatio = ePower / aPower
-
+	if aPower < ePower then
+		powerRatio = ePower / aPower - 1
+	else
+		powerRatio = (-aPower / ePower) + 1
+	end
 	return powerRatio
 
 end
@@ -280,9 +284,9 @@ end
 
 function module.IsEnhanced(unit)
 	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsAttackImmune()) then
-		return false
-	else
 		return true
+	else
+		return false
 	end
 end
 
@@ -365,21 +369,27 @@ function module.SmartTarget(npcBot)
 		end
 
 		---percent health
-		if (#eHeroList == 1) then
-			target = eHeroList[1]
-			return target
-		end
+
 
 		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
 		powHero,powHealth = module.GetStrongestHero(eHeroList)
-		if (lowHealth <= powHealth) then
+		if (lowHealth <= powHealth and not lowHero:IsNightmared()) then
 			target = lowHero
 			return target
-		else
+		elseif (not powHero:IsNightmared()) then
 			target = powHero
 			return target
 		end
+
+		for _,unit in pairs(eHeroList)do
+			if (not unit:IsNightmared()) then
+				target = unit
+				return target
+			end
+		end
 	end
+
+	return target
 
 end
 

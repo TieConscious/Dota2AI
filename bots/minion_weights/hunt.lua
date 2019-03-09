@@ -246,21 +246,21 @@ local hunt_weight = {
         },
 
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=40}, --is this in retreat
-            {func=zero, condition=weDisabled, weight=40}, --should this be in retreat
+            {func=zero, condition=isUnderTower, weight=10}, --is this in retreat
+            --{func=zero, condition=weDisabled, weight=40}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
             {func=onehundred, condition=eUnderTower, weight=20},
             --{func=heroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
+            --{func=numberCreeps, condition=enemyNear, weight=4},
+            --{func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
 
             {func=Fuckem, condition=EnemyWeak, weight=30},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
+            --{func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
             {func=heroHealth, condition=EnemyDisabled, weight=20},
             {func=heroHealth, condition=punchBack, weight=60},
             {func=onehundred, condition=allyInFight, weight=40},
-            {func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
+            --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
         }
     }
 }

@@ -69,27 +69,31 @@ function enemyTowerTargetingMe(npcBot)
 end
 --powerRatio------------------------------------------------------------------------
 function hasPassiveEnemyNearby(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
-	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) then
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > 0.8 then
 		return true
 	end
 	return false
 end
 
 function hasAggressiveEnemyNearby(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
-	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) then
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > 0.4  then
 		return true
 	end
 	return false
 end
 
 function considerPowerRatio(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 
-	return Clamp(100 * (powerRatio * 2 - 1), 0, 100)
+	return RemapValClamped(powerRatio, 0.2, 1, 0, 100)
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
 function hasEnemyCreepsNearby(npcBot)

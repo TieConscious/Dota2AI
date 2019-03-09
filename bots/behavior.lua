@@ -34,6 +34,8 @@ function behavior.generic(npcBot, stateMachine)
 		Dodge()
 	elseif stateMachine.state == "defend" then
 		Defend()
+	elseif stateMachine.state == "finishHim" then
+		FinishHim()
 	else
 		Idle()
 	end
@@ -383,6 +385,17 @@ function Defend()
 		npcBot:Action_UseAbilityOnLocation(tpScroll, ancient:GetLocation())
 	else
 		npcBot:Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), defendLane, 0))
+	end
+end
+
+function FinishHim()
+	local npcBot = GetBot()
+	local pingLocation = npcBot:GetMostRecentPing().location
+	local timeSince = npcBot:GetMostRecentPing().time
+	local timeNow = GameTime()
+
+	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 2.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
+		npcBot:Action_MoveToLocation(pingLocation)
 	end
 end
 
