@@ -241,6 +241,21 @@ function module.GetTower1(npcBot)
 	return tower
 end
 
+function module.GetTower2(npcBot)
+	local team = GetTeam()
+	local tower = nil
+	local myLane = module.GetLane(npcBot)
+	local pID = npcBot:GetPlayerID()
+	if (myLane == LANE_TOP) then
+		tower = GetTower(team, TOWER_TOP_2)
+	elseif (myLane == LANE_BOT) then
+		tower = GetTower(team, TOWER_BOT_2)
+	else
+		tower = GetTower(team, TOWER_MID_2)
+	end
+	return tower
+end
+
 ----Assign castable item so it can be used----
 function module.ItemSlot(npcBot, ItemName)
 	local Slot = npcBot:FindItemSlot(ItemName)
