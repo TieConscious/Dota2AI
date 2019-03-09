@@ -205,12 +205,6 @@ function Think()
 	else
 		behavior.generic(npcBot, state)
 	end
-
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-
-	print(powerRatio)
 end
 
 function MinionThink(hMinionUnit)

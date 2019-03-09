@@ -11,6 +11,7 @@ function behavior.generic(npcBot, stateMachine)
 	courier_think.Decide()
 	consumable_think.Decide()
 	buyback_think.Decide()
+
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
@@ -301,16 +302,16 @@ end
 local pulledPushed = {
 	[TEAM_RADIANT] =
 	{
-		[LANE_TOP] = {0.42, 0.65},
-		[LANE_MID] = {0.52, 0.61},
-		[LANE_BOT] = {0.65, 0.7}
+		[LANE_TOP] = {0.42, 0.28, 0.19, 0.65},
+		[LANE_MID] = {0.52, 0.37, 0.28, 0.61},
+		[LANE_BOT] = {0.65, 0.33, 0.19, 0.7}
 	},
 	[TEAM_DIRE] =
 	{
-		[LANE_TOP] = {0.7, 0.65},
-		[LANE_MID] = {0.52, 0.61},
-		[LANE_BOT] = {0.65, 0.42}
-	},
+		[LANE_TOP] = {0.65, 0.33, 0.19, 0.7},
+		[LANE_MID] = {0.52, 0.37, 0.28, 0.61},
+		[LANE_BOT] = {0.42, 0.28, 0.19, 0.65}
+	}
 }
 
 local midTargetLane = LANE_BOT
@@ -319,28 +320,35 @@ function Gank()
 	local npcBot = GetBot()
 	local lane = module.GetLane(npcBot)
 	local team = GetTeam()
+	local time = DotaTime()
 	local targetLane = LANE_MID
 
 	if npcBot:IsChanneling() then
 		return
 	end
 
-	if lane == LANE_MID then
-		local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
-		if  midDist < 2000 then
-			if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
-				midTargetLane = LANE_BOT
-			elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
-				midTargetLane = LANE_TOP
-			else
-				midTargetLane = LANE_BOT
+	if time < 1800 then
+		if lane == LANE_MID then
+			local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
+			if  midDist < 2000 then
+				if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
+					midTargetLane = LANE_BOT
+				elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
+					midTargetLane = LANE_TOP
+				else
+					midTargetLane = LANE_BOT
+				end
 			end
+			targetLane = midTargetLane
+		else
+			targetLane = LANE_MID
 		end
-		targetLane = midTargetLane
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
 	else
-		targetLane = LANE_MID
+		targetLane = globalState.state.furthestLane
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false)))
+
 	end
-	npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
 end
 
 function Dodge()
@@ -361,13 +369,13 @@ function Defend()
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local ancient
-	local defendLane = LANE_TOP
+	local defendLane = globalState.state.closestLane
 
-	for lane,laneInfo in pairs(globalState.state.laneInfo) do
-		if (laneInfo.numEnemies >  globalState.state.laneInfo[defendLane].numEnemies) then
-			defendLane = lane
-		end
-	end
+	-- for lane,laneInfo in pairs(globalState.state.laneInfo) do
+	-- 	if (laneInfo.numEnemies >  globalState.state.laneInfo[defendLane].numEnemies) then
+	-- 		defendLane = lane
+	-- 	end
+	-- end
 
 	if (npcBot:GetTeam() == 2) then
 		ancient = GetAncient(2)
