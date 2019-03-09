@@ -9,8 +9,9 @@ function towerHealth(npcBot)
 end
 
 function towerNearby(npcBot)
-    local eTower = npcBot:GetNearbyTowers(searchRange, true)
-    if eTower ~= nil and #eTower > 0 then
+	local eTower = npcBot:GetNearbyTowers(searchRange, true)
+	local nearbyAcreeps = module.GetAllyCreepInTowerRange(npcBot, searchRange)
+    if eTower ~= nil and #eTower > 0 and #nearbyAcreeps ~= 0 then
         return true
     end
 end

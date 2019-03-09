@@ -90,12 +90,19 @@ end
 local maxLaneDist = 1000
 
 function globalState.getLaneInfo(team)
+	globalState.state.furthestLaneAmount = 0
+	globalState.state.closestLaneAmount = 100
 	for _,lane in pairs(lanes) do
 		globalState.state.laneInfo[lane].numAllies = 0
 		globalState.state.laneInfo[lane].numEnemies = 0
 		local pushDist = GetLaneFrontAmount(team, lane, false)
 		if pushDist > globalState.state.furthestLaneAmount then
 			globalState.state.furthestLane = lane
+			globalState.state.furthestLaneAmount = pushDist
+		end
+		if pushDist < globalState.state.closestLaneAmount then
+			globalState.state.closestLane = lane
+			globalState.state.closestLaneAmount = pushDist
 		end
 	end
 
@@ -134,8 +141,6 @@ function globalState.getLaneInfo(team)
 			end
 		end
 		if closestLane ~= 0 and closestLane ~= nil then
-			globalState.state.closestLane = closestLane
-			globalState.state.closestLaneAmount = GetLaneFrontLocation(team, closestLane, 0)
 			globalState.state.laneInfo[closestLane].numAllies = globalState.state.laneInfo[closestLane].numAllies + 1
 		end
 	end
@@ -150,6 +155,7 @@ function globalState.calculateState(team)
 	globalState.state.calculationTime = currTime
 	globalState.getLaneInfo(team)
 	globalState.getEnemyInfo(team)
+	print(globalState.state.closestLane)
 	--globalState.printState()
 end
 

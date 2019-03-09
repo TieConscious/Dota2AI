@@ -7,18 +7,19 @@ local globalState = require(GetScriptDirectory().."/global_state")
 
 --globalState.state.furthestLane = penis
 
+--1, 2, 3, on destroyed state, 4 on pushed
 local pulledPushed = {
 	[TEAM_RADIANT] =
 	{
-		[LANE_TOP] = {0.42, 0.65},
-		[LANE_MID] = {0.52, 0.61},
-		[LANE_BOT] = {0.65, 0.7}
+		[LANE_TOP] = {0.42, 0.28, 0.19, 0.65},
+		[LANE_MID] = {0.52, 0.37, 0.28, 0.61},
+		[LANE_BOT] = {0.65, 0.33, 0.19, 0.7}
 	},
 	[TEAM_DIRE] =
 	{
-		[LANE_TOP] = {0.7, 0.65},
-		[LANE_MID] = {0.52, 0.61},
-		[LANE_BOT] = {0.65, 0.42}
+		[LANE_TOP] = {0.65, 0.33, 0.19, 0.7},
+		[LANE_MID] = {0.52, 0.37, 0.28, 0.61},
+		[LANE_BOT] = {0.42, 0.28, 0.19, 0.65}
 	}
 }
 
@@ -35,6 +36,7 @@ function LanePushedPulledNotHealing(npcBot)
 	local pID = npcBot:GetPlayerID()
 	local percentHealth = module.CalcPerHealth(npcBot)
 	local team = GetTeam()
+	local time = DotaTime()
 
 	local gankable = {
 		[LANE_TOP] = true,
@@ -43,17 +45,21 @@ function LanePushedPulledNotHealing(npcBot)
 	}
 
 	gankable[myLane] = nil
-	if myLane == LANE_TOP then
+
+	if time < 1800 and myLane == LANE_TOP then
 		gankable[LANE_BOT] = nil
 	end
-	if myLane == LANE_BOT then
+	if time < 1800 and myLane == LANE_BOT then
 		gankable[LANE_TOP] = nil
 	end
 
-	if GetLaneFrontAmount(team, myLane, false) > pulledPushed[team][myLane][2] then
+	local myFrontAmount = GetLaneFrontAmount(team, myLane, false)
+	if myFrontAmount > pulledPushed[team][myLane][4] then
 		lane_state[myLane] = 1
 	end
-	if GetLaneFrontAmount(team, myLane, false) < pulledPushed[team][myLane][1] then
+	if	((time < 1800 or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
+		(module.GetTower2(npcBot) ~= nil and myFrontAmount < pulledPushed[team][myLane][2]) or 
+		(myFrontAmount < pulledPushed[team][myLane][3]) then
 		lane_state[myLane] = 0
 	end
 
@@ -61,20 +67,22 @@ function LanePushedPulledNotHealing(npcBot)
 		return false
 	end
 
-	if decided[pID] == nil or decided[pID] + 30 < DotaTime() then
-		local pulledLane = false
-		for lane,exist in pairs(gankable) do
-
-			if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1]
-				and globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0 then
-				pulledLane = true
+	if time < 1800 then
+		if decided[pID] == nil or decided[pID] + 30 < time then
+			local pulledLane = false
+			for lane, exist in pairs(gankable) do
+				if exist ~= nil and GetLaneFrontAmount(team, lane, false) < pulledPushed[team][lane][1] and
+					globalState.state.laneInfo[lane].numEnemies > 0 and globalState.state.laneInfo[lane].numAllies > 0 then
+					pulledLane = true
+				end
+			end
+			if pulledLane == false then
+				return false
 			end
 		end
-		if pulledLane == false then
-			return false
-		end
+		decided[pID] = time
+		return true
 	end
-	decided[pID] = DotaTime()
 	return true
 end
 
