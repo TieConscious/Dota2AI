@@ -1,9 +1,5 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
-local buy_weight = require(GetScriptDirectory().."/weights/buy")
-local courier_think = require(GetScriptDirectory().."/courier_think")
-local consumable_think = require(GetScriptDirectory().."/consumable_think")
-local buyback_think = require(GetScriptDirectory().."/buyback_think")
 local minionBehavior = {}
 
 function minionBehavior.generic(minion, master, stateMachine)

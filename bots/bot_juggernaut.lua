@@ -113,35 +113,37 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
-		if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
-			npcBot:Action_UseAbility(phase)
-		end
-
-		if (abyssal ~= nil and not IsBotCasting() and ConsiderCast(abyssal) and currentMana >= manaAbyssal and GetUnitToUnitDistance(npcBot, target) <= abyssal:GetCastRange()
-				and not module.IsHardCC(target) ) then
-				npcBot:Action_UseAbilityOnEntity(abyssal, target)
-
-		elseif (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
-				and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()) then
-			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
-
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
-			if (GetUnitToUnitDistance(npcBot,target) <= 150) then
-				npcBot:Action_UseAbility(abilityQ)
-			else
-				npcBot:Action_MoveToUnit(target)
+		if (not npcBot:IsSilenced()) then
+			if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
+				npcBot:Action_UseAbility(phase)
 			end
 
-		elseif (mjol ~= nil and not IsBotCasting() and ConsiderCast(mjol) and currentMana >= manaMjol and GetUnitToUnitDistance(npcBot, target) <= 200) then
-			npcBot:Action_UseAbilityOnEntity(mjol, npcBot)
+			if (abyssal ~= nil and not IsBotCasting() and ConsiderCast(abyssal) and currentMana >= manaAbyssal and GetUnitToUnitDistance(npcBot, target) <= abyssal:GetCastRange()
+					and not module.IsHardCC(target) ) then
+					npcBot:Action_UseAbilityOnEntity(abyssal, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)) then
-			npcBot:Action_UseAbilityOnLocation(abilityW, npcBot:GetLocation())
-		end
+			elseif (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+					and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()) then
+				npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 
-		if (manta ~= nil) then
-			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
-				npcBot:Action_UseAbility(manta)
+			elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
+				if (GetUnitToUnitDistance(npcBot,target) <= 150) then
+					npcBot:Action_UseAbility(abilityQ)
+				else
+					npcBot:Action_MoveToUnit(target)
+				end
+
+			elseif (mjol ~= nil and not IsBotCasting() and ConsiderCast(mjol) and currentMana >= manaMjol and GetUnitToUnitDistance(npcBot, target) <= 200) then
+				npcBot:Action_UseAbilityOnEntity(mjol, npcBot)
+
+			elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)) then
+				npcBot:Action_UseAbilityOnLocation(abilityW, npcBot:GetLocation())
+			end
+
+			if (manta ~= nil) then
+				if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
+					npcBot:Action_UseAbility(manta)
+				end
 			end
 		end
 
@@ -159,6 +161,11 @@ function Murder()
 					npcBot:Action_MoveToUnit(target)
 				end
 			end
+		end
+
+		if (module.CalcPerHealth(target) <= 0.15) then
+			local ping = target:GetExtrapolatedLocation(1)
+			npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
 		end
 	end
 end
@@ -202,15 +209,18 @@ function Think()
 		if (not npcBot:IsSilenced()) then
 			SpellRetreat()
 		end
+	elseif state.state == "finishHim" then
+		behavior.generic(npcBot, state)
+		Murder()
 	else
 		behavior.generic(npcBot, state)
 	end
 
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-
-	print(powerRatio)
+	--local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    --local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+    --local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+--
+	--print(powerRatio)
 end
 
 function MinionThink(hMinionUnit)

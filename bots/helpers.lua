@@ -284,9 +284,9 @@ end
 
 function module.IsEnhanced(unit)
 	if (unit:IsInvulnerable() or unit:IsMagicImmune() or unit:IsAttackImmune()) then
-		return false
-	else
 		return true
+	else
+		return false
 	end
 end
 
@@ -369,21 +369,27 @@ function module.SmartTarget(npcBot)
 		end
 
 		---percent health
-		if (#eHeroList == 1) then
-			target = eHeroList[1]
-			return target
-		end
+
 
 		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
 		powHero,powHealth = module.GetStrongestHero(eHeroList)
-		if (lowHealth <= powHealth) then
+		if (lowHealth <= powHealth and not lowHero:IsNightmared()) then
 			target = lowHero
 			return target
-		else
+		elseif (not powHero:IsNightmared()) then
 			target = powHero
 			return target
 		end
+
+		for _,unit in pairs(eHeroList)do
+			if (not unit:IsNightmared()) then
+				target = unit
+				return target
+			end
+		end
 	end
+
+	return target
 
 end
 

@@ -1,11 +1,6 @@
-local farm_weight = require(GetScriptDirectory().."/weights/farm")
-local retreat_weight = require(GetScriptDirectory().."/weights/retreat")
-local hunt_weight = require(GetScriptDirectory().."/weights/hunt")
-local tower_weight = require(GetScriptDirectory().."/weights/tower")
-local buy_weight = require(GetScriptDirectory().."/weights/buy")
-local deaggro_weight = require(GetScriptDirectory().."/weights/deaggro")
-local rune_weight = require(GetScriptDirectory().."/weights/rune")
-local heal_weight = require(GetScriptDirectory().."/weights/heal")
+local farm_weight = require(GetScriptDirectory().."/minion_weights/farm")
+local hunt_weight = require(GetScriptDirectory().."/minion_weights/hunt")
+local tower_weight = require(GetScriptDirectory().."/minion_weights/tower")
 
 local stateMachine = {}
 
