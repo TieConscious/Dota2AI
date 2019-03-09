@@ -141,19 +141,19 @@ function Murder()
 					and currentMana >= module.CalcManaCombo(manaR)) then
 				npcBot:Action_UseAbilityOnEntity(abilityR, target2)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+			elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaW)) then
-				npcBot:Action_UseAbilityOnEntity(abilityW, target2)
+				npcBot:Action_UseAbilityOnEntity(abilityW, target)
 			end
 		end
 		----Fuck'em up!----
 		--ranged, wait til attack finish
 		if (not IsBotCasting()) then
 			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target2) <= hRange then
-					npcBot:Action_AttackUnit(target2, true)
+				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+					npcBot:Action_AttackUnit(target, true)
 				else
-					npcBot:Action_MoveToUnit(target2)
+					npcBot:Action_MoveToUnit(target)
 				end
 			end
 		end
@@ -212,7 +212,7 @@ function Think()
 		return
 	end
 
-	--stateMachine.printState(state)
+	stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
 		--implement custom hero hunting here
