@@ -371,7 +371,7 @@ function module.SmartTarget(npcBot)
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		if (aHeroList ~= nil and #aHeroList > 1 and aHeroList[2]:GetAttackTarget() ~= nil
-				and (aHeroList[2]:GetAttackTarget()):IsHero()) then
+				and (aHeroList[2]:GetAttackTarget()):IsHero()) and not aHeroList[2]:GetAttackTarget():IsNightmared() then
 			target = aHeroList[2]:GetAttackTarget()
 			return target
 		end
