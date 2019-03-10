@@ -28,7 +28,7 @@ local Ability = {
 	SKILL_W, --W
 	SKILL_W, --W
 	TALENT1,
-	SKILL_E, --E
+	SKILL_W, --E
 	SKILL_R,
 	SKILL_E, --E
 	SKILL_E, --E
