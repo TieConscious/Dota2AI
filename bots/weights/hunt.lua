@@ -133,7 +133,7 @@ end
 
 function isUnderTower(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local eTower = npcBot:GetNearbyTowers(900, true)
+	local eTower = npcBot:GetNearbyTowers(1600, true)
 	if #eTower == 0 or #nearbyEnemy == 0 then
 		return false
 	end
@@ -146,7 +146,7 @@ function isUnderTower(npcBot)
 		calculation = calculation / GetUnitToUnitDistance(npcBot, nearbyEnemy[1]) * distToMove
 		calculation = calculation + myLocation
 	local val = PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())
-	return 	PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())["distance"] < 800
+	return 	PointToLineDistance(npcBot:GetLocation(), calculation, eTower[1]:GetLocation())["distance"] < 950
 end
 
 function eUnderTower(npcBot)
@@ -156,8 +156,11 @@ function eUnderTower(npcBot)
 		return false
     end
 
-    dist = GetUnitToLocationDistance(nearbyEnemy[1], aTower[1]:GetLocation())
-    return RemapValClamped(dist, 200, 600, 100, 0)
+	dist = GetUnitToLocationDistance(nearbyEnemy[1], aTower[1]:GetLocation())
+	if dist < 600 then
+		return true
+	end
+	return false
 end
  ----stunned enemy
 

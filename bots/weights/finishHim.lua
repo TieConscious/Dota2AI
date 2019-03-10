@@ -19,7 +19,7 @@ function IsThereAPing(npcBot)
 	local timeNow = GameTime()
 
 	--print(timeNow)
-	print(timeSince)
+	--print(timeSince)
 	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 4.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
 		return true
 	end

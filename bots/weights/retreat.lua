@@ -40,8 +40,8 @@ end
 --tower-----------------------------------------------------------------------------
 --do not calc if EnemyTower is actually targeting me. use function below for that
 function willEnemyTowerTargetMe(npcBot)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(850, true)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(950, true)
 	if #ACreepsInTowerRange < 3 and
 		not npcBot:WasRecentlyDamagedByTower(0.5) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
 		return true
@@ -50,13 +50,13 @@ function willEnemyTowerTargetMe(npcBot)
 end
 
 function enemyTowerShallTargetMe(npcBot)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
 	return Clamp((3 - #ACreepsInTowerRange) * 60, 0, 100)
 end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMeNoAlly(npcBot)
-	local nearbyEnemyTowers = npcBot:GetNearbyTowers(700, true)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 850)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(950, true)
+	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
 	if #ACreepsInTowerRange == 0 and
 		(npcBot:WasRecentlyDamagedByTower(0.5) or (nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() == npcBot)) then
 		return true
@@ -97,7 +97,7 @@ function considerPowerRatio(npcBot)
 end
 --enemyCreepsHittingMe--------------------------------------------------------------
 function hasEnemyCreepsNearby(npcBot)
-	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(500, true)
+	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(800, true)
 	if #nearbyEnemyCreeps ~= 0 then
 		return true
 	end
@@ -105,7 +105,7 @@ function hasEnemyCreepsNearby(npcBot)
 end
 
 function considerEnemyCreepHits(npcBot)
-	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(500, true)
+	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(800, true)
 	local creepsTargetingMe = {}
 	for _,creep in pairs(nearbyEnemyCreeps) do
 		if creep:GetAttackTarget() == npcBot then

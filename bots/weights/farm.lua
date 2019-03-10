@@ -22,14 +22,21 @@ end
 function calcEnemyCreepHealth(npcBot)
     local attackRange = npcBot:GetAttackRange()
     local attackDamage = npcBot:GetAttackDamage()
-    local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
-    local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
+	local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
+	local nearbyACreeps = npcBot:GetNearbyLaneCreeps(800, false)
+	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
+	local targetCount = 0
 
     if nearbyECreeps == nil or #nearbyECreeps == 0 then
         return 0
-    end
+	end
 
-    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * hitConsider, 50, 0)
+	for k,v in pairs(nearbyACreeps) do
+		if v:GetAttackTarget() == eWeakestCreep then
+			targetCount = targetCount + 1
+		end
+	end
+    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * (1 + targetCount * 0.33), 50, 0)
 end
 
 function calcEnemyCreepDist(npcBot)
