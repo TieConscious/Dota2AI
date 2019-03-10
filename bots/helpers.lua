@@ -404,6 +404,9 @@ function module.SmartTarget(npcBot)
 				return target
 			end
 		end
+		if target == nil then
+			target = eHeroList[1]
+		end
 	end
 
 	return target
