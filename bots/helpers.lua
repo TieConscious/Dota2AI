@@ -272,7 +272,8 @@ end
 
 
 function module.IsDisabled(unit)
-	if (unit:IsBlind() or
+	if (not unit:IsNightmared() and
+	(unit:IsBlind() or
 	unit:IsBlockDisabled() or
 	unit:IsDisarmed() or
 	unit:IsEvadeDisabled() or
@@ -280,7 +281,7 @@ function module.IsDisabled(unit)
 	unit:IsMuted() or
 	unit:IsRooted() or
 	unit:IsSilenced() or
-	unit:IsStunned()) then
+	unit:IsStunned())) then
 		return true
 	else
 		return false
@@ -367,6 +368,7 @@ end
 function module.SmartTarget(npcBot)
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local unitName = npcBot:GetUnitName()
 	local target = nil
 
 	if (eHeroList ~= nil and #eHeroList > 0) then

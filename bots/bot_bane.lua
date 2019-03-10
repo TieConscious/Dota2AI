@@ -120,28 +120,28 @@ function Murder()
 
 		if (not npcBot:IsSilenced()) then
 			----Try various combos on weakened enemy unit----
-			if (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
+			if (not target:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
 				npcBot:Action_UseAbilityOnEntity(abilityE, target)
 
-			elseif (not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
+			elseif (not target:IsNightmared() and not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaSheepStick) and not module.IsHardCC(target)) then
 				npcBot:Action_UseAbilityOnEntity(sheepStick, target)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, targetFastAttack) <= abilityQ:GetCastRange()
+			elseif (not targetFastAttack:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, targetFastAttack) <= abilityQ:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaQ) and targetFastAttack ~= target2 and not module.IsHardCC(targetFastAttack)) then
 				npcBot:Action_UseAbilityOnEntity(abilityQ, targetFastAttack)
 
-			elseif (not IsBotCasting() and target2 ~= nil and ConsiderCast(abilityR, abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+			elseif (target2 ~= nil and not target2:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityR, abilityW) and GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaW, manaR) and not module.IsHardCC(target2)) then
 				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target2)
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target2)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target2) <= abilityR:GetCastRange()
+			elseif (target2 ~= nil and not target2:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target2) <= abilityR:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaR)) then
 				npcBot:Action_UseAbilityOnEntity(abilityR, target2)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+			elseif (target2 ~= nil and not target:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaW)) then
 				npcBot:Action_UseAbilityOnEntity(abilityW, target)
 			end
@@ -151,7 +151,11 @@ function Murder()
 		if (not IsBotCasting()) then
 			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
 				if GetUnitToUnitDistance(npcBot, target) <= hRange then
-					npcBot:Action_AttackUnit(target, true)
+					if (target:IsNightmared()) then
+						npcBot:Action_ClearActions(true)
+					else
+						npcBot:Action_AttackUnit(target, true)
+					end
 				else
 					npcBot:Action_MoveToUnit(target)
 				end
