@@ -88,6 +88,14 @@ function Heal()
 	local clarity = module.ItemSlot(npcBot, "item_clarity")
 	local nearbyAllyTower = npcBot:GetNearbyTowers(1600, false)
 
+	local shrine1 = GetShrine(GetTeam(), SHRINE_JUNGLE_1)
+	local shrine2 = GetShrine(GetTeam(), SHRINE_JUNGLE_2)
+	if (GetUnitToUnitDistance(npcBot, shrine1) < GetUnitToUnitDistance(npcBot, shrine2)) then
+		closestShrine = shrine1
+	else
+		closestShrine = shrine2
+	end
+
 	if #nearbyAllyTower ~= 0 and GetUnitToUnitDistance(nearbyAllyTower[1], npcBot) < 500 and salve ~= nil and not npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_UseAbilityOnEntity(salve, npcBot)
 		return
@@ -96,7 +104,7 @@ function Heal()
 		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
 	end
-	if #nearbyAllyTower ~= 0 then
+	if #nearbyAllyTower ~= 0 and npcBot:HasModifier("modifier_flask_healing") then
 		npcBot:Action_MoveToUnit(nearbyAllyTower[1])
 		return
 	end
@@ -107,6 +115,20 @@ function Heal()
 	if clarity ~= nil and not npcBot:HasModifier("modifier_clarity_potion") then
 		npcBot:Action_UseAbilityOnEntity(clarity, npcBot)
 		return
+	end
+	if not npcBot:HasModifier("modifier_flask_healing") then
+		print(GetUnitToUnitDistance(npcBot, closestShrine))
+		if GetUnitToUnitDistance(npcBot, closestShrine) >= 145 then
+			npcBot:Action_MoveToUnit(closestShrine)
+			return
+		else
+			if IsShrineHealing(closestShrine) then
+				return
+			else
+				npcBot:Action_UseShrine(closestShrine)
+				return
+			end
+		end
 	end
 	movement.RetreatToBase(npcBot)
 end

@@ -16,6 +16,41 @@ function SalveWeight(npcBot)
 	return 100
 end
 
+-----------------------------------------------------------------------
+
+function isShrineSafe(npcBot)
+	local percentHealth = module.CalcPerHealth(npcBot)
+	local time = DotaTime()
+	if time < 0 then
+		time = 0
+	end
+	time = math.floor(time / 60)
+	local neededHealth = npcBot:GetMaxHealth() - npcBot:GetHealth()
+	local nearbyEnemyHeroes = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
+	local nearbyEnemyTowers = npcBot:GetNearbyTowers(800, true)
+	local possibleRegen = math.min(495 + 0.11 * npcBot:GetMaxHealth(), (120 + 2 * time) * 5)
+	local closestShrine = nil
+
+	local shrine1 = GetShrine(GetTeam(), SHRINE_JUNGLE_1)
+	local shrine2 = GetShrine(GetTeam(), SHRINE_JUNGLE_2)
+	if (GetUnitToUnitDistance(npcBot, shrine1) < GetUnitToUnitDistance(npcBot, shrine2)) then
+		closestShrine = shrine1
+	else
+		closestShrine = shrine2
+	end
+	if #nearbyEnemyHeroes == 0 and #nearbyEnemyTowers == 0 and
+		(neededHealth - npcBot:GetHealthRegen() * 5 - possibleRegen > 0 and GetUnitToUnitDistance(npcBot, closestShrine) < 3000 and GetShrineCooldown(closestShrine) == 0 or
+		(IsShrineHealing(closestShrine) and GetUnitToUnitDistance(npcBot, closestShrine) < 500)) then
+		return true
+	end
+	return false
+end
+
+function ShrineWeight(npcBot)
+	return 100
+end
+-----------------------------------------------------------------------
+
 function isTangoSafe(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	local tango = module.ItemSlot(npcBot, "item_tango")
@@ -42,7 +77,8 @@ local heal_weight = {
 
         conditionals = {
 			-- {func=TangoWeight, condition=isTangoSafe, weight=1},
-			{func=SalveWeight, condition=isSalveSafe, weight=1}
+			{func=SalveWeight, condition=isSalveSafe, weight=1},
+			{func=ShrineWeight, condition=isShrineSafe, weight=1}
         }
     }
 }

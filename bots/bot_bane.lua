@@ -216,7 +216,7 @@ function Think()
 		return
 	end
 
-	stateMachine.printState(state)
+	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
 		--implement custom hero hunting here
