@@ -16,7 +16,7 @@ function creepsAround(npcBot)
         creepCount = creepCount + #nearbyACreeps
     end
 
-    return RemapValClamped(creepCount, 0, 3, 0, 100)
+    return RemapValClamped(creepCount, 0, 3, 0, 30)
 end
 
 function calcEnemyCreepHealth(npcBot)

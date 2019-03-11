@@ -5,7 +5,7 @@ local searchRange = 1200
 function towerHealth(npcBot)
     local eTower = npcBot:GetNearbyTowers(searchRange, true)
     local towerHealth = module.CalcPerHealth(eTower[1])
-    return RemapValClamped(towerHealth, 0.1, 0, 20, 100)
+    return RemapValClamped(towerHealth, 0.1, 0, 40, 100)
 end
 
 function towerNearby(npcBot)
@@ -17,7 +17,7 @@ end
 
 function numberEnemyCreeps(npcBot)
     local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
+    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 20)
 end
 
 function buildingNearby(npcBot)

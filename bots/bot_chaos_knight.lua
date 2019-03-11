@@ -212,6 +212,7 @@ end
 
 function MinionThink(hMinionUnit)
 	local state = minionStateMachine.calculateState(hMinionUnit)
+	stateMachine.printState(state)
 	local master = GetBot()
 	if (hMinionUnit == nil) then
 		return

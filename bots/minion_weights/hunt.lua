@@ -103,7 +103,7 @@ function enemyHealth(npcBot)
     local enemyPercHealth =  module.CalcPerHealth(lowestEnemy)
 
 
-    return RemapValClamped(enemyPercHealth, 0.1, 0.6, 100, 0)
+    return RemapValClamped(enemyPercHealth, 0.1, 0.6, 100, 10)
 end
 
 function numberCreeps(npcBot)
@@ -246,7 +246,7 @@ local hunt_weight = {
         },
 
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=10}, --is this in retreat
+            --{func=zero, condition=isUnderTower, weight=10}, --is this in retreat
             --{func=zero, condition=weDisabled, weight=40}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
             {func=onehundred, condition=eUnderTower, weight=20},
