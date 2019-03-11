@@ -33,10 +33,19 @@ function isShrineSafe(npcBot)
 
 	local shrine1 = GetShrine(GetTeam(), SHRINE_JUNGLE_1)
 	local shrine2 = GetShrine(GetTeam(), SHRINE_JUNGLE_2)
-	if (GetUnitToUnitDistance(npcBot, shrine1) < GetUnitToUnitDistance(npcBot, shrine2)) then
+	if (shrine1 == nil) then
+		if (shrine2 == nil) then
+			return false
+		end
+		closestShrine = shrine2
+	elseif (shrine2 == nil) then
 		closestShrine = shrine1
 	else
-		closestShrine = shrine2
+		if (GetUnitToUnitDistance(npcBot, shrine1) < GetUnitToUnitDistance(npcBot, shrine2)) then
+			closestShrine = shrine1
+		else
+			closestShrine = shrine2
+		end
 	end
 	if #nearbyEnemyHeroes == 0 and #nearbyEnemyTowers == 0 and
 		(neededHealth - npcBot:GetHealthRegen() * 5 - possibleRegen > 0 and GetUnitToUnitDistance(npcBot, closestShrine) < 3000 and GetShrineCooldown(closestShrine) == 0 or
