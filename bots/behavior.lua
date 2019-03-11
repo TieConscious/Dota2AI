@@ -411,6 +411,10 @@ function Defend()
 		return
 	end
 
+	if GetGlyphCooldown() == 0 then
+		npcBot:ActionImmediate_Glyph()
+	end
+
 	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
 		npcBot:Action_UseAbilityOnLocation(tpScroll, ancient:GetLocation())
 	else
