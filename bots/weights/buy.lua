@@ -26,6 +26,7 @@ local buy_weight = {
 		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/item_purchase_tinker"),
 		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/item_purchase_ogre_magi")
+		--['npc_dota_hero_ursa'] = require(GetScriptDirectory().."/item_purchase_ursa")
 	}
 }
 

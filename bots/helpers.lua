@@ -196,34 +196,124 @@ function module.CalcPerMana(unit)
 	return percentMana
 end
 
-local TopPicks = {
-	['npc_dota_hero_bane'] = 1,
-	['npc_dota_hero_chaos_knight'] = 1
+
+local picks = nil
+
+local TopCarry = {
+	--'npc_dota_hero_ursa',
+	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_sven",
+	"npc_dota_hero_mars",
+	"npc_dota_hero_phantom_lancer"
 }
 
-local MidPicks = {
-	['npc_dota_hero_ogre_magi'] = 1
+local BotCarry = {
+	"npc_dota_hero_axe",
+	"npc_dota_hero_juggernaut",
+
+	"npc_dota_hero_medusa"
 }
 
-local BotPicks = {
-	['npc_dota_hero_juggernaut'] = 1,
-	['npc_dota_hero_lich'] = 1
+local Mid = {
+	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_obsidian_destroyer",
+	"npc_dota_hero_tinker"
 }
+
+local TopSupport = {
+	"npc_dota_hero_bane",
+	"npc_dota_hero_tidehunter",
+	"npc_dota_hero_abaddon"
+}
+
+local BotSupport = {
+	"npc_dota_hero_lich",
+	"npc_dota_hero_crystal_maiden",
+	"npc_dota_hero_lion"
+}
+
+
+local Bans = {
+	'npc_dota_hero_sniper',
+	'npc_dota_hero_jakiro',
+	'npc_dota_hero_tusk',
+	'npc_dota_hero_undying',
+    'npc_dota_hero_vengefulspirit',
+	'npc_dota_hero_venomancer',
+    'npc_dota_hero_warlock',
+    'npc_dota_hero_windrunner',
+    'npc_dota_hero_witch_doctor',
+	'npc_dota_hero_zuus',
+	'npc_dota_hero_sven',
+	'npc_dota_hero_slark'
+}
+
+function ReconstructPicks()
+	local hero = nil
+	picks = {}
+
+	local teamPlayers = GetTeamPlayers(GetTeam())
+	local pickedHero = {}
+	for k,v in pairs(teamPlayers) do
+		pickedHero[GetSelectedHeroName(v)] = true
+	end
+
+	for PickCycle=1,5 do
+		if PickCycle == 1 then
+			hero = TopCarry[1]
+			table.remove(TopCarry, 1)
+		elseif PickCycle == 2 then
+			hero = BotCarry[1]
+			table.remove(BotCarry, 1)
+		elseif PickCycle == 3 then
+			hero = Mid[1]
+			table.remove(Mid, 1)
+		elseif	PickCycle == 4 then
+			hero = TopSupport[1]
+			table.remove(TopSupport, 1)
+		elseif PickCycle == 5 then
+			hero = BotSupport[1]
+			table.remove(BotSupport, 1)
+		end
+		while picks[hero] ~= nil or pickedHero[hero] == nil do
+			if PickCycle == 1 then
+				hero = TopCarry[1]
+				table.remove(TopCarry, 1)
+			elseif PickCycle == 2 then
+				hero = BotCarry[1]
+				table.remove(BotCarry, 1)
+			elseif PickCycle == 3 then
+				hero = Mid[1]
+				table.remove(Mid, 1)
+			elseif	PickCycle == 4 then
+				hero = TopSupport[1]
+				table.remove(TopSupport, 1)
+			elseif PickCycle == 5 then
+				hero = BotSupport[1]
+				table.remove(BotSupport, 1)
+			end
+		end
+		if PickCycle == 1 then
+			picks[hero] = LANE_TOP
+		elseif PickCycle == 2 then
+			picks[hero] = LANE_BOT
+		elseif PickCycle == 3 then
+			picks[hero] = LANE_MID
+		elseif PickCycle == 4 then
+			picks[hero] = LANE_TOP
+		elseif PickCycle == 5 then
+			picks[hero] = LANE_BOT
+		end
+	end
+end
 
 function module.GetLane(npcBot)
 	local team = GetTeam()
-	local lane = nil
 	local hero = npcBot:GetUnitName()
-
-
-	if (TopPicks[hero] ~= nil) then
-		lane = LANE_TOP
-	elseif (BotPicks[hero] ~= nil) then
-		lane = LANE_BOT
-	elseif (MidPicks[hero] ~= nil) then
-		lane = LANE_MID
+	if (picks == nil) then
+		ReconstructPicks()
 	end
-	return lane
+	return picks[hero]
 end
 
 function module.GetTower1(npcBot)

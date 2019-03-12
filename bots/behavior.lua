@@ -117,7 +117,7 @@ function Heal()
 		return
 	end
 	if not npcBot:HasModifier("modifier_flask_healing") then
-		print(GetUnitToUnitDistance(npcBot, closestShrine))
+		--print(GetUnitToUnitDistance(npcBot, closestShrine))
 		if GetUnitToUnitDistance(npcBot, closestShrine) >= 145 then
 			npcBot:Action_MoveToUnit(closestShrine)
 			return

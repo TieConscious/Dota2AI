@@ -155,7 +155,7 @@ function globalState.calculateState(team)
 	globalState.state.calculationTime = currTime
 	globalState.getLaneInfo(team)
 	globalState.getEnemyInfo(team)
-	print(globalState.state.closestLane)
+	--print(globalState.state.closestLane)
 	--globalState.printState()
 end
 
