@@ -117,7 +117,7 @@ function Heal()
 		return
 	end
 	if not npcBot:HasModifier("modifier_flask_healing") then
-		print(GetUnitToUnitDistance(npcBot, closestShrine))
+		--print(GetUnitToUnitDistance(npcBot, closestShrine))
 		if GetUnitToUnitDistance(npcBot, closestShrine) >= 145 then
 			npcBot:Action_MoveToUnit(closestShrine)
 			return
@@ -192,41 +192,48 @@ function Tower()
 
 end
 
+
+
 function Farm()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
+	local attackPoint = npcBot:GetAttackPoint()
 	------Enemy and Creep stats----
 	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(eCreeps)
 	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local health = 0
 
+	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+		return
+	end
 
-	----Last-hit Creep----
-	if (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
-		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+	----push when no enemy----
+	if (eCreeps[1] ~= nil and nearbyEnemy ~= nil and #nearbyEnemy == 0) then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
-			npcBot:Action_MoveToUnit(eCreeps[1])
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
-	elseif (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
-		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
-			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
-				npcBot:Action_AttackUnit(eWeakestCreep, true)
+	elseif eWeakestCreep ~= nil then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			if aWeakestCreep ~= nil then
+				health = module.PredictTiming(npcBot, aWeakestCreep, eCreeps)
+				if health <= 0 or health > aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+					movement.MTL_Farm(npcBot)
+				else
+					npcBot:Action_AttackUnit(aWeakestCreep, true)
+				end
 			else
-				npcBot:Action_MoveToUnit(eWeakestCreep)
+				movement.MTL_Farm(npcBot)
 			end
-		elseif (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
-			npcBot:Action_MoveToUnit(eWeakestCreep)
 		else
-			npcBot:Action_ClearActions(true)
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
-	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
-		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
-			npcBot:Action_AttackUnit(aWeakestCreep, true)
-		end
-	----Push when no enemy heros around----
 	else
 		movement.MTL_Farm(npcBot)
 	end
