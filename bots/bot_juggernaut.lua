@@ -150,16 +150,12 @@ function Murder()
 		----Fuck'em up!----
 				--melee, miss when over 350
 		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target) > 350 then
+			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetTarget() == target then
+				if GetUnitToUnitDistance(npcBot, target) > 350 then	
 					npcBot:Action_MoveToUnit(target)
 				end
 			else
-				if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-					npcBot:Action_AttackUnit(target, true)
-				else
-					npcBot:Action_MoveToUnit(target)
-				end
+				npcBot:Action_AttackUnit(target, true)
 			end
 		end
 

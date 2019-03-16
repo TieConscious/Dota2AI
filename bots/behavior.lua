@@ -117,7 +117,7 @@ function Heal()
 		return
 	end
 	if not npcBot:HasModifier("modifier_flask_healing") then
-		print(GetUnitToUnitDistance(npcBot, closestShrine))
+		--print(GetUnitToUnitDistance(npcBot, closestShrine))
 		if GetUnitToUnitDistance(npcBot, closestShrine) >= 145 then
 			npcBot:Action_MoveToUnit(closestShrine)
 			return
@@ -140,11 +140,7 @@ function Hunt()
 
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	if (eHeros ~= nil and #eHeros > 0) then
-		if (GetUnitToUnitDistance(npcBot, eHeros[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eHeros[1], true)
-		else
-			npcBot:Action_MoveToUnit(eHeros[1])
-		end
+		npcBot:Action_AttackUnit(eHeros[1], true)
 		return
 	end
 end
@@ -157,36 +153,19 @@ function Tower()
 	local eTowers = npcBot:GetNearbyTowers(800, true)
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
 	if (eBarracks ~= nil and #eBarracks > 0 and not eBarracks[1]:IsInvulnerable() and (eTowers == nil or #eTowers == 0)) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eBarracks[1], true)
-		else
-			npcBot:Action_MoveToUnit(eBarracks[1])
-		end
+		npcBot:Action_AttackUnit(eBarracks[1], true)
 		return
 	end
 
 	eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eTowers[1], true)
-		else
-			npcBot:Action_MoveToUnit(eTowers[1])
-		end
+		npcBot:Action_AttackUnit(eTowers[1], true)
 		return
 	end
 
-	local eAncient
-	if npcBot:GetTeam() == 2 then
-		eAncient = GetAncient(3)
-	else
-		eAncient = GetAncient(2)
-	end
+	local eAncient = GetAncient(GetOpposingTeam())
 	if (eAncient ~= nil and not eAncient:IsInvulnerable() and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
-		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eAncient, true)
-		else
-			npcBot:Action_MoveToUnit(eAncient)
-		end
+		npcBot:Action_AttackUnit(eAncient, true)
 		return
 	end
 
@@ -195,38 +174,43 @@ end
 function Farm()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
+	local attackPoint = npcBot:GetAttackPoint()
 	------Enemy and Creep stats----
 	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(eCreeps)
 	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local health = 0
 
+	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetAttackTarget() ~= nil and npcBot:GetAttackTarget():IsCreep() then
+		return
+	end
 
-	----Last-hit Creep----
-	if (eCreeps[1] ~= nil and npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE) ~= nil and #(npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)) == 0) then
-		if (GetUnitToUnitDistance(npcBot, eCreeps[1]) <= attackRange) then
+	----push when no enemy----
+	if (eCreeps[1] ~= nil and nearbyEnemy ~= nil and #nearbyEnemy == 0) then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
 			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
-			npcBot:Action_MoveToUnit(eCreeps[1])
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
-	elseif (eWeakestCreep ~= nil and eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 2) then
-		if (eCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) * 1.1 or #aCreeps < 0) then --number of enemies in the future
-			if (GetUnitToUnitDistance(npcBot,WeakestCreep) <= attackRange) then
-				npcBot:Action_AttackUnit(eWeakestCreep, true)
+	elseif eWeakestCreep ~= nil then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			if aWeakestCreep ~= nil then
+				health = module.PredictTiming(npcBot, aWeakestCreep, eCreeps)
+				if health <= 0 or health > aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+					movement.MTL_Farm(npcBot)
+				else
+					npcBot:Action_AttackUnit(aWeakestCreep, true)
+				end
 			else
-				npcBot:Action_MoveToUnit(eWeakestCreep)
+				movement.MTL_Farm(npcBot)
 			end
-		elseif (GetUnitToUnitDistance(npcBot,WeakestCreep) > attackRange) then
-			npcBot:Action_MoveToUnit(eWeakestCreep)
 		else
-			npcBot:Action_ClearActions(true)
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
-	----Deny creep----
-	elseif (aWeakestCreep ~= nil and aCreepHealth <= npcBot:GetEstimatedDamageToTarget(true, eWeakestCreep, npcBot:GetAttackSpeed(), DAMAGE_TYPE_PHYSICAL) + 5) then
-		if (GetUnitToUnitDistance(npcBot,aWeakestCreep) <= attackRange) then
-			npcBot:Action_AttackUnit(aWeakestCreep, true)
-		end
-	----Push when no enemy heros around----
 	else
 		movement.MTL_Farm(npcBot)
 	end
@@ -266,12 +250,7 @@ function Deaggro()
 	local attackRange = npcBot:GetAttackRange()
 	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
 
-	if GetUnitToUnitDistance(ACreepsInTowerRange[1], npcBot) > attackRange then
-		npcBot:Action_MoveToUnit(ACreepsInTowerRange[1])
-	else
-		npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
-	end
-
+	npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
 end
 
 local runes = {
@@ -392,20 +371,8 @@ function Defend()
 	local npcBot = GetBot()
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local ancient
+	local ancient = GetAncient(GetTeam())
 	local defendLane = globalState.state.closestLane
-
-	-- for lane,laneInfo in pairs(globalState.state.laneInfo) do
-	-- 	if (laneInfo.numEnemies >  globalState.state.laneInfo[defendLane].numEnemies) then
-	-- 		defendLane = lane
-	-- 	end
-	-- end
-
-	if (npcBot:GetTeam() == 2) then
-		ancient = GetAncient(2)
-	else
-		ancient = GetAncient(3)
-	end
 
 	if npcBot:IsChanneling() then
 		return
@@ -431,6 +398,11 @@ function FinishHim()
 	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 2.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
 		npcBot:Action_MoveToLocation(pingLocation)
 	end
+end
+
+function Ward()
+	local npcBot = GetBot()
+	return
 end
 
 return behavior

@@ -149,17 +149,7 @@ function Murder()
 		----Fuck'em up!----
 		--ranged, wait til attack finish
 		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target) <= hRange then
-					if (target:IsNightmared()) then
-						npcBot:Action_ClearActions(true)
-					else
-						npcBot:Action_AttackUnit(target, true)
-					end
-				else
-					npcBot:Action_MoveToUnit(target)
-				end
-			end
+			npcBot:Action_AttackUnit(target, true)
 		end
 
 		if (module.CalcPerHealth(target) <= 0.15) then
