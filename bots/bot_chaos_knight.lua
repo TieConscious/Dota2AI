@@ -188,7 +188,15 @@ function SpellRetreat()
 	end
 end
 
+function DangerPing()
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
+	if (eHeroList ~= nil and #eHeroList > 0 and #eHeroList > #aHeroList) then
+		local dangerPing = eHeroList[1]:GetLocation()
+		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
+	end
+end
 
 function Think()
 	local npcBot = GetBot()
@@ -198,6 +206,8 @@ function Think()
 	--local y = 4250
 	--npcBot:ActionImmediate_Ping(x, y, true)
 	--DebugDrawCircle(Vector(x, y, 0), 10, 255, 0, 0)
+
+	DangerPing()
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)

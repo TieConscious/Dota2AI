@@ -14,7 +14,7 @@ function EnemyPowerful(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.8) then
+    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.6) then --0.8
         return false
     end
     return true
