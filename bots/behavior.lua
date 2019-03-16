@@ -140,11 +140,7 @@ function Hunt()
 
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	if (eHeros ~= nil and #eHeros > 0) then
-		if (GetUnitToUnitDistance(npcBot, eHeros[1]) <= attackRange) then
-			npcBot:Action_AttackUnit(eHeros[1], true)
-		else
-			npcBot:Action_MoveToUnit(eHeros[1])
-		end
+		npcBot:Action_AttackUnit(eHeros[1], true)
 		return
 	end
 end
@@ -157,36 +153,19 @@ function Tower()
 	local eTowers = npcBot:GetNearbyTowers(800, true)
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
 	if (eBarracks ~= nil and #eBarracks > 0 and not eBarracks[1]:IsInvulnerable() and (eTowers == nil or #eTowers == 0)) then
-		--if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eBarracks[1], true)
-		--else
-			--npcBot:Action_MoveToUnit(eBarracks[1])
-		--end
+		npcBot:Action_AttackUnit(eBarracks[1], true)
 		return
 	end
 
 	eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
-		--if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eTowers[1], true)
-		--else
-			--npcBot:Action_MoveToUnit(eTowers[1])
-		--end
+		npcBot:Action_AttackUnit(eTowers[1], true)
 		return
 	end
 
-	local eAncient
-	if npcBot:GetTeam() == 2 then
-		eAncient = GetAncient(3)
-	else
-		eAncient = GetAncient(2)
-	end
+	local eAncient = GetAncient(GetOpposingTeam())
 	if (eAncient ~= nil and not eAncient:IsInvulnerable() and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
-		--if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
-			npcBot:Action_AttackUnit(eAncient, true)
-		--else
-			--npcBot:Action_MoveToUnit(eAncient)
-		--end
+		npcBot:Action_AttackUnit(eAncient, true)
 		return
 	end
 
@@ -204,7 +183,7 @@ function Farm()
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local health = 0
 
-	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetAttackTarget() ~= nil and npcBot:GetAttackTarget():IsCreep() then
 		return
 	end
 
@@ -271,12 +250,7 @@ function Deaggro()
 	local attackRange = npcBot:GetAttackRange()
 	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 800)
 
-	if GetUnitToUnitDistance(ACreepsInTowerRange[1], npcBot) > attackRange then
-		npcBot:Action_MoveToUnit(ACreepsInTowerRange[1])
-	else
-		npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
-	end
-
+	npcBot:Action_AttackUnit(ACreepsInTowerRange[1], true)
 end
 
 local runes = {
@@ -397,20 +371,8 @@ function Defend()
 	local npcBot = GetBot()
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
 	local eHeros = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local ancient
+	local ancient = GetAncient(GetTeam())
 	local defendLane = globalState.state.closestLane
-
-	-- for lane,laneInfo in pairs(globalState.state.laneInfo) do
-	-- 	if (laneInfo.numEnemies >  globalState.state.laneInfo[defendLane].numEnemies) then
-	-- 		defendLane = lane
-	-- 	end
-	-- end
-
-	if (npcBot:GetTeam() == 2) then
-		ancient = GetAncient(2)
-	else
-		ancient = GetAncient(3)
-	end
 
 	if npcBot:IsChanneling() then
 		return

@@ -118,7 +118,7 @@ function Murder()
 		local target2,eHealth2 = module.GetStrongestHero(eHeroList)
 		local targetFastAttack = module.HighestAttackSpeed(eHeroList)
 
-		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
+		if (not npcBot:IsSilenced()) then
 			----Try various combos on weakened enemy unit----
 			if (not target:IsNightmared() and not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
@@ -149,17 +149,7 @@ function Murder()
 		----Fuck'em up!----
 		--ranged, wait til attack finish
 		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
-				if GetUnitToUnitDistance(npcBot, target) <= hRange then
-					if (target:IsNightmared()) then
-						npcBot:Action_ClearActions(true)
-					else
-						npcBot:Action_AttackUnit(target, true)
-					end
-				else
-					npcBot:Action_MoveToUnit(target)
-				end
-			end
+			npcBot:Action_AttackUnit(target, true)
 		end
 
 		if (module.CalcPerHealth(target) <= 0.15) then
@@ -184,7 +174,7 @@ function SpellRetreat()
 	local manaE = abilityE:GetManaCost()
 	local manaGlimmer = 90
 
-	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible() and not npcBot:IsSilenced()) then
+	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible()) then
 		local target = eHeroList[1]
 
 		if (not IsBotCasting() and glimmer ~= nil and ConsiderCast(glimmer) and currentMana >= module.CalcManaCombo(manaGlimmer)) then
