@@ -74,6 +74,7 @@ function Murder()
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local eCreepList = npcBot:GetNearbyLaneCreeps(800, true)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -108,9 +109,9 @@ function Murder()
 		local bounce = module.BounceSpells(npcBot, 600)
 		local forceTarget = module.UseForceStaff(npcBot)
 
-		if (not npcBot:IsSilenced()) then
-			if (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
-					and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
+		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
+			if (not IsBotCasting() and #eHeroList > 1 and #eCreepList < 2 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
+				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
 				npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 
 			elseif (not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
@@ -144,10 +145,10 @@ function Murder()
 		end
 		----Fuck'em up!----
 		--melee, miss when over 350
-		if (not IsBotCasting()) then
+		if (not IsBotCasting() and not target:IsNightmared()) then
 			npcBot:Action_AttackUnit(target, true)
 		end
-		
+
 
 		if (module.CalcPerHealth(target) <= 0.15) then
 			local ping = target:GetExtrapolatedLocation(1)
@@ -181,7 +182,7 @@ function SpellRetreat()
 	end
 
 
-	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible()) then
+	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsInvisible() and not npcBot:IsSilenced()) then
 		local target = eHeroList[1]
 		local bounce = module.BounceSpells(npcBot, 600)
 
