@@ -157,21 +157,21 @@ function Tower()
 	local eTowers = npcBot:GetNearbyTowers(800, true)
 	local eBarracks = npcBot:GetNearbyBarracks(1600, true)
 	if (eBarracks ~= nil and #eBarracks > 0 and not eBarracks[1]:IsInvulnerable() and (eTowers == nil or #eTowers == 0)) then
-		if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
+		--if (GetUnitToUnitDistance(npcBot, eBarracks[1]) <= attackRange + (eBarracks[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eBarracks[1], true)
-		else
-			npcBot:Action_MoveToUnit(eBarracks[1])
-		end
+		--else
+			--npcBot:Action_MoveToUnit(eBarracks[1])
+		--end
 		return
 	end
 
 	eTowers = npcBot:GetNearbyTowers(1600, true)
 	if (eTowers ~= nil and #eTowers > 0) then
-		if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
+		--if (GetUnitToUnitDistance(npcBot, eTowers[1]) <= attackRange + (eTowers[1]:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eTowers[1], true)
-		else
-			npcBot:Action_MoveToUnit(eTowers[1])
-		end
+		--else
+			--npcBot:Action_MoveToUnit(eTowers[1])
+		--end
 		return
 	end
 
@@ -182,11 +182,11 @@ function Tower()
 		eAncient = GetAncient(2)
 	end
 	if (eAncient ~= nil and not eAncient:IsInvulnerable() and GetUnitToUnitDistance(npcBot, eAncient) <= 1500) then
-		if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
+		--if (GetUnitToUnitDistance(npcBot, eAncient) <= attackRange + (eAncient:GetBoundingRadius() - 50)) then
 			npcBot:Action_AttackUnit(eAncient, true)
-		else
-			npcBot:Action_MoveToUnit(eAncient)
-		end
+		--else
+			--npcBot:Action_MoveToUnit(eAncient)
+		--end
 		return
 	end
 
