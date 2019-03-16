@@ -143,12 +143,16 @@ function Murder()
 		----Fuck'em up!----
 		--melee, miss when over 350
 		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetTarget() == target then
+			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 				if GetUnitToUnitDistance(npcBot, target) > 350 then
 					npcBot:Action_MoveToUnit(target)
 				end
 			else
-				npcBot:Action_AttackUnit(target, true)
+				if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+					npcBot:Action_AttackUnit(target, true)
+				else
+					npcBot:Action_MoveToUnit(target)
+				end
 			end
 		end
 
@@ -208,7 +212,7 @@ end
 
 function MinionThink(hMinionUnit)
 	local state = minionStateMachine.calculateState(hMinionUnit)
-	--stateMachine.printState(state)
+	stateMachine.printState(state)
 	local master = GetBot()
 	if (hMinionUnit == nil) then
 		return

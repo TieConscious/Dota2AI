@@ -143,11 +143,16 @@ function Murder()
 			end
 		end
 		----Fuck'em up!----
-		--melee, miss when over 350
+				--melee, miss when over 350
 		if (not IsBotCasting()) then
-			npcBot:Action_AttackUnit(target, true)
+			if npcBot:GetCurrentActionType() ~= BOT_ACTION_TYPE_ATTACK then
+				if GetUnitToUnitDistance(npcBot, target) <= hRange then
+					npcBot:Action_AttackUnit(target, true)
+				else
+					npcBot:Action_MoveToUnit(target)
+				end
+			end
 		end
-		
 
 		if (module.CalcPerHealth(target) <= 0.15) then
 			local ping = target:GetExtrapolatedLocation(1)
