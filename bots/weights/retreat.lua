@@ -136,8 +136,8 @@ local retreat_weight = {
         conditionals = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5},
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2},
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=2}, --0.5
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=3}, --2
 			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3},
 			{func=lowHealth, condition=hardRetreat, weight=6},
 			{func=lowHealthSoft, condition=enemyRetreat, weight=6},

@@ -54,14 +54,12 @@ function module.AbilityLevelUp(Ability)
 		return
 	end
 
-	--npcBot:ActionImmediate_Chat("nil removed", true)
 
 	local ability_name = Ability[1]
 
 	--If level up is "nil", delete nil
 	if (ability_name == "nil") then
 		table.remove(Ability, 1)
-		--npcBot:ActionImmediate_Chat("nil removed", true)
 		return
 	end
 
@@ -71,7 +69,7 @@ function module.AbilityLevelUp(Ability)
 	if (ability:CanAbilityBeUpgraded() and npcBot:GetAbilityPoints() > 0) then
 		print("Skill: "..ability_name.."  upgraded!")
 		npcBot:ActionImmediate_LevelAbility(ability_name)
-		npcBot:ActionImmediate_Chat("Upgraded Ability", true)
+		--npcBot:ActionImmediate_Chat("Upgraded Ability", true)
 		table.remove(Ability, 1)
 		return
 	end
@@ -202,13 +200,13 @@ local picks = nil
 local TopCarry = {
 	--'npc_dota_hero_ursa',
 	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_sven",
-	"npc_dota_hero_mars",
-	"npc_dota_hero_phantom_lancer"
+	--"npc_dota_hero_sven",
+	--"npc_dota_hero_mars",
+	--"npc_dota_hero_phantom_lancer"
 }
 
 local BotCarry = {
-	"npc_dota_hero_axe",
+	--"npc_dota_hero_axe",
 	"npc_dota_hero_juggernaut",
 
 	"npc_dota_hero_medusa"
@@ -216,14 +214,14 @@ local BotCarry = {
 
 local Mid = {
 	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_obsidian_destroyer",
+	--"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_tinker"
 }
 
 local TopSupport = {
 	"npc_dota_hero_bane",
 	"npc_dota_hero_tidehunter",
-	"npc_dota_hero_abaddon"
+	--"npc_dota_hero_abaddon"
 }
 
 local BotSupport = {
@@ -359,7 +357,114 @@ function module.ItemSlot(npcBot, ItemName)
 	return nil
 end
 
+local MELEE = 1
+local RANGED = 2
+local attackType =
+{
+	["npc_dota_hero_chaos_knight"] = MELEE,
+	["npc_dota_hero_sven"] = MELEE,
+	["npc_dota_hero_mars"] = MELEE,
+	["npc_dota_hero_phantom_lancer"] = MELEE,
+	["npc_dota_hero_axe"] = MELEE,
+	["npc_dota_hero_juggernaut"] = MELEE,
+	["npc_dota_hero_tidehunter"] = MELEE,
+	["npc_dota_hero_abaddon"] = MELEE,
+	["npc_dota_hero_ogre_magi"] = MELEE,
+	["npc_dota_hero_medusa"] = RANGED,
+	["npc_dota_hero_obsidian_destroyer"] = RANGED,
+	["npc_dota_hero_tinker"] = RANGED,
+	["npc_dota_hero_bane"] = RANGED,
+	["npc_dota_hero_lich"] = RANGED,
+	["npc_dota_hero_crystal_maiden"] = RANGED,
+	["npc_dota_hero_lion"] = RANGED
+}
 
+local turnRate =
+{
+	["npc_dota_hero_chaos_knight"] = 0.5,
+	["npc_dota_hero_sven"] = 0.6,
+	["npc_dota_hero_mars"] = 0.8,
+	["npc_dota_hero_phantom_lancer"] = 0.6,
+	["npc_dota_hero_axe"] = 0.6,
+	["npc_dota_hero_juggernaut"] = 0.6,
+	["npc_dota_hero_tidehunter"] = 0.5,
+	["npc_dota_hero_abaddon"] = 0.5,
+	["npc_dota_hero_ogre_magi"] = 0.6,
+	["npc_dota_hero_medusa"] = 0.5,
+	["npc_dota_hero_obsidian_destroyer"] = 0.5,
+	["npc_dota_hero_tinker"] = 0.6,
+	["npc_dota_hero_bane"] = 0.6,
+	["npc_dota_hero_lich"] = 0.5,
+	["npc_dota_hero_crystal_maiden"] = 0.5,
+	["npc_dota_hero_lion"] = 0.5
+}
+
+function module.GetTimeToFace(npcBot, unit)
+	local angle = npcBot:GetFacing()
+	local dirFacing = Vector(math.cos(angle), math.sin(angle), 0)
+	local enemyLocation = unit:GetLocation()
+	enemyLocation.z = 0
+	local myLocation = npcBot:GetLocation()
+	myLocation.z = 0
+	local dirToUnit = enemyLocation - myLocation
+	dirToUnit = dirToUnit / math.sqrt(dirToUnit.x^2 + dirToUnit.y^2)
+	local myTurnRate = turnRate[npcBot:GetUnitName()]
+	return math.acos(module.dot(dirFacing, dirToUnit)) * 0.03 / myTurnRate
+end
+
+function module.PredictTiming(npcBot, weakestCreep, opposingCreepsList)
+	local attackTime =  npcBot:GetSecondsPerAttack() * npcBot:GetAttackPoint() + module.GetTimeToFace(npcBot, weakestCreep)
+	local attackRange = npcBot:GetAttackRange()
+	if (GetUnitToUnitDistance(npcBot, weakestCreep) <= attackRange) then
+		if attackType[npcBot:GetUnitName()] == RANGED then
+			attackTime = attackTime + GetUnitToUnitDistance(npcBot, weakestCreep) / npcBot:GetAttackProjectileSpeed()
+		end
+	else
+		attackTime = attackTime + (GetUnitToUnitDistance(npcBot, weakestCreep) - attackRange) / npcBot:GetCurrentMovementSpeed()
+		if attackType[npcBot:GetUnitName()] == RANGED then
+			attackTime = attackTime + attackRange / npcBot:GetAttackProjectileSpeed()
+		end
+	end
+	return module.predictHealth(npcBot, weakestCreep, opposingCreepsList, attackTime)
+end
+
+function module.predictHealth(npcBot, creep, opposingCreepList, time)
+	local health = creep:GetHealth()
+	local targetingCreeps = {}
+	for k,v in pairs(opposingCreepList) do
+		if v:GetAttackTarget() == creep then
+			table.insert(targetingCreeps, v)
+		end
+	end
+	for k,v in pairs(targetingCreeps) do
+		local name = v:GetUnitName()
+		local anim = v:GetAnimActivity()
+		local attackPoint = v:GetAttackPoint()
+		local animCycle = v:GetAnimCycle()
+		local spa = v:GetSecondsPerAttack()
+		local projSpeed = v:GetAttackProjectileSpeed()
+		if (anim == ACTIVITY_ATTACK or anim == ACTIVITY_ATTACK2 or anim == ACTIVITY_ATTACK_EVENT) and attackPoint > animCycle then
+			if name == "npc_dota_creep_goodguys_melee" or name == "npc_dota_creep_badguys_melee" then
+				if (attackPoint - animCycle) * spa < time then
+					health = health - creep:GetActualIncomingDamage(v:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL)
+				end
+			else
+				if (attackPoint - animCycle) * spa + GetUnitToUnitDistance(v, creep) / projSpeed < time then
+					health = health - creep:GetActualIncomingDamage(v:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL)
+				end
+			end
+		end
+	end
+	for k,v in pairs(creep:GetIncomingTrackingProjectiles()) do
+		if v.is_attack and v.ability == nil and v.caster ~= nil and GetUnitToLocationDistance(creep, v.location) / v.caster:GetAttackProjectileSpeed() < time then
+			health = health - creep:GetActualIncomingDamage(v.caster:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL)
+		end
+	end
+--	if npcBot:GetUnitName() == "npc_dota_hero_bane" then
+--		print(health)
+--	end
+ 	return health
+end
 
 function module.IsDisabled(unit)
 	if (not unit:IsNightmared() and
@@ -480,7 +585,11 @@ function module.SmartTarget(npcBot)
 
 		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
 		powHero,powHealth = module.GetStrongestHero(eHeroList)
-		if (lowHealth <= powHealth and not lowHero:IsNightmared()) then
+		if (lowHero ~= eHeroList[1] and GetUnitToUnitDistance(npcBot, lowHero) > 600 and GetUnitToUnitDistance(npcBot, eHeroList[1]) < 300
+				and not eHeroList[1]:IsNightmared()) then
+			target = eHeroList[1]
+			return target
+		elseif (lowHealth <= powHealth and not lowHero:IsNightmared()) then
 			target = lowHero
 			return target
 		elseif (not powHero:IsNightmared()) then

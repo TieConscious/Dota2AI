@@ -180,7 +180,7 @@ function EnemyDisabled(npcBot)
     return false
 end
 
-function heroHealth(npcBot)
+function HeroHealth(npcBot)
     local perHealth = module.CalcPerHealth(npcBot)
 
     return RemapValClamped(perHealth, 0.2, 0.9, 0, 100)
@@ -237,6 +237,17 @@ function  onehundred(npcBot)
     return 100
 end
 
+function CanWeKillThem(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    if (nearbyEnemy == nil or #nearbyEnemy == 0) then
+        return false
+    end
+
+    local target = module.SmartTarget(npcBot)
+    local targetHealth = target:GetHealth()
+    return npcBot:GetEstimatedDamageToTarget(true, target, 4.0, DAMAGE_TYPE_ALL) >= targetHealth
+end
+
 local hunt_weight = {
     settings = {
         name = "hunt",
@@ -252,20 +263,24 @@ local hunt_weight = {
             {func=zero, condition=isUnderTower, weight=40}, --is this in retreat
             {func=zero, condition=weDisabled, weight=40}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
-            {func=onehundred, condition=eUnderTower, weight=20},
-            --{func=heroHealth, condition=eDissapeared, weight=20},
+            {func=HeroHealth, condition=eUnderTower, weight=20},
+            --{func=HeroHealth, condition=eDissapeared, weight=20},
 
             {func=numberCreeps, condition=enemyNear, weight=4},
+            {func=heroMana, condition=enemyNear, weight=20},
             {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
+
 
             {func=Fuckem, condition=EnemyWeak, weight=30},
             {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
-            {func=heroHealth, condition=EnemyDisabled, weight=20},
-            {func=heroHealth, condition=punchBack, weight=60},
+            {func=HeroHealth, condition=EnemyDisabled, weight=20},
+            {func=HeroHealth, condition=punchBack, weight=60},
             {func=onehundred, condition=allyInFight, weight=40},
-            {func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
+            --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
+            {func=HeroHealth, condition=CanWeKillThem, weight=80}
         }
     }
 }
+
 
 return hunt_weight

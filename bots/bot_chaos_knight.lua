@@ -102,12 +102,12 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
-		if (not npcBot:IsSilenced()) then
+		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
 			if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target)) then
 				if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
 					npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
-					npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 					npcBot:ActionPush_UseAbility(abilityR)
+					npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 				elseif (GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()) then
 					npcBot:ActionPush_UseAbility(abilityR)
 					npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
@@ -115,8 +115,9 @@ function Murder()
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW) and currentMana >= module.CalcManaCombo(manaW, manaR)
 					and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 				npcBot:ActionPush_UseAbility(abilityR)
+				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)
 					and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)
@@ -142,7 +143,7 @@ function Murder()
 		end
 		----Fuck'em up!----
 		--melee, miss when over 350
-		if (not IsBotCasting()) then
+		if (not IsBotCasting() and not target:IsNightmared()) then
 			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 				if GetUnitToUnitDistance(npcBot, target) > 350 then
 					npcBot:Action_MoveToUnit(target)
@@ -176,7 +177,8 @@ function SpellRetreat()
 
 	local manaQ = abilityQ:GetManaCost()
 
-	if (eHeroList ~= nil and #eHeroList > 0) then
+	--if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
+	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsSilenced()) then
 		local target = eHeroList[1]
 
 		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
@@ -191,6 +193,11 @@ end
 function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
+
+	--local x = -3000
+	--local y = 4250
+	--npcBot:ActionImmediate_Ping(x, y, true)
+	--DebugDrawCircle(Vector(x, y, 0), 10, 255, 0, 0)
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)

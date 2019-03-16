@@ -123,7 +123,7 @@ function Murder()
 		local target = module.SmartTarget(npcBot)
 		local forceTarget = module.UseForceStaff(npcBot)
 
-		if (not npcBot:IsSilenced()) then
+		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
 			----Try various combos on weakened enemy unit----
 			if (not IsBotCasting() and ConsiderCast(abilityW, abilityQ, abilityUF) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaQ, manaW, manaUF) and not module.IsHardCC(target)) then
@@ -162,7 +162,7 @@ function Murder()
 
 		----Fuck'em up!----
 		--melee, miss when over 350
-		if (not IsBotCasting()) then
+		if (not IsBotCasting() and not target:IsNightmared()) then
 			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 				if GetUnitToUnitDistance(npcBot, target) > 350 then
 					npcBot:Action_MoveToUnit(target)
@@ -221,7 +221,7 @@ function SpellRetreat()
 	--end
 
 
-	if (eHeroList ~= nil and #eHeroList > 0) then
+	if (eHeroList ~= nil and #eHeroList > 0 and not npcBot:IsSilenced()) then
 		local target = eHeroList[1]
 
 		if (not IsBotCasting() and force ~= nil and ConsiderCast(force) and currentMana >= module.CalcManaCombo(manaForce)
