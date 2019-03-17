@@ -20,24 +20,23 @@ function creepsAround(npcBot)
 end
 
 function calcEnemyCreepHealth(npcBot)
-	local nearbyECreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-	local nearbyACreeps = npcBot:GetNearbyLaneCreeps(1600, false)
+    local attackRange = npcBot:GetAttackRange()
+    local attackDamage = npcBot:GetAttackDamage()
+	local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
+	local nearbyACreeps = npcBot:GetNearbyLaneCreeps(800, false)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
-	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(nearbyACreeps)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	if eWeakestCreep ~= nil then
-		local health = module.PredictTiming(npcBot, eWeakestCreep, nearbyACreeps)
-		if health > 0 and health <= eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-			return 50
+	local targetCount = 0
+
+    if nearbyECreeps == nil or #nearbyECreeps == 0 then
+        return 0
+	end
+
+	for k,v in pairs(nearbyACreeps) do
+		if v:GetAttackTarget() == eWeakestCreep then
+			targetCount = targetCount + 1
 		end
 	end
-	if aWeakestCreep ~= nil then
-		local health = module.PredictTiming(npcBot, aWeakestCreep, nearbyECreeps)
-		if health > 0 and health <= aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-			return 50
-		end
-	end
-	return 0
+    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * (1 + targetCount * 0.33), 50, 0)
 end
 
 function calcEnemyCreepDist(npcBot)
@@ -45,7 +44,7 @@ function calcEnemyCreepDist(npcBot)
     local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
     local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
     local eCreepDist = GetUnitToUnitDistance(npcBot, eWeakestCreep)
-    
+
     --if creeps are dead, they are not close
     if nearbyECreeps == nil or #nearbyECreeps == 0 then
         eCreepDist = 100000
@@ -77,23 +76,18 @@ end
 local farm_weight = {
     settings =
     {
-        name = "farm", 
-    
+        name = "farm",
+
         components = {
             {func=creepsAround, weight=2},
             {func=calcEnemyCreepHealth, weight=11},
-            {func=calcEnemyCreepDist, weight=7}
+            --{func=calcEnemyCreepDist, weight=7}
         },
-    
+
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-<<<<<<< HEAD
             --{func=heroLevel, condition=enemyNotLevel, weight=10},
-           	--{func=moreFarm, condition=alone, weight=5}
-=======
-            {func=heroLevel, condition=enemyNotLevel, weight=10},
-            {func=moreFarm, condition=alone, weight=5}
->>>>>>> parent of 41499f0... wards work
+            --{func=moreFarm, condition=alone, weight=5}
         }
     }
 }
