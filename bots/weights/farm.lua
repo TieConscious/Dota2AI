@@ -44,7 +44,7 @@ function calcEnemyCreepDist(npcBot)
     local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
     local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
     local eCreepDist = GetUnitToUnitDistance(npcBot, eWeakestCreep)
-    
+
     --if creeps are dead, they are not close
     if nearbyECreeps == nil or #nearbyECreeps == 0 then
         eCreepDist = 100000
@@ -76,18 +76,18 @@ end
 local farm_weight = {
     settings =
     {
-        name = "farm", 
-    
+        name = "farm",
+
         components = {
             {func=creepsAround, weight=2},
             {func=calcEnemyCreepHealth, weight=11},
-            {func=calcEnemyCreepDist, weight=7}
+            --{func=calcEnemyCreepDist, weight=7}
         },
-    
+
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=10},
-            {func=moreFarm, condition=alone, weight=5}
+            --{func=heroLevel, condition=enemyNotLevel, weight=10},
+            --{func=moreFarm, condition=alone, weight=5}
         }
     }
 }

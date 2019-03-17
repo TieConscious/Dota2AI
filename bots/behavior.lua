@@ -1,6 +1,7 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
+local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
 local buyback_think = require(GetScriptDirectory().."/buyback_think")
@@ -37,6 +38,8 @@ function behavior.generic(npcBot, stateMachine)
 		Defend()
 	elseif stateMachine.state == "finishHim" then
 		FinishHim()
+	elseif stateMachine.state == "ward" then
+		Ward()
 	else
 		Idle()
 	end
@@ -222,6 +225,7 @@ function Buy()
 	local SS1 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET)
 	local SS2 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET2)
 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+	local venom = module.ItemSlot(npcBot, "item_orb_of_venom")
 	local closerSecretShop = nil
 	if GetUnitToLocationDistance(npcBot, SS1) < GetUnitToLocationDistance(npcBot, SS2) then
 		closerSecretShop = SS1
@@ -230,6 +234,10 @@ function Buy()
 	end
 	if (npcBot:GetItemInSlot(5) ~= nil and wand ~= nil) then
 		npcBot:Action_DropItem(wand, npcBot:GetLocation())
+		return
+	end
+	if (npcBot:GetItemInSlot(5) ~= nil and venom ~= nil) then
+		npcBot:Action_DropItem(venom, npcBot:GetLocation())
 		return
 	end
 	if IsItemPurchasedFromSecretShop(nextItem) then
@@ -400,9 +408,26 @@ function FinishHim()
 	end
 end
 
+
 function Ward()
 	local npcBot = GetBot()
-	return
+	local ward = module.ItemSlot(npcBot, "item_ward_observer")
+	local currentTime = DotaTime()
+
+	if (ward ~= nil) then
+		for loc,time in pairs(ward_weight.wardLocs) do
+			--print("LET ME WAAAARD")
+			if (GetUnitToLocationDistance(npcBot, loc) < 2000 and currentTime >= time) then
+				if GetUnitToLocationDistance(npcBot, loc) < 120 then
+					npcBot:Action_UseAbilityOnLocation(ward, loc)
+					ward_weight.wardLocs[loc] = currentTime + 360
+				else
+					npcBot:Action_MoveToLocation(loc)
+				end
+				return
+			end
+        end
+    end
 end
 
 return behavior

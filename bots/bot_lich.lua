@@ -206,9 +206,21 @@ function SpellRetreat()
 
 end
 
+function DangerPing()
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+
+	if (eHeroList ~= nil and #eHeroList > 0 and #eHeroList > #aHeroList and npcBot:IsAlive()) then
+		local dangerPing = eHeroList[1]:GetLocation()
+		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
+	end
+end
+
 function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
+
+	DangerPing()
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then
