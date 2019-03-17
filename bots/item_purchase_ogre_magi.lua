@@ -19,11 +19,6 @@ local Items =
 	"item_boots",
 	"item_energy_booster",
 
-	----kaya----
-	"item_staff_of_wizardry",
-	"item_robe",
-	"item_recipe_kaya",
-
 	----force staff----
 	"item_staff_of_wizardry",
 	"item_ring_of_regen",
@@ -45,10 +40,6 @@ local Items =
 	"item_ogre_axe",
 	"item_blade_of_alacrity",
 
-	----kaya and sange----
-	"item_ogre_axe",
-	"item_belt_of_strength",
-	"item_recipe_sange"
 
 }
 
