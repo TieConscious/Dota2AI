@@ -1,6 +1,7 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
+local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
 local buyback_think = require(GetScriptDirectory().."/buyback_think")
@@ -37,13 +38,10 @@ function behavior.generic(npcBot, stateMachine)
 		Defend()
 	elseif stateMachine.state == "finishHim" then
 		FinishHim()
-<<<<<<< HEAD
 	elseif stateMachine.state == "ward" then
 		Ward()
 	elseif stateMachine.state == "laning" then
 		Laning()
-=======
->>>>>>> parent of 41499f0... wards work
 	else
 		Idle()
 	end
@@ -229,6 +227,7 @@ function Buy()
 	local SS1 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET)
 	local SS2 = GetShopLocation(npcBot:GetTeam(), SHOP_SECRET2)
 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+	local venom = module.ItemSlot(npcBot, "item_orb_of_venom")
 	local closerSecretShop = nil
 	if GetUnitToLocationDistance(npcBot, SS1) < GetUnitToLocationDistance(npcBot, SS2) then
 		closerSecretShop = SS1
@@ -237,6 +236,10 @@ function Buy()
 	end
 	if (npcBot:GetItemInSlot(5) ~= nil and wand ~= nil) then
 		npcBot:Action_DropItem(wand, npcBot:GetLocation())
+		return
+	end
+	if (npcBot:GetItemInSlot(5) ~= nil and venom ~= nil) then
+		npcBot:Action_DropItem(venom, npcBot:GetLocation())
 		return
 	end
 	if IsItemPurchasedFromSecretShop(nextItem) then
@@ -407,9 +410,9 @@ function FinishHim()
 	end
 end
 
+
 function Ward()
 	local npcBot = GetBot()
-<<<<<<< HEAD
 	local ward = module.ItemSlot(npcBot, "item_ward_observer")
 	local currentTime = DotaTime()
 
@@ -456,9 +459,6 @@ function Laning()
 		end
 	end
 	movement.MTL_Farm(npcBot)
-=======
-	return
->>>>>>> parent of 41499f0... wards work
 end
 
 return behavior
