@@ -1,3 +1,4 @@
+local botPicks = {}
 
 -- local BotPicks = {
 -- 	'npc_dota_hero_bane',
@@ -29,23 +30,45 @@
 -- 	'npc_dota_hero_jakiro'
 -- };
 
-local TopPicks = {
-	'npc_dota_hero_bane',
-	'npc_dota_hero_chaos_knight'
+
+local TopCarry = {
+	--'npc_dota_hero_ursa',
+	"npc_dota_hero_chaos_knight",
+	--"npc_dota_hero_sven",
+	--"npc_dota_hero_mars",
+	--"npc_dota_hero_phantom_lancer"
 }
 
-local MidPicks = {
-	'npc_dota_hero_ogre_magi'
+local BotCarry = {
+	--"npc_dota_hero_axe",
+	"npc_dota_hero_juggernaut",
+
+	"npc_dota_hero_medusa"
 }
 
-local BotPicks = {
-	'npc_dota_hero_juggernaut',
-	'npc_dota_hero_lich'
+local Mid = {
+	"npc_dota_hero_ogre_magi",
+	--"npc_dota_hero_obsidian_destroyer",
+	"npc_dota_hero_tinker"
 }
 
-local BotBans = {
+local TopSupport = {
+	"npc_dota_hero_bane",
+	"npc_dota_hero_tidehunter",
+	--"npc_dota_hero_abaddon"
+}
+
+local BotSupport = {
+	"npc_dota_hero_lich",
+	"npc_dota_hero_crystal_maiden",
+	"npc_dota_hero_lion"
+}
+
+
+
+local Bans = {
 	'npc_dota_hero_sniper',
-	'npc_dota_hero_treant',
+	'npc_dota_hero_jakiro',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_undying',
     'npc_dota_hero_vengefulspirit',
@@ -57,6 +80,7 @@ local BotBans = {
 	'npc_dota_hero_sven',
 	'npc_dota_hero_slark'
 }
+
 
 function GetBotNames ()
 	local bot_names = {}
@@ -214,42 +238,61 @@ end
 --Random hero which is non picked, non banned, or non human picked heroes if the human is the captain
 function PickHero()
 	local hero = nil
-	if PickCycle == 1 or PickCycle == 2 then
-		hero = TopPicks[1]
-	elseif	PickCycle == 3 then
-		hero = MidPicks[1]
-	elseif	PickCycle == 4 or PickCycle == 5 then
-		hero = BotPicks[1]
+	if PickCycle == 1 then
+		hero = TopCarry[1]
+		table.remove(TopCarry, 1)
+	elseif PickCycle == 2 then
+		hero = BotCarry[1]
+		table.remove(BotCarry, 1)
+	elseif PickCycle == 3 then
+		hero = Mid[1]
+		table.remove(Mid, 1)
+	elseif	PickCycle == 4 then
+		hero = TopSupport[1]
+		table.remove(TopSupport, 1)
+	elseif PickCycle == 5 then
+		hero = BotSupport[1]
+		table.remove(BotSupport, 1)
 	end
-
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero)) do
-		if PickCycle == 1 or PickCycle == 2 then
-			hero = TopPicks[1]
-			table.remove(TopPicks, 1)
-		elseif	PickCycle == 3 then
-			hero = MidPicks[1]
-			table.remove(MidPicks, 1)
-		elseif	PickCycle == 4 or PickCycle == 5 then
-			hero = BotPicks[1]
-			table.remove(BotPicks, 1)
+		if PickCycle == 1 then
+			hero = TopCarry[1]
+			table.remove(TopCarry, 1)
+		elseif PickCycle == 2 then
+			hero = BotCarry[1]
+			table.remove(BotCarry, 1)
+		elseif PickCycle == 3 then
+			hero = Mid[1]
+			table.remove(Mid, 1)
+		elseif	PickCycle == 4 then
+			hero = TopSupport[1]
+			table.remove(TopSupport, 1)
+		elseif PickCycle == 5 then
+			hero = BotSupport[1]
+			table.remove(BotSupport, 1)
 		end
 	end
-	if PickCycle == 1 or PickCycle == 2 then
-		table.remove(TopPicks, 1)
-	elseif	PickCycle == 3 then
-		table.remove(MidPicks, 1)
-	elseif	PickCycle == 4 or PickCycle == 5 then
-		table.remove(BotPicks, 1)
+	local heroName = hero
+	if PickCycle == 1 then
+		botPicks[heroName] = 1
+	elseif PickCycle == 2 then
+		botPicks[heroName] = 1
+	elseif PickCycle == 3 then
+		botPicks[heroName] = 1
+	elseif PickCycle == 4 then
+		botPicks[heroName] = 1
+	elseif PickCycle == 5 then
+		botPicks[heroName] = 1
 	end
 	return hero
 end
 
 --Random ban
 function PickBan()
-	local hero = BotBans[1]
+	local hero = Bans[1]
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero)) do
-        table.remove(BotBans, 1)
-        hero = BotBans[1]
+        table.remove(Bans, 1)
+        hero = Bans[1]
     end
 	return hero
 end

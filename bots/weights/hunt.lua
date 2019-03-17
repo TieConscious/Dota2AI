@@ -14,7 +14,7 @@ function EnemyPowerful(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
     local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.8) then
+    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.6) then --0.8
         return false
     end
     return true
@@ -23,8 +23,11 @@ end
 function Fuckem(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    return RemapValClamped(powerRatio, 0, -0.5, 10, 100)
+	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+	if npcBot:GetUnitName() == "npc_dota_hero_bane" then
+		print(powerRatio)
+	end
+    return RemapValClamped(powerRatio, 0, -1, 0, 100)
 end
 
 function EnemyWeak(npcBot)
@@ -81,7 +84,7 @@ function heroMana(npcBot)
     local perMana = module.CalcPerMana(npcBot)
     --local mana = npcBot:GetMana()
 
-    return RemapValClamped(perMana, 0.3, 0.8, 0, 100)
+    return RemapValClamped(perMana, 0.3, 0.8, 0, 20)
 end
 
 function under50ManaAndEnemyNear(npcBot)
@@ -158,6 +161,7 @@ function eUnderTower(npcBot)
 
 	dist = GetUnitToLocationDistance(nearbyEnemy[1], aTower[1]:GetLocation())
 	if dist < 600 then
+
 		return true
 	end
 	return false
@@ -180,7 +184,7 @@ function EnemyDisabled(npcBot)
     return false
 end
 
-function heroHealth(npcBot)
+function HeroHealth(npcBot)
     local perHealth = module.CalcPerHealth(npcBot)
 
     return RemapValClamped(perHealth, 0.2, 0.9, 0, 100)
@@ -233,8 +237,19 @@ function zero(npcBot)
     return 0
 end
 
-function  onehundred(npcBot)
-    return 100
+function  forty(npcBot)
+    return 40
+end
+
+function CanWeKillThem(npcBot)
+    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+    if (nearbyEnemy == nil or #nearbyEnemy == 0) then
+        return false
+    end
+
+    local target = module.SmartTarget(npcBot)
+	local targetHealth = target:GetHealth()
+    return npcBot:GetEstimatedDamageToTarget(true, target, 3.0, DAMAGE_TYPE_ALL) >= targetHealth
 end
 
 local hunt_weight = {
@@ -242,8 +257,8 @@ local hunt_weight = {
         name = "hunt",
 
         components = {
-            {func=enemyHealth, weight=20},
-            {func=enemyDistance, weight=12}
+            {func=enemyHealth, weight=30},
+            --{func=enemyDistance, weight=12}
             --our health
             --our mana
         },
@@ -252,20 +267,22 @@ local hunt_weight = {
             {func=zero, condition=isUnderTower, weight=40}, --is this in retreat
             {func=zero, condition=weDisabled, weight=40}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
-            {func=onehundred, condition=eUnderTower, weight=20},
-            --{func=heroHealth, condition=eDissapeared, weight=20},
+            {func=HeroHealth, condition=eUnderTower, weight=20},
+            --{func=HeroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
-
-            {func=Fuckem, condition=EnemyWeak, weight=30},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
-            {func=heroHealth, condition=EnemyDisabled, weight=20},
-            {func=heroHealth, condition=punchBack, weight=60},
-            {func=onehundred, condition=allyInFight, weight=40},
-            {func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
+            --{func=numberCreeps, condition=enemyNear, weight=4},
+            {func=heroMana, condition=enemyNear, weight=20},
+            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=20},
+            {func=Fuckem, condition=EnemyWeak, weight=20},
+            --{func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
+            {func=HeroHealth, condition=EnemyDisabled, weight=20},
+            --{func=HeroHealth, condition=punchBack, weight=60},
+            {func=forty, condition=allyInFight, weight=40},
+            --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
+            {func=HeroHealth, condition=CanWeKillThem, weight=80}
         }
     }
 }
+
 
 return hunt_weight

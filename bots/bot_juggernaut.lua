@@ -113,7 +113,7 @@ function Murder()
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
-		if (not npcBot:IsSilenced()) then
+		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
 			if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
 				npcBot:Action_UseAbility(phase)
 			end
@@ -122,7 +122,7 @@ function Murder()
 					and not module.IsHardCC(target) ) then
 					npcBot:Action_UseAbilityOnEntity(abyssal, target)
 
-			elseif (not IsBotCasting() and #eCreepList < 4 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
+			elseif (not IsBotCasting() and #eCreepList < 2 and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
 					and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()) then
 				npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 
@@ -149,17 +149,13 @@ function Murder()
 
 		----Fuck'em up!----
 				--melee, miss when over 350
-		if (not IsBotCasting()) then
-			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+		if (not IsBotCasting() and not target:IsNightmared()) then
+			if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetTarget() == target then
 				if GetUnitToUnitDistance(npcBot, target) > 350 then
 					npcBot:Action_MoveToUnit(target)
 				end
 			else
-				if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-					npcBot:Action_AttackUnit(target, true)
-				else
-					npcBot:Action_MoveToUnit(target)
-				end
+				npcBot:Action_AttackUnit(target, true)
 			end
 		end
 
@@ -206,7 +202,7 @@ function Think()
 		Murder()
 	elseif state.state == "retreat" then
 		behavior.generic(npcBot, state)
-		if (not npcBot:IsSilenced()) then
+		if (not npcBot:IsSilenced() and not npcBot:IsSilenced()) then
 			SpellRetreat()
 		end
 	elseif state.state == "finishHim" then

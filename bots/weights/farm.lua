@@ -20,23 +20,24 @@ function creepsAround(npcBot)
 end
 
 function calcEnemyCreepHealth(npcBot)
-    local attackRange = npcBot:GetAttackRange()
-    local attackDamage = npcBot:GetAttackDamage()
-	local nearbyECreeps = npcBot:GetNearbyLaneCreeps(attackRange + moveDist, true)
-	local nearbyACreeps = npcBot:GetNearbyLaneCreeps(800, false)
+	local nearbyECreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+	local nearbyACreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(nearbyECreeps)
-	local targetCount = 0
-
-    if nearbyECreeps == nil or #nearbyECreeps == 0 then
-        return 0
-	end
-
-	for k,v in pairs(nearbyACreeps) do
-		if v:GetAttackTarget() == eWeakestCreep then
-			targetCount = targetCount + 1
+	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(nearbyACreeps)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	if eWeakestCreep ~= nil then
+		local health = module.PredictTiming(npcBot, eWeakestCreep, nearbyACreeps)
+		if health > 0 and health <= eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			return 50
 		end
 	end
-    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * (1 + targetCount * 0.33), 50, 0)
+	if aWeakestCreep ~= nil then
+		local health = module.PredictTiming(npcBot, aWeakestCreep, nearbyECreeps)
+		if health > 0 and health <= aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			return 50
+		end
+	end
+	return 0
 end
 
 function calcEnemyCreepDist(npcBot)
@@ -81,13 +82,13 @@ local farm_weight = {
         components = {
             {func=creepsAround, weight=2},
             {func=calcEnemyCreepHealth, weight=11},
-            {func=calcEnemyCreepDist, weight=7}
+            --{func=calcEnemyCreepDist, weight=7}
         },
     
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=10},
-            {func=moreFarm, condition=alone, weight=5}
+            --{func=heroLevel, condition=enemyNotLevel, weight=10},
+           	--{func=moreFarm, condition=alone, weight=5}
         }
     }
 }

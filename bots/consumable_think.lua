@@ -13,15 +13,21 @@ function consumable_think.Decide()
 	local front = GetLaneFrontLocation(team, lane, 0.0)
 	local time = DotaTime()
 
+	----tpscroll
 	local tpScroll = npcBot:GetItemInSlot(npcBot:FindItemSlot("item_tpscroll"))
 	if npcBot:DistanceFromFountain() == 0 and (tpScroll == nil or (time > 600 and tpScroll:GetCurrentCharges() < 2)) and npcBot:GetGold() >= GetItemCost("item_tpscroll") then
 		npcBot:ActionImmediate_PurchaseItem("item_tpscroll")
 	end
+	----flask
 	local runTime = math.floor(DotaTime()) + 80
 	if runTime <= 601 and bought_on[pID] ~= runTime and runTime % 300 == 0 then
 		bought_on[pID] = runTime
-		npcBot:ActionImmediate_PurchaseItem ("item_flask")
+		npcBot:ActionImmediate_PurchaseItem("item_flask")
 	end
+	----wards
+	--if () then
+	--	npcBot:ActionImmediate_PurchaseItem("item_")
+	--end
 	-- local pID = npcBot:GetPlayerID()
 	-- local runTime = math.floor(DotaTime()) + 90
 	-- if runTime <= 601 and bought_on[pID] ~= runTime and runTime % 300 == 0 then
