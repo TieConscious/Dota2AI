@@ -260,7 +260,7 @@ function CanWeKillThem(npcBot)
 
     local target = module.SmartTarget(npcBot)
     local targetHealth = target:GetHealth()
-    return npcBot:GetEstimatedDamageToTarget(true, target, 3.0, DAMAGE_TYPE_ALL) >= targetHealth
+    return npcBot:GetEstimatedDamageToTarget(true, target, 4.0, DAMAGE_TYPE_ALL) >= targetHealth
 end
 
 local hunt_weight = {
