@@ -27,7 +27,7 @@ wardLocs =
 --eShrine1 = GetShrine(GetOpposingTeam(), SHRINE_JUNGLE_1)
 --eShrine2 = GetShrine(GetOpposingTeam(), SHRINE_JUNGLE_2)
 
-local wardPlaceDist = 20000
+local wardPlaceDist = 2000
 
 
 
