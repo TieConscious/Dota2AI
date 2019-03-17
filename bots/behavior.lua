@@ -40,6 +40,8 @@ function behavior.generic(npcBot, stateMachine)
 		FinishHim()
 	elseif stateMachine.state == "ward" then
 		Ward()
+	elseif stateMachine.state == "laning" then
+		Laning()
 	else
 		Idle()
 	end
@@ -427,7 +429,36 @@ function Ward()
 				return
 			end
         end
-    end
+	end
+end
+
+function Laning()
+	local npcBot = GetBot()
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local attackRange = npcBot:GetAttackRange()
+
+	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+		return
+	end
+
+	for k,v in pairs(nearbyEnemy) do
+		if v:GetAttackRange() + 100 > GetUnitToUnitDistance(npcBot, v) then
+			local moveTo = 2 * npcBot:GetLocation() - v:GetLocation()
+			if IsLocationPassable(moveTo) then
+				npcBot:Action_MoveToLocation(moveTo)
+			else
+				movement.RetreatToBase(npcBot)
+			end
+			return
+		end
+	end
+	for k,v in pairs(nearbyEnemy) do
+		if attackRange >= GetUnitToUnitDistance(npcBot, v) then
+			npcBot:Action_AttackUnit(v, true)
+			return
+		end
+	end
+	movement.MTL_Farm(npcBot)
 end
 
 return behavior

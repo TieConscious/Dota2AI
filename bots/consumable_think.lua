@@ -30,6 +30,10 @@ function consumable_think.Decide()
 		and ward == nil and npcBot:GetItemInSlot(5) == nil) then
 		npcBot:ActionImmediate_PurchaseItem("item_ward_observer")
 	end
+	----wards
+	--if () then
+	--	npcBot:ActionImmediate_PurchaseItem("item_")
+	--end
 	-- local pID = npcBot:GetPlayerID()
 	-- local runTime = math.floor(DotaTime()) + 90
 	-- if runTime <= 601 and bought_on[pID] ~= runTime and runTime % 300 == 0 then

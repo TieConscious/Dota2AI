@@ -11,6 +11,7 @@ local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
 local ward_weight = require(GetScriptDirectory().."/weights/ward")
+local laning_weight = require(GetScriptDirectory().."/weights/laning")
 local globalState = require(GetScriptDirectory().."/global_state")
 
 local stateMachine = {}
@@ -36,8 +37,7 @@ function stateMachine.calculateState(npcBot)
     stateMachine.calcWeight(npcBot, defend_weight.settings)
     stateMachine.calcWeight(npcBot, finishHim_weight.settings)
     stateMachine.calcWeight(npcBot, ward_weight.settings)
-
-
+	stateMachine.calcWeight(npcBot, laning_weight.settings)
     --more weights
 
     stateMachine.getState()
