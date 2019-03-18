@@ -559,6 +559,23 @@ function module.HighestAttackSpeed(HeroList)
 	return nil
 end
 
+function module.CanWeKillThem(npcBot, target)
+    if (target == nil) then
+        return false
+    end
+
+    local targetHealth = target:GetHealth()
+    return npcBot:GetEstimatedDamageToTarget(true, target, 3.0, DAMAGE_TYPE_ALL) >= targetHealth
+end
+
+
+function module.ConsiderKillPing(npcBot, target)
+	if (module.CanWeKillThem(npcBot, target)) then
+		local ping = target:GetExtrapolatedLocation(1)
+		npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
+	end
+end
+
 ----Smart Target----
 function module.SmartTarget(npcBot)
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -610,6 +627,30 @@ function module.SmartTarget(npcBot)
 
 	return target
 
+end
+
+function module.DangerPing(npcBot)
+	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+	local actualAlly = 0
+	local actualEnemy = 0
+
+	for _,unit in pairs(aHeroList) do
+		if (unit ~= nil and unit:IsAlive()) then
+			actualAlly = actualAlly + 1
+		end
+	end
+
+	for _,unit in pairs(eHeroList) do
+		if (unit ~= nil and unit:IsAlive()) then
+			actualEnemy = actualEnemy + 1
+		end
+	end
+
+	if (eHeroList ~= nil and #eHeroList > 0 and actualEnemy > actualAlly and npcBot:IsAlive()) then
+		local dangerPing = eHeroList[1]:GetLocation()
+		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
+	end
 end
 
 function module.BounceSpells(npcBot, bounceRadius)

@@ -172,10 +172,7 @@ function Murder()
 			end
 		end
 
-		if (module.CalcPerHealth(target) <= 0.15) then
-			local ping = target:GetExtrapolatedLocation(1)
-			npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
-		end
+		module.ConsiderKillPing(npcBot, target)
 	end
 end
 
@@ -238,15 +235,7 @@ function SpellRetreat()
 
 end
 
-function DangerPing()
-	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
-	if (eHeroList ~= nil and #eHeroList > 0 and #eHeroList > #aHeroList and npcBot:IsAlive()) then
-		local dangerPing = eHeroList[1]:GetLocation()
-		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
-	end
-end
 
 function Think()
 	npcBot = GetBot()
@@ -256,7 +245,7 @@ function Think()
 	local maxMana = npcBot:GetMaxMana()
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	DangerPing()
+	--module.DangerPing(npcBot)
 
 	if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and currentMana <= (maxMana - 180)) then
 		npcBot:Action_UseAbility(arcane)

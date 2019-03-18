@@ -98,4 +98,9 @@ function stateMachine.printState(s)
     print(str)
 end
 
+function stateMachine.getWeightValue(value)
+    local weightValue = state.weights[value].weight
+    return weightValue
+end
+
 return stateMachine

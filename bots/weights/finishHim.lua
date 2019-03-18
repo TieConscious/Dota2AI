@@ -27,8 +27,8 @@ function IsThereAPing(npcBot)
 	return false
 end
 
-function Thirty(npcBot)
-    return 30
+function Forty(npcBot)
+    return 40
 end
 
 local finishHim_weight = {
@@ -41,7 +41,7 @@ local finishHim_weight = {
         },
 
         conditionals = {
-            {func=Thirty, condition=IsThereAPing, weight=1},
+            {func=Forty, condition=IsThereAPing, weight=1},
         }
     }
 }

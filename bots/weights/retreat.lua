@@ -128,10 +128,12 @@ end
 
 function AreThereDangerPings(npcBot)
 	local team = GetUnitList(UNIT_LIST_ALLIED_HEROES)
+	local time = GameTime()
 
 	for __,aHero in pairs(team) do
 		local recentPing = aHero:GetMostRecentPing()
-		if (not recentPing.normal_ping and recentPing.time <= 4.0 and GetUnitToLocationDistance(npcBot, recentPing.location) <= 1600) then
+		--print(recentPing.time)
+		if (recentPing ~= nil and not recentPing.normal_ping and (time - recentPing.time) <= 6.0 and GetUnitToLocationDistance(npcBot, recentPing.location) <= 2000) then
 			return true
 		end
 	end
@@ -150,7 +152,7 @@ local retreat_weight = {
         name = "retreat",
 
         components = {
-            {func=numberDifference, weight=1}
+            --{func=numberDifference, weight=1}
         },
 
         conditionals = {
@@ -162,7 +164,7 @@ local retreat_weight = {
 			{func=lowHealth, condition=hardRetreat, weight=6},
 			{func=lowHealthSoft, condition=enemyRetreat, weight=6},
 			{func=FillMana, condition=FountainMana, weight=3},
-			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=10}
+			--{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=4}
 		}
     }
 }

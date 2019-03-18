@@ -152,10 +152,7 @@ function Murder()
 			end
 		end
 
-		if (module.CalcPerHealth(target) <= 0.15) then
-			local ping = target:GetExtrapolatedLocation(1)
-			npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
-		end
+		module.ConsiderKillPing(npcBot, target)
 	end
 
 end
@@ -182,15 +179,6 @@ function SpellRetreat()
 	end
 end
 
-function DangerPing()
-	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-
-	if (eHeroList ~= nil and #eHeroList > 0 and #eHeroList > #aHeroList and npcBot:IsAlive()) then
-		local dangerPing = eHeroList[1]:GetLocation()
-		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
-	end
-end
 
 function Think()
 	local npcBot = GetBot()
@@ -201,7 +189,7 @@ function Think()
 	--npcBot:ActionImmediate_Ping(x, y, true)
 	--DebugDrawCircle(Vector(x, y, 0), 10, 255, 0, 0)
 
-	DangerPing()
+	--module.DangerPing(npcBot)
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)
