@@ -81,13 +81,13 @@ local farm_weight = {
         components = {
             {func=creepsAround, weight=2},
             {func=calcEnemyCreepHealth, weight=11},
-            --{func=calcEnemyCreepDist, weight=7}
+            {func=calcEnemyCreepDist, weight=7}
         },
 
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            --{func=heroLevel, condition=enemyNotLevel, weight=10},
-            --{func=moreFarm, condition=alone, weight=5}
+            {func=heroLevel, condition=enemyNotLevel, weight=10},
+            {func=moreFarm, condition=alone, weight=5}
         }
     }
 }

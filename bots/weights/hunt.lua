@@ -267,7 +267,7 @@ local hunt_weight = {
             --{func=HeroHealth, condition=eDissapeared, weight=20},
 
             {func=numberCreeps, condition=enemyNear, weight=4},
-            {func=heroMana, condition=enemyNear, weight=20},
+            --{func=heroMana, condition=enemyNear, weight=20},
             {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
 
 
@@ -277,7 +277,7 @@ local hunt_weight = {
             {func=HeroHealth, condition=punchBack, weight=60},
             {func=onehundred, condition=allyInFight, weight=40},
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
-            {func=HeroHealth, condition=CanWeKillThem, weight=80}
+            --{func=HeroHealth, condition=CanWeKillThem, weight=80}
         }
     }
 }
