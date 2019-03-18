@@ -192,34 +192,7 @@ function Tower()
 
 end
 
-function Laning()
-	local npcBot = GetBot()
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local attackRange = npcBot:GetAttackRange()
 
-	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
-		return
-	end
-
-	for k,v in pairs(nearbyEnemy) do
-		if v:GetAttackRange() + 100 > GetUnitToUnitDistance(npcBot, v) then
-			local moveTo = 2 * npcBot:GetLocation() - v:GetLocation()
-			if IsLocationPassable(moveTo) then
-				npcBot:Action_MoveToLocation(moveTo)
-			else
-				movement.RetreatToBase(npcBot)
-			end
-			return
-		end
-	end
-	for k,v in pairs(nearbyEnemy) do
-		if attackRange >= GetUnitToUnitDistance(npcBot, v) then
-			npcBot:Action_AttackUnit(v, true)
-			return
-		end
-	end
-	movement.MTL_Farm(npcBot)
-end
 
 function Farm()
 	local npcBot = GetBot()
@@ -251,18 +224,18 @@ function Farm()
 			if aWeakestCreep ~= nil then
 				health = module.PredictTiming(npcBot, aWeakestCreep, eCreeps)
 				if health <= 0 or health > aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-					Laning()
+					movement.MTL_Farm(npcBot)
 				else
 					npcBot:Action_AttackUnit(aWeakestCreep, true)
 				end
 			else
-				Laning()
+				movement.MTL_Farm(npcBot)
 			end
 		else
 			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
 	else
-		Laning()
+		movement.MTL_Farm(npcBot)
 	end
 end
 
