@@ -245,7 +245,7 @@ function Think()
 	local maxMana = npcBot:GetMaxMana()
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
 
-	--module.DangerPing(npcBot)
+	module.DangerPing(npcBot)
 
 	if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and currentMana <= (maxMana - 180)) then
 		npcBot:Action_UseAbility(arcane)

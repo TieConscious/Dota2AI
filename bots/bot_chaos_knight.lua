@@ -189,7 +189,7 @@ function Think()
 	--npcBot:ActionImmediate_Ping(x, y, true)
 	--DebugDrawCircle(Vector(x, y, 0), 10, 255, 0, 0)
 
-	--module.DangerPing(npcBot)
+	module.DangerPing(npcBot)
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)

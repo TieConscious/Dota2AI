@@ -195,7 +195,7 @@ function Think()
 	npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
 
-	--module.DangerPing(npcBot)
+	module.DangerPing(npcBot)
 
 	module.AbilityLevelUp(Ability)
 	if state.state == "hunt" then

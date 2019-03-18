@@ -164,7 +164,7 @@ local retreat_weight = {
 			{func=lowHealth, condition=hardRetreat, weight=6},
 			{func=lowHealthSoft, condition=enemyRetreat, weight=6},
 			{func=FillMana, condition=FountainMana, weight=3},
-			--{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=4}
+			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=4}
 		}
     }
 }
