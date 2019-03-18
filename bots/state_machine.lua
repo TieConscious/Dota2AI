@@ -35,7 +35,7 @@ function stateMachine.calculateState(npcBot)
     stateMachine.calcWeight(npcBot, dodge_weight.settings)
     stateMachine.calcWeight(npcBot, defend_weight.settings)
     stateMachine.calcWeight(npcBot, finishHim_weight.settings)
-    stateMachine.calcWeight(npcBot, ward_weight.settings)
+    --stateMachine.calcWeight(npcBot, ward_weight.settings)
 
 
     --more weights

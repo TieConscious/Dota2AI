@@ -25,11 +25,11 @@ function consumable_think.Decide()
 		npcBot:ActionImmediate_PurchaseItem("item_flask")
 	end
 	----wards
-	local ward = module.ItemSlot(npcBot, "item_ward_observer")
-	if (GetItemStockCount("item_ward_observer") > 0 and npcBot:DistanceFromFountain() == 0 and npcBot:GetGold() >= GetItemCost("item_ward_observer")
-		and ward == nil and npcBot:GetItemInSlot(5) == nil) then
-		npcBot:ActionImmediate_PurchaseItem("item_ward_observer")
-	end
+	--local ward = module.ItemSlot(npcBot, "item_ward_observer")
+	--if (GetItemStockCount("item_ward_observer") > 0 and npcBot:DistanceFromFountain() == 0 and npcBot:GetGold() >= GetItemCost("item_ward_observer")
+	--	and ward == nil and npcBot:GetItemInSlot(5) == nil) then
+	--	npcBot:ActionImmediate_PurchaseItem("item_ward_observer")
+	--end
 	-- local pID = npcBot:GetPlayerID()
 	-- local runTime = math.floor(DotaTime()) + 90
 	-- if runTime <= 601 and bought_on[pID] ~= runTime and runTime % 300 == 0 then

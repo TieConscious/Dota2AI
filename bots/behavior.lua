@@ -38,8 +38,8 @@ function behavior.generic(npcBot, stateMachine)
 		Defend()
 	elseif stateMachine.state == "finishHim" then
 		FinishHim()
-	elseif stateMachine.state == "ward" then
-		Ward()
+	--elseif stateMachine.state == "ward" then
+	--	Ward()
 	else
 		Idle()
 	end
