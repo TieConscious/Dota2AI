@@ -359,7 +359,11 @@ end
 
 local MELEE = 1
 local RANGED = 2
+<<<<<<< HEAD
 local attackType =
+=======
+local attackType =
+>>>>>>> farmMaster
 {
 	["npc_dota_hero_chaos_knight"] = MELEE,
 	["npc_dota_hero_sven"] = MELEE,
@@ -379,7 +383,11 @@ local attackType =
 	["npc_dota_hero_lion"] = RANGED
 }
 
+<<<<<<< HEAD
 local turnRate =
+=======
+local turnRate =
+>>>>>>> farmMaster
 {
 	["npc_dota_hero_chaos_knight"] = 0.5,
 	["npc_dota_hero_sven"] = 0.6,

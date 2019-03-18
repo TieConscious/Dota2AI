@@ -174,6 +174,8 @@ function Tower()
 
 end
 
+
+
 function Farm()
 	local npcBot = GetBot()
 	local attackRange = npcBot:GetAttackRange()
@@ -186,7 +188,7 @@ function Farm()
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local health = 0
 
-	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK and npcBot:GetAttackTarget() ~= nil and npcBot:GetAttackTarget():IsCreep() then
+	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 		return
 	end
 
