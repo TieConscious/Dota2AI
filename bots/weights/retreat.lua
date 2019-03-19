@@ -156,15 +156,15 @@ local retreat_weight = {
         },
 
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5}, --0.5
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2}, --2
-			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3},
-			{func=lowHealth, condition=hardRetreat, weight=6},
-			{func=lowHealthSoft, condition=enemyRetreat, weight=6},
-			{func=FillMana, condition=FountainMana, weight=3},
-			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=4}
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=gene.willEnemyTowerTargetMe},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=gene.isEnemyTowerTargetingMeNoAlly},
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=gene.hasPassiveEnemyNearby}, --0.5
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=gene.hasAggressiveEnemyNearby}, --2
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=gene.hasEnemyCreepsNearby},
+			{func=lowHealth, condition=hardRetreat, weight=gene.hardRetreat},
+			{func=lowHealthSoft, condition=enemyRetreat, weight=gene.enemyRetreat},
+			{func=FillMana, condition=FountainMana, weight=gene.FountainMana},
+			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=gene.AreThereDangerPings}
 		}
     }
 }

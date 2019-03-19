@@ -1,4 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
+local gene = require(GetScriptDirectory().."/gene")
 
 local searchRadius = 1000
 local hitConsider = 2.5
@@ -79,15 +80,15 @@ local farm_weight = {
         name = "farm",
 
         components = {
-            {func=creepsAround, weight=2},
-            {func=calcEnemyCreepHealth, weight=11},
-            {func=calcEnemyCreepDist, weight=7}
+            {func=creepsAround, weight=gene.creepsAround},
+            {func=calcEnemyCreepHealth, weight=gene.calcEnemyCreepHealth},
+            {func=calcEnemyCreepDist, weight=gene.calcEnemyCreepDist}
         },
 
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=10},
-            {func=moreFarm, condition=alone, weight=5}
+            {func=heroLevel, condition=enemyNotLevel, weight=gene.enemyNotLevel},
+            {func=moreFarm, condition=alone, weight=gene.alone}
         }
     }
 }

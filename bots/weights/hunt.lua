@@ -1,5 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
 local globalState = require(GetScriptDirectory().."/global_state")
+local gene = require(GetScriptDirectory().."/gene")
 
 function PowerRatioNoHunt(npcBot)
     -- local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -253,29 +254,29 @@ local hunt_weight = {
         name = "hunt",
 
         components = {
-            {func=enemyHealth, weight=20},
-            {func=enemyDistance, weight=12}
+            {func=enemyHealth, weight=gene.enemyHealth},
+            {func=enemyDistance, weight=gene.enemyDistance}
             --our health
             --our mana
         },
 
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=40}, --is this in retreat
-            {func=zero, condition=weDisabled, weight=40}, --should this be in retreat
+            {func=zero, condition=isUnderTower, weight=gene.isUnderTower}, --is this in retreat
+            {func=zero, condition=weDisabled, weight=gene.weDisabled}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
-            {func=HeroHealth, condition=eUnderTower, weight=20},
+            {func=HeroHealth, condition=eUnderTower, weight=gene.eUnderTower},
             --{func=HeroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=4},
+            {func=numberCreeps, condition=enemyNear, weight=gene.enemyNear},
             --{func=heroMana, condition=enemyNear, weight=20},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=30},
+            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=gene.EnemyPowerful},
 
 
-            {func=Fuckem, condition=EnemyWeak, weight=30},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=20},
-            {func=HeroHealth, condition=EnemyDisabled, weight=20},
-            {func=HeroHealth, condition=punchBack, weight=60},
-            {func=onehundred, condition=allyInFight, weight=40},
+            {func=Fuckem, condition=EnemyWeak, weight=gene.EnemyWeak},
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=gene.enemyNearAndNotLevel},
+            {func=HeroHealth, condition=EnemyDisabled, weight=gene.EnemyDisabled},
+            {func=HeroHealth, condition=punchBack, weight=gene.punchBack},
+            {func=onehundred, condition=allyInFight, weight=gene.allyInFight},
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
         }
