@@ -47,14 +47,6 @@ local Ability = {
 
 local npcBot = GetBot()
 
-
-----Function pointers----
---local AP_AttackUnit = npcBot.ActionPush_AttackUnit
---local AP_MoveDirectly = npcBot.ActionPush_MoveDirectly
---local AP_MoveToUnit = npcBot.ActionPush_MoveToUnit
---local UseAbilityEnemy = npcBot.ActionPush_UseAbilityOnEntity
---local UseAbility = npcBot.ActionPush_UseAbility
-
 function IsBotCasting()
 	return npcBot:IsChanneling()
 		  or npcBot:IsUsingAbility()

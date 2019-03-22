@@ -198,36 +198,40 @@ end
 local picks = nil
 
 local TopCarry = {
-	--'npc_dota_hero_ursa',
-	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_ogre_magi",
+	--"npc_dota_hero_chaos_knight",
+	--"npc_dota_hero_viper",
+	--"npc_dota_hero_lycan"
 	--"npc_dota_hero_sven",
-	--"npc_dota_hero_mars",
-	--"npc_dota_hero_phantom_lancer"
 }
 
 local BotCarry = {
 	--"npc_dota_hero_axe",
+	"npc_dota_hero_chaos_knight",
 	"npc_dota_hero_juggernaut",
 
-	"npc_dota_hero_medusa"
+	--"npc_dota_hero_medusa"
 }
 
 local Mid = {
-	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_medusa",
+	--"npc_dota_hero_ogre_magi",
 	--"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_tinker"
 }
 
 local TopSupport = {
-	"npc_dota_hero_bane",
+	"npc_dota_hero_lich",
+	--"npc_dota_hero_bane",
 	"npc_dota_hero_tidehunter",
 	--"npc_dota_hero_abaddon"
 }
 
 local BotSupport = {
-	"npc_dota_hero_lich",
+	"npc_dota_hero_bane",
+	--"npc_dota_hero_lich",
 	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_lion"
+	--"npc_dota_hero_lion"
 }
 
 

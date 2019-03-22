@@ -393,7 +393,7 @@ function Defend()
 	end
 
 	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
-		npcBot:Action_UseAbilityOnLocation(tpScroll, ancient:GetLocation())
+		npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.1))
 	else
 		npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.15))
 	end
