@@ -40,6 +40,10 @@ function EnemyWeak(npcBot)
     return true
 end
 
+function CalcHyper(x, max_x, max_y, rate)
+	return rate * (x - max_x)^2 / 2 + max_y
+end
+
 function enemyDistance(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     if nearbyEnemy == nil or #nearbyEnemy == 0 then
@@ -50,7 +54,8 @@ function enemyDistance(npcBot)
 	if attackRange <= 150 then
 		return RemapValClamped(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), 200, 600 , 100, 0)
 	else
-		return RemapValClamped(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), 200, 600 , 100, 0)
+		local val = 100 * CalcHyper(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), attackRange * 0.8, 100, -0.01)
+		return Clamp(val, 0, 100)
 	end
     --return RemapValClamped(dist, 200, 600 , 100, 0)
 end
