@@ -28,6 +28,11 @@ local Items = {
 	"item_cloak",
 	"item_shadow_amulet",
 
+	----scythe of vyse----
+	"item_mystic_staff",
+	"item_ultimate_orb",
+	"item_void_stone",
+
 	----force staff----
 	"item_staff_of_wizardry",
 	"item_ring_of_regen",
@@ -39,11 +44,6 @@ local Items = {
 	"item_ogre_axe",
 	"item_blade_of_alacrity",
 	"item_recipe_ultimate_scepter",
-
-	----scythe of vyse----
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",
 
 	----shivas----
 	"item_platemail",

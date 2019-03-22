@@ -180,10 +180,10 @@ function SpellRetreat()
 			npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
-				and GetUnitToUnitDistance(npcBot,target) >= abilityE:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
+				and GetUnitToUnitDistance(npcBot,target) >= abilityE:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaE) and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 
-		elseif (not IsBotCasting() and (nearbyAllyTower ~= nil or #nearbyAllyTower > 0) and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+		elseif (not IsBotCasting() and (nearbyAllyTower ~= nil or #nearbyAllyTower > 0) and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, target)
 		end

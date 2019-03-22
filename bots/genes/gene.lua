@@ -7,7 +7,11 @@ local geneList = {
 		['npc_dota_hero_juggernaut'] = require(GetScriptDirectory().."/genes/gene_juggernaut"),
 		['npc_dota_hero_lich'] = require(GetScriptDirectory().."/genes/gene_lich"),
 		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/genes/gene_ogre_magi"),
-		['npc_dota_hero_medusa'] = require(GetScriptDirectory().."/genes/gene_medusa")
+		['npc_dota_hero_medusa'] = require(GetScriptDirectory().."/genes/gene_medusa"),
+		['npc_dota_hero_lion'] = require(GetScriptDirectory().."/genes/gene_lion"),
+		['npc_dota_hero_tidehunter'] = require(GetScriptDirectory().."/genes/gene_tidehunter"),
+		['npc_dota_hero_crystal_maiden'] = require(GetScriptDirectory().."/genes/gene_crystal_maiden"),
+		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/genes/gene_tinker")
 	}
 }
 
