@@ -13,10 +13,10 @@ wardLocs =
     [Radiantside_riverward_Bot] = 120,
     [Radiantside_riverward_Top] = 120,
     [Radiantside_direjungle_Top] = 120,
-    [aShrine1] = 120,
-    [aShrine2] = 120,
     [eShrine1] = 120,
-    [eShrine2] = 120
+    [eShrine2] = 120,
+    [aShrine1] = 120,
+    [aShrine2] = 120
 }
 }
 --Radiantside_riverward_Top = Vector(-2800, 800, 0)

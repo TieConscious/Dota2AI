@@ -1,5 +1,7 @@
 local module = require(GetScriptDirectory().."/helpers")
+local geneList = require(GetScriptDirectory().."/genes/gene")
 
+local npcBot = GetBot()
 --components--
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
@@ -156,15 +158,15 @@ local retreat_weight = {
         },
 
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=gene.willEnemyTowerTargetMe},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=gene.isEnemyTowerTargetingMeNoAlly},
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=gene.hasPassiveEnemyNearby}, --0.5
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=gene.hasAggressiveEnemyNearby}, --2
-			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=gene.hasEnemyCreepsNearby},
-			{func=lowHealth, condition=hardRetreat, weight=gene.hardRetreat},
-			{func=lowHealthSoft, condition=enemyRetreat, weight=gene.enemyRetreat},
-			{func=FillMana, condition=FountainMana, weight=gene.FountainMana},
-			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=gene.AreThereDangerPings}
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=geneList.geneticTree[npcBot:GetUnitName()].willEnemyTowerTargetMe},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=geneList.geneticTree[npcBot:GetUnitName()].isEnemyTowerTargetingMeNoAlly},
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.geneticTree[npcBot:GetUnitName()].hasPassiveEnemyNearby}, --0.5
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=geneList.geneticTree[npcBot:GetUnitName()].hasAggressiveEnemyNearby}, --2
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=geneList.geneticTree[npcBot:GetUnitName()].hasEnemyCreepsNearby},
+			{func=lowHealth, condition=hardRetreat, weight=geneList.geneticTree[npcBot:GetUnitName()].hardRetreat},
+			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyRetreat},
+			{func=FillMana, condition=FountainMana, weight=geneList.geneticTree[npcBot:GetUnitName()].FountainMana},
+			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.geneticTree[npcBot:GetUnitName()].AreThereDangerPings}
 		}
     }
 }

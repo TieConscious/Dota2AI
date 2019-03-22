@@ -1,6 +1,8 @@
 local module = require(GetScriptDirectory().."/helpers")
 local globalState = require(GetScriptDirectory().."/global_state")
-local gene = require(GetScriptDirectory().."/gene")
+local geneList = require(GetScriptDirectory().."/genes/gene")
+
+local npcBot = GetBot()
 
 function PowerRatioNoHunt(npcBot)
     -- local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -43,9 +45,14 @@ function enemyDistance(npcBot)
     if nearbyEnemy == nil or #nearbyEnemy == 0 then
         return 0
     end
+	local attackRange = npcBot:GetAttackRange()
 
-    local dist = GetUnitToUnitDistance(npcBot, nearbyEnemy[1])
-    return RemapValClamped(dist, 200, 600 , 100, 0)
+	if attackRange <= 150 then
+		return RemapValClamped(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), 200, 600 , 100, 0)
+	else
+		return RemapValClamped(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), 200, 600 , 100, 0)
+	end
+    --return RemapValClamped(dist, 200, 600 , 100, 0)
 end
 
 function enemyOutlevels(npcBot)
@@ -254,29 +261,29 @@ local hunt_weight = {
         name = "hunt",
 
         components = {
-            {func=enemyHealth, weight=gene.enemyHealth},
-            {func=enemyDistance, weight=gene.enemyDistance}
+            {func=enemyHealth, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyHealth},
+            {func=enemyDistance, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyDistance}
             --our health
             --our mana
         },
 
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=gene.isUnderTower}, --is this in retreat
-            {func=zero, condition=weDisabled, weight=gene.weDisabled}, --should this be in retreat
+            {func=zero, condition=isUnderTower, weight=geneList.geneticTree[npcBot:GetUnitName()].isUnderTower}, --is this in retreat
+            {func=zero, condition=weDisabled, weight=geneList.geneticTree[npcBot:GetUnitName()].weDisabled}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
-            {func=HeroHealth, condition=eUnderTower, weight=gene.eUnderTower},
+            {func=HeroHealth, condition=eUnderTower, weight=geneList.geneticTree[npcBot:GetUnitName()].eUnderTower},
             --{func=HeroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=gene.enemyNear},
+            {func=numberCreeps, condition=enemyNear, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNear},
             --{func=heroMana, condition=enemyNear, weight=20},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=gene.EnemyPowerful},
+            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyPowerful},
 
 
-            {func=Fuckem, condition=EnemyWeak, weight=gene.EnemyWeak},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=gene.enemyNearAndNotLevel},
-            {func=HeroHealth, condition=EnemyDisabled, weight=gene.EnemyDisabled},
-            {func=HeroHealth, condition=punchBack, weight=gene.punchBack},
-            {func=onehundred, condition=allyInFight, weight=gene.allyInFight},
+            {func=Fuckem, condition=EnemyWeak, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyWeak},
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNearAndNotLevel},
+            {func=HeroHealth, condition=EnemyDisabled, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyDisabled},
+            {func=HeroHealth, condition=punchBack, weight=geneList.geneticTree[npcBot:GetUnitName()].punchBack},
+            {func=onehundred, condition=allyInFight, weight=geneList.geneticTree[npcBot:GetUnitName()].allyInFight},
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
         }

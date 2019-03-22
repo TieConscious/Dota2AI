@@ -181,7 +181,7 @@ function SpellRetreat()
 		if (phase ~= nil and not IsBotCasting() and ConsiderCast(phase)) then
 			npcBot:Action_UseAbility(phase)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)) then
+		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, eHeroList[1]) <= 800) then
 			npcBot:Action_UseAbility(abilityQ)
 		end
 

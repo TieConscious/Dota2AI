@@ -1,6 +1,7 @@
 local module = require(GetScriptDirectory().."/helpers")
-local gene = require(GetScriptDirectory().."/gene")
+local geneList = require(GetScriptDirectory().."/genes/gene")
 
+local npcBot = GetBot()
 local searchRadius = 1000
 local hitConsider = 2.5
 local moveDist = 300
@@ -80,15 +81,15 @@ local farm_weight = {
         name = "farm",
 
         components = {
-            {func=creepsAround, weight=gene.creepsAround},
-            {func=calcEnemyCreepHealth, weight=gene.calcEnemyCreepHealth},
-            {func=calcEnemyCreepDist, weight=gene.calcEnemyCreepDist}
+            {func=creepsAround, weight=geneList.geneticTree[npcBot:GetUnitName()].creepsAround},
+            {func=calcEnemyCreepHealth, weight=geneList.geneticTree[npcBot:GetUnitName()].calcEnemyCreepHealth},
+            {func=calcEnemyCreepDist, weight=geneList.geneticTree[npcBot:GetUnitName()].calcEnemyCreepDist}
         },
 
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=gene.enemyNotLevel},
-            {func=moreFarm, condition=alone, weight=gene.alone}
+            {func=heroLevel, condition=enemyNotLevel, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNotLevel},
+            {func=moreFarm, condition=alone, weight=geneList.geneticTree[npcBot:GetUnitName()].alone}
         }
     }
 }

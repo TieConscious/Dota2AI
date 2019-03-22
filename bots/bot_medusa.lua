@@ -101,8 +101,8 @@ function Murder(eHero)
 		local bounce = module.BounceSpells(npcBot, 475)
 
 		if (not npcBot:IsSilenced()) then
-			if (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
-					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() and target:IsFacingLocation(npcBot:GetLocation(), 20)) then
+			if (not IsBotCasting() and ConsiderCast(abilityR) and #eHeroList > #aHeroList and #eHeroList + #aHeroList > 4 and currentMana >= module.CalcManaCombo(manaR)
+					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() and target:IsFacingLocation(npcBot:GetLocation(), 50)) then
 				npcBot:Action_UseAbility(abilityR)
 
 			elseif (not IsBotCasting() and #eHeroList > 1 and bounce > 1 and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)

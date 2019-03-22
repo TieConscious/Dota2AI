@@ -173,7 +173,7 @@ function SpellRetreat()
 		local target = eHeroList[1]
 
 		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
-			and not module.IsHardCC(target)) then
+			and GetUnitToUnitDistance(npcBot,target) >= abilityQ:GetCastRange() - 200 and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 		end
 	end

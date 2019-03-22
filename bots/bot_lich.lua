@@ -160,6 +160,7 @@ function SpellRetreat()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
@@ -191,11 +192,11 @@ function SpellRetreat()
 			npcBot:Action_UseAbilityOnEntity(force, npcBot)
 
 		elseif (not IsBotCasting() and #eHeroList > 1 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
-				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
+				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR) and #aHeroList > 1) then
 			npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaQ)) then
+				and GetUnitToUnitDistance(npcBot,target) >= abilityQ:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaQ)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 		end
 

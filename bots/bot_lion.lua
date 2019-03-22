@@ -1,226 +1,226 @@
-local module = require(GetScriptDirectory().."/helpers")
-local behavior = require(GetScriptDirectory().."/behavior")
-local stateMachine = require(GetScriptDirectory().."/state_machine")
-local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
-local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
+-- local module = require(GetScriptDirectory().."/helpers")
+-- local behavior = require(GetScriptDirectory().."/behavior")
+-- local stateMachine = require(GetScriptDirectory().."/state_machine")
+-- local minionBehavior = require(GetScriptDirectory().."/minion_behavior")
+-- local minionStateMachine = require(GetScriptDirectory().."/minion_state_machine")
 
-local SKILL_Q = "lion_impale"
-local SKILL_W = "lion_voodoo"
-local SKILL_E = "lion_mana_drain"
-local SKILL_R = "lion_finger_of_death"
-local TALENT1 = "special_bonus_cast_range_100"
-local TALENT2 = "special_bonus_attack_damage_90"
-local TALENT3 = "special_bonus_unique_lion_3"
-local TALENT4 = "special_bonus_gold_income_25"
-local TALENT5 = "special_bonus_hp_500"
-local TALENT6 = "special_bonus_unique_lion"
-local TALENT7 = "special_bonus_unique_lion_2"
-local TALENT8 = "special_bonus_unique_lion_4"
-
-
-local Ability = {
-	SKILL_Q,
-	SKILL_E,
-	SKILL_Q,
-	SKILL_W,
-	SKILL_Q,
-	SKILL_R,
-	SKILL_Q,
-	SKILL_E,
-	SKILL_E,
-	TALENT1,
-	SKILL_E,
-	SKILL_R,
-	SKILL_W,
-	SKILL_W,
-	TALENT3,
-	SKILL_W,
-	"nil",
-	SKILL_R,
-	"nil",
-	TALENT5,
-	"nil",
-	"nil",
-	"nil",
-	"nil",
-	TALENT8
-}
-
-local npcBot = GetBot()
+-- local SKILL_Q = "lion_impale"
+-- local SKILL_W = "lion_voodoo"
+-- local SKILL_E = "lion_mana_drain"
+-- local SKILL_R = "lion_finger_of_death"
+-- local TALENT1 = "special_bonus_cast_range_100"
+-- local TALENT2 = "special_bonus_attack_damage_90"
+-- local TALENT3 = "special_bonus_unique_lion_3"
+-- local TALENT4 = "special_bonus_gold_income_25"
+-- local TALENT5 = "special_bonus_hp_500"
+-- local TALENT6 = "special_bonus_unique_lion"
+-- local TALENT7 = "special_bonus_unique_lion_2"
+-- local TALENT8 = "special_bonus_unique_lion_4"
 
 
-function IsBotCasting()
-	return npcBot:IsChanneling()
-		  or npcBot:IsUsingAbility()
-		  or npcBot:IsCastingAbility()
-end
+-- local Ability = {
+-- 	SKILL_Q,
+-- 	SKILL_E,
+-- 	SKILL_Q,
+-- 	SKILL_W,
+-- 	SKILL_Q,
+-- 	SKILL_R,
+-- 	SKILL_Q,
+-- 	SKILL_E,
+-- 	SKILL_E,
+-- 	TALENT1,
+-- 	SKILL_E,
+-- 	SKILL_R,
+-- 	SKILL_W,
+-- 	SKILL_W,
+-- 	TALENT3,
+-- 	SKILL_W,
+-- 	"nil",
+-- 	SKILL_R,
+-- 	"nil",
+-- 	TALENT5,
+-- 	"nil",
+-- 	"nil",
+-- 	"nil",
+-- 	"nil",
+-- 	TALENT8
+-- }
+
+-- local npcBot = GetBot()
 
 
-function ConsiderCast(...)
-	for k,v in pairs({...}) do
-		if (v == nil or not v:IsFullyCastable()) then
-			return false
-		end
-	end
-	return true
-end
-
-----Murder closest enemy hero----
-function Murder()
-	local currentHealth = npcBot:GetHealth()
-	local maxHealth = npcBot:GetMaxHealth()
-	local perHealth = module.CalcPerHealth(npcBot)
-	local currentMana = npcBot:GetMana()
-	local manaPer = module.CalcPerMana(npcBot)
-	local hRange = npcBot:GetAttackRange() - 25
-
-	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
-	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
-	local abilityW = npcBot:GetAbilityByName(SKILL_W)
-	local abilityE = npcBot:GetAbilityByName(SKILL_E)
-	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local stick = module.ItemSlot(npcBot, "item_magic_stick")
-	local wand = module.ItemSlot(npcBot, "item_magic_wand")
+-- function IsBotCasting()
+-- 	return npcBot:IsChanneling()
+-- 		  or npcBot:IsUsingAbility()
+-- 		  or npcBot:IsCastingAbility()
+-- end
 
 
-	local manaQ = abilityQ:GetManaCost()
-	local manaW = abilityW:GetManaCost()
-	local manaE = abilityE:GetManaCost()
-	local manaR = abilityR:GetManaCost()
+-- function ConsiderCast(...)
+-- 	for k,v in pairs({...}) do
+-- 		if (v == nil or not v:IsFullyCastable()) then
+-- 			return false
+-- 		end
+-- 	end
+-- 	return true
+-- end
 
-	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
-		npcBot:Action_UseAbility(stick)
-		return
-	end
+-- ----Murder closest enemy hero----
+-- function Murder()
+-- 	local currentHealth = npcBot:GetHealth()
+-- 	local maxHealth = npcBot:GetMaxHealth()
+-- 	local perHealth = module.CalcPerHealth(npcBot)
+-- 	local currentMana = npcBot:GetMana()
+-- 	local manaPer = module.CalcPerMana(npcBot)
+-- 	local hRange = npcBot:GetAttackRange() - 25
 
-	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
-		npcBot:Action_UseAbility(wand)
-		return
-	end
+-- 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
-	--f (eHeroList ~= nil and #eHeroList > 0) then
-	--	local target = module.SmartTarget(npcBot)
-
-	--	if (not npcBot:IsSilenced()) then
-	--		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target)) then
-	--			if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
-	--				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
-	--				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
-	--				npcBot:ActionPush_UseAbility(abilityR)
-	--			elseif (GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()) then
-	--				npcBot:ActionPush_UseAbility(abilityR)
-	--				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
-	--			end
-
-	--		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW) and currentMana >= module.CalcManaCombo(manaW, manaR)
-	--				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
-	--			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
-	--			npcBot:ActionPush_UseAbility(abilityR)
-
-	--		elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)
-	--				and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)
-	--				and not module.IsHardCC(target)) then
-	--			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
-	--			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
-
-	--		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)
-	--				and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and not module.IsHardCC(target)) then
-	--			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
-
-	--		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
-	--				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
-	--			npcBot:Action_UseAbilityOnEntity(abilityW, target)
-
-	--		end
-
-	--		if (manta ~= nil) then
-	--			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
-	--				npcBot:Action_UseAbility(manta)
-	--			end
-	--		end
-	--	end
-	--	----Fuck'em up!----
-	--	--melee, miss when over 350
-	--	if (not IsBotCasting()) then
-	--		if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
-	--			if GetUnitToUnitDistance(npcBot, target) > 350 then
-	--				npcBot:Action_MoveToUnit(target)
-	--			end
-	--		else
-	--			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
-	--				npcBot:Action_AttackUnit(target, true)
-	--			else
-	--				npcBot:Action_MoveToUnit(target)
-	--			end
-	--		end
-	--	end
-
-	--	if (module.CalcPerHealth(target) <= 0.15) then
-	--		local ping = target:GetExtrapolatedLocation(1)
-	--		npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
-	--	end
-	--end
-
-end
-
-function SpellRetreat()
-	npcBot = GetBot()
-	local perHealth = module.CalcPerHealth(npcBot)
-	local currentMana = npcBot:GetMana()
-	local manaPer = module.CalcPerMana(npcBot)
-
-	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-
-	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
-
-	local manaQ = abilityQ:GetManaCost()
-
-	if (eHeroList ~= nil and #eHeroList > 0) then
-		local target = eHeroList[1]
-
-		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
-			and not module.IsHardCC(target)) then
-			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
-		end
-	end
-end
+-- 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+-- 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
+-- 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
+-- 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+-- 	local stick = module.ItemSlot(npcBot, "item_magic_stick")
+-- 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
 
+-- 	local manaQ = abilityQ:GetManaCost()
+-- 	local manaW = abilityW:GetManaCost()
+-- 	local manaE = abilityE:GetManaCost()
+-- 	local manaR = abilityR:GetManaCost()
 
-function Think()
-	local npcBot = GetBot()
-	local state = stateMachine.calculateState(npcBot)
+-- 	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
+-- 		npcBot:Action_UseAbility(stick)
+-- 		return
+-- 	end
 
-	--stateMachine.printState(state)
-	module.AbilityLevelUp(Ability)
-	if state.state == "hunt" then
-		--implement custom hero hunting here
-		Murder()
-	elseif state.state == "retreat" then
-		behavior.generic(npcBot, state)
-		--if (not npcBot:IsSilenced()) then
-		--	SpellRetreat()
-		--end
-	elseif state.state == "finishHim" then
-		behavior.generic(npcBot, state)
-		Murder()
-	else
-		behavior.generic(npcBot, state)
-	end
-end
+-- 	if (not IsBotCasting() and wand ~= nil and ConsiderCast(wand) and wand:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (wand:GetCurrentCharges() * 15))) then
+-- 		npcBot:Action_UseAbility(wand)
+-- 		return
+-- 	end
 
-function MinionThink(hMinionUnit)
-	local state = minionStateMachine.calculateState(hMinionUnit)
-	--stateMachine.printState(state)
-	local master = GetBot()
-	if (hMinionUnit == nil) then
-		return
-	end
+-- 	--f (eHeroList ~= nil and #eHeroList > 0) then
+-- 	--	local target = module.SmartTarget(npcBot)
 
-	if hMinionUnit:IsIllusion() then
-		minionBehavior.generic(hMinionUnit, master, state)
-	else
-		return
-	end
-end
+-- 	--	if (not npcBot:IsSilenced()) then
+-- 	--		if (not IsBotCasting() and ConsiderCast(abilityR, abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW, manaR) and not module.IsHardCC(target)) then
+-- 	--			if (GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+-- 	--				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+-- 	--				npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+-- 	--				npcBot:ActionPush_UseAbility(abilityR)
+-- 	--			elseif (GetUnitToUnitDistance(npcBot,target) <= abilityQ:GetCastRange()) then
+-- 	--				npcBot:ActionPush_UseAbility(abilityR)
+-- 	--				npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+-- 	--			end
+
+-- 	--		elseif (not IsBotCasting() and ConsiderCast(abilityR, abilityW) and currentMana >= module.CalcManaCombo(manaW, manaR)
+-- 	--				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+-- 	--			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+-- 	--			npcBot:ActionPush_UseAbility(abilityR)
+
+-- 	--		elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)
+-- 	--				and	GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)
+-- 	--				and not module.IsHardCC(target)) then
+-- 	--			npcBot:ActionPush_UseAbilityOnEntity(abilityQ, target)
+-- 	--			npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
+
+-- 	--		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ)
+-- 	--				and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange() and not module.IsHardCC(target)) then
+-- 	--			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+
+-- 	--		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
+-- 	--				and GetUnitToUnitDistance(npcBot,target) >= (abilityW:GetCastRange() * 0.75) and abilityW:GetCastRange() >= GetUnitToUnitDistance(npcBot,target)) then
+-- 	--			npcBot:Action_UseAbilityOnEntity(abilityW, target)
+
+-- 	--		end
+
+-- 	--		if (manta ~= nil) then
+-- 	--			if (not IsBotCasting() and ConsiderCast(manta) and currentMana >= manaManta and GetUnitToUnitDistance(npcBot, target) <= 200) then
+-- 	--				npcBot:Action_UseAbility(manta)
+-- 	--			end
+-- 	--		end
+-- 	--	end
+-- 	--	----Fuck'em up!----
+-- 	--	--melee, miss when over 350
+-- 	--	if (not IsBotCasting()) then
+-- 	--		if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
+-- 	--			if GetUnitToUnitDistance(npcBot, target) > 350 then
+-- 	--				npcBot:Action_MoveToUnit(target)
+-- 	--			end
+-- 	--		else
+-- 	--			if (GetUnitToUnitDistance(npcBot, target) <= hRange) then
+-- 	--				npcBot:Action_AttackUnit(target, true)
+-- 	--			else
+-- 	--				npcBot:Action_MoveToUnit(target)
+-- 	--			end
+-- 	--		end
+-- 	--	end
+
+-- 	--	if (module.CalcPerHealth(target) <= 0.15) then
+-- 	--		local ping = target:GetExtrapolatedLocation(1)
+-- 	--		npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
+-- 	--	end
+-- 	--end
+
+-- end
+
+-- function SpellRetreat()
+-- 	npcBot = GetBot()
+-- 	local perHealth = module.CalcPerHealth(npcBot)
+-- 	local currentMana = npcBot:GetMana()
+-- 	local manaPer = module.CalcPerMana(npcBot)
+
+-- 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+
+-- 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
+
+-- 	local manaQ = abilityQ:GetManaCost()
+
+-- 	if (eHeroList ~= nil and #eHeroList > 0) then
+-- 		local target = eHeroList[1]
+
+-- 		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+-- 			and not module.IsHardCC(target)) then
+-- 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+-- 		end
+-- 	end
+-- end
+
+
+
+-- function Think()
+-- 	local npcBot = GetBot()
+-- 	local state = stateMachine.calculateState(npcBot)
+
+-- 	--stateMachine.printState(state)
+-- 	module.AbilityLevelUp(Ability)
+-- 	if state.state == "hunt" then
+-- 		--implement custom hero hunting here
+-- 		Murder()
+-- 	elseif state.state == "retreat" then
+-- 		behavior.generic(npcBot, state)
+-- 		--if (not npcBot:IsSilenced()) then
+-- 		--	SpellRetreat()
+-- 		--end
+-- 	elseif state.state == "finishHim" then
+-- 		behavior.generic(npcBot, state)
+-- 		Murder()
+-- 	else
+-- 		behavior.generic(npcBot, state)
+-- 	end
+-- end
+
+-- function MinionThink(hMinionUnit)
+-- 	local state = minionStateMachine.calculateState(hMinionUnit)
+-- 	--stateMachine.printState(state)
+-- 	local master = GetBot()
+-- 	if (hMinionUnit == nil) then
+-- 		return
+-- 	end
+
+-- 	if hMinionUnit:IsIllusion() then
+-- 		minionBehavior.generic(hMinionUnit, master, state)
+-- 	else
+-- 		return
+-- 	end
+-- end
