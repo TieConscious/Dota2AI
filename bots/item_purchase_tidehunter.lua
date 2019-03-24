@@ -18,6 +18,12 @@ local Items =
 	"item_energy_booster",
 	"item_recipe_arcane_boots",
 
+	----urn----
+	"item_circlet",
+	"item_ring_of_protection",
+	"item_urn_of_shadows",
+	"item_infused_raindrop",
+
 	----blink dagger----
 	"item_blink",
 
@@ -37,13 +43,7 @@ local Items =
 	----shivas----
 	"item_platemail",
 	"item_mystic_staff",
-	"item_recipe_shivas_guard",
-
-	----octarine core----
-	"item_mystic_staff",
-	"item_point_booster",
-	"item_energy_booster",
-	"item_vitality_booster"
+	"item_recipe_shivas_guard"
 
 }
 

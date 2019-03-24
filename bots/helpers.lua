@@ -211,7 +211,7 @@ local TopCarry = {
 }
 
 local BotCarry = {
-	--"npc_dota_hero_axe",
+	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_chaos_knight",
 	"npc_dota_hero_juggernaut",
 	"npc_dot_hero_naga_siren"
@@ -227,6 +227,7 @@ local Mid = {
 }
 
 local TopSupport = {
+	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	--"npc_dota_hero_bane",
 	"npc_dota_hero_tidehunter",
@@ -243,7 +244,7 @@ local BotSupport = {
 
 local Bans = {
 	'npc_dota_hero_sniper',
-	'npc_dota_hero_jakiro',
+	--'npc_dota_hero_jakiro',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_undying',
     'npc_dota_hero_vengefulspirit',
@@ -386,7 +387,9 @@ local attackType =
 	["npc_dota_hero_bane"] = RANGED,
 	["npc_dota_hero_lich"] = RANGED,
 	["npc_dota_hero_crystal_maiden"] = RANGED,
-	["npc_dota_hero_lion"] = RANGED
+	["npc_dota_hero_lion"] = RANGED,
+	["npc_dota_hero_skeleton_king"] = MELEE,
+	["npc_dota_hero_jakiro"] = RANGED
 }
 
 local turnRate =
@@ -406,7 +409,9 @@ local turnRate =
 	["npc_dota_hero_bane"] = 0.6,
 	["npc_dota_hero_lich"] = 0.5,
 	["npc_dota_hero_crystal_maiden"] = 0.5,
-	["npc_dota_hero_lion"] = 0.5
+	["npc_dota_hero_lion"] = 0.5,
+	["npc_dota_hero_skeleton_king"] = 0.5,
+	["npc_dota_hero_jakiro"] = 0.5
 }
 
 function module.GetTimeToFace(npcBot, unit)

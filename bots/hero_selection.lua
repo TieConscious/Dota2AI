@@ -33,15 +33,17 @@ local ZeroBadGuyPicks = {
 	'npc_dota_hero_viper',
 	'npc_dota_hero_windrunner',
 	'npc_dota_hero_witch_doctor',
-	'npc_dota_hero_skeleton_king'
+	--'npc_dota_hero_skeleton_king'
 }
 
 local APPicks = {
+	'npc_dota_hero_jakiro',
 	 'npc_dota_hero_bane',
 	--'npc_dota_hero_lion',
- 	'npc_dota_hero_chaos_knight',
+	'npc_dota_hero_skeleton_king',
+ 	--'npc_dota_hero_chaos_knight',
  	--'npc_dota_hero_juggernaut',
- 	'npc_dota_hero_lich',
+ 	--'npc_dota_hero_lich',
 	'npc_dota_hero_ogre_magi',
 	'npc_dota_hero_medusa',
  	'npc_dota_hero_tinker',
@@ -53,8 +55,7 @@ local APPicks = {
  	'npc_dota_hero_abyssal_underlord',
  	'npc_dota_hero_pugna',
  	'npc_dota_hero_sven',
- 	'npc_dota_hero_dazzle',
- 	'npc_dota_hero_jakiro'
+ 	'npc_dota_hero_dazzle'
 }
 
 local TopCarry = {
@@ -70,7 +71,7 @@ local TopCarry = {
 }
 
 local BotCarry = {
-	--"npc_dota_hero_axe",
+	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_chaos_knight",
 	"npc_dota_hero_juggernaut",
 	"npc_dot_hero_naga_siren"
@@ -86,6 +87,7 @@ local Mid = {
 }
 
 local TopSupport = {
+	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	--"npc_dota_hero_bane",
 	"npc_dota_hero_tidehunter",
@@ -103,7 +105,7 @@ local BotSupport = {
 
 
 local Bans = {
-	'npc_dota_hero_jakiro',
+	--'npc_dota_hero_jakiro',
 	'npc_dota_hero_warlock',
 	'npc_dota_hero_phantom_lancer',
 	'npc_dota_hero_sniper',

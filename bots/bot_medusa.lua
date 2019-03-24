@@ -97,6 +97,7 @@ function Murder(eHero)
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local manta = module.ItemSlot(npcBot, "item_manta")
 	local hurricane = module.ItemSlot(npcBot, "item_hurricane_pike")
+	local mjol = module.ItemSlot(npcBot, "item_mjollnir")
 	local stick = module.ItemSlot(npcBot, "item_magic_stick")
 	local wand = module.ItemSlot(npcBot, "item_magic_wand")
 
@@ -104,6 +105,7 @@ function Murder(eHero)
 	local manaR = abilityR:GetManaCost()
 	local manaManta = 125
 	local manaHurricane = 100
+	local manaMjol = 50
 
 
 	if (not IsBotCasting() and stick ~= nil and ConsiderCast(stick) and stick:GetCurrentCharges() >= 5 and currentHealth <= (maxHealth - (stick:GetCurrentCharges() * 15))) then
@@ -137,6 +139,8 @@ function Murder(eHero)
 					and GetUnitToUnitDistance(npcBot, wTarget) <= abilityW:GetCastRange()) then
 				npcBot:Action_UseAbilityOnEntity(abilityW, wTarget)
 
+			elseif (mjol ~= nil and not IsBotCasting() and ConsiderCast(mjol) and currentMana >= manaMjol and GetUnitToUnitDistance(npcBot, target) <= 200) then
+				npcBot:Action_UseAbilityOnEntity(mjol, npcBot)
 
 			end
 

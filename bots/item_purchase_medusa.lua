@@ -24,6 +24,11 @@ local Items = {
 	"item_ogre_axe",
 	"item_recipe_dragon_lance",
 
+	----maelstrom----
+	"item_javelin",
+	"item_mithril_hammer",
+
+
 	----manta style----
 	"item_ultimate_orb",
 	"item_boots_of_elves",
@@ -37,12 +42,6 @@ local Items = {
 	"item_point_booster",
 	"item_recipe_skadi",
 
-	----butterfly----
-	"item_eagle",
-	"item_talisman_of_evasion",
-	"item_quarterstaff",
-	"item_recipe_butterfly",
-
 	----force staff----
 	"item_staff_of_wizardry",
 	"item_ring_of_regen",
@@ -53,8 +52,11 @@ local Items = {
 	"item_ultimate_orb",
 	"item_ring_of_health",
 	"item_void_stone",
-	"item_recipe_sphere"
+	"item_recipe_sphere",
 
+	----mjollnir----
+	"item_hyperstone",
+	"item_recipe_mjollnir"
 }
 
 return Items

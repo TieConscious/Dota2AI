@@ -188,6 +188,10 @@ function Farm()
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local health = 0
 
+	if npcBot:IsChanneling() then
+		return
+	end
+
 	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 		return
 	end
@@ -395,7 +399,7 @@ function Defend()
 	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
 		npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.1))
 	else
-		npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.15))
+		npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.2))
 	end
 end
 

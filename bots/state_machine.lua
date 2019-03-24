@@ -10,7 +10,7 @@ local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
-local ward_weight = require(GetScriptDirectory().."/weights/ward")
+--local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local globalState = require(GetScriptDirectory().."/global_state")
 
 local stateMachine = {}

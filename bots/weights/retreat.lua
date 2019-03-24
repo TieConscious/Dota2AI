@@ -135,7 +135,7 @@ function AreThereDangerPings(npcBot)
 	for __,aHero in pairs(team) do
 		local recentPing = aHero:GetMostRecentPing()
 		--print(recentPing.time)
-		if (recentPing ~= nil and not recentPing.normal_ping and (time - recentPing.time) <= 6.0 and GetUnitToLocationDistance(npcBot, recentPing.location) <= 2000
+		if (recentPing ~= nil and not recentPing.normal_ping and (time - recentPing.time) <= 6.0 and GetUnitToLocationDistance(npcBot, recentPing.location) <= 1600
 			and GetUnitToUnitDistance(npcBot, aHero) <= 2000) then
 			return true
 		end
