@@ -84,7 +84,6 @@ function CalculateBreath(target, npcBot)
 	-- print(x)
 	-- return target:GetExtrapolatedLocation(x), x
 	x = GetUnitToUnitDistance(target, npcBot) / 1050 + 0.55
-	print(x)
 	return target:GetExtrapolatedLocation(x)
 end
 
@@ -136,10 +135,9 @@ function Murder()
 		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
 			----Try various combos on weakened enemy unit----
 			local extraLocation = CalculateBreath(target, npcBot)
-			if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToLocationDistance(npcBot, extraLocation) <= abilityQ:GetCastRange()
+			if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaQ)) then
-				local targetLocation = npcBot:GetLocation()
-				npcBot:Action_UseAbilityOnLocation(abilityQ, targetLocation)
+				npcBot:Action_UseAbilityOnLocation(abilityQ, extraLocation)
 
 			elseif (not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaSheepStick) and not module.IsHardCC(target)) then
