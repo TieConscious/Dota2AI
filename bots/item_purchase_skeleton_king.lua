@@ -17,16 +17,16 @@ local Items =
 	"item_boots",
 	"item_chainmail",
 
-	----radiance----
-	"item_relic",
-	"item_recipe_radiance",
-
 	----echo sabre----
 	"item_ogre_axe",
 	"item_quarterstaff",
 	"item_robe",
 	"item_sobi_mask",
 	"item_recipe_echo_sabre",
+
+	----radiance----
+	"item_relic",
+	"item_recipe_radiance",
 
 	----Assault Cuirass----
 	"item_chainmail",
