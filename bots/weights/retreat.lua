@@ -159,15 +159,15 @@ local retreat_weight = {
         },
 
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=geneList.geneticTree[npcBot:GetUnitName()].willEnemyTowerTargetMe},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=geneList.geneticTree[npcBot:GetUnitName()].isEnemyTowerTargetingMeNoAlly},
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.geneticTree[npcBot:GetUnitName()].hasPassiveEnemyNearby}, --0.5
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=geneList.geneticTree[npcBot:GetUnitName()].hasAggressiveEnemyNearby}, --2
-			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=geneList.geneticTree[npcBot:GetUnitName()].hasEnemyCreepsNearby},
-			{func=lowHealth, condition=hardRetreat, weight=geneList.geneticTree[npcBot:GetUnitName()].hardRetreat},
-			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyRetreat},
-			{func=FillMana, condition=FountainMana, weight=geneList.geneticTree[npcBot:GetUnitName()].FountainMana},
-			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.geneticTree[npcBot:GetUnitName()].AreThereDangerPings}
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=geneList.GetWeight, weightName="willEnemyTowerTargetMe"},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=geneList.GetWeight, weightName="isEnemyTowerTargetingMeNoAlly"},
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.GetWeight, weightName="hasPassiveEnemyNearby"}, --0.5
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby, weight=geneList.GetWeight, weightName="hasAggressiveEnemyNearby"}, --2
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=geneList.GetWeight, weightName="hasEnemyCreepsNearby"},
+			{func=lowHealth, condition=hardRetreat, weight=geneList.GetWeight, weightName="hardRetreat"},
+			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.GetWeight, weightName="enemyRetreat"},
+			{func=FillMana, condition=FountainMana, weight=geneList.GetWeight, weightName="FountainMana"},
+			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.GetWeight, weightName="AreThereDangerPings"}
 		}
     }
 }

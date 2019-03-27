@@ -266,29 +266,29 @@ local hunt_weight = {
         name = "hunt",
 
         components = {
-            {func=enemyHealth, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyHealth},
-            {func=enemyDistance, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyDistance}
+            {func=enemyHealth, weight=geneList.GetWeight, weightName="enemyHealth"},
+            {func=enemyDistance, weight=geneList.GetWeight, weightName="enemyDistance"}
             --our health
             --our mana
         },
 
         conditionals = {
-            {func=zero, condition=isUnderTower, weight=geneList.geneticTree[npcBot:GetUnitName()].isUnderTower}, --is this in retreat
-            {func=zero, condition=weDisabled, weight=geneList.geneticTree[npcBot:GetUnitName()].weDisabled}, --should this be in retreat
+            {func=zero, condition=isUnderTower, weight=geneList.GetWeight, weightName="isUnderTower"}, --is this in retreat
+            {func=zero, condition=weDisabled, weight=geneList.GetWeight, weightName="weDisabled"}, --should this be in retreat
             --{func=zero, condition=enemyOutlevels, weight=10},
-            {func=HeroHealth, condition=eUnderTower, weight=geneList.geneticTree[npcBot:GetUnitName()].eUnderTower},
+            {func=HeroHealth, condition=eUnderTower, weight=geneList.GetWeight, weightName="eUnderTower"},
             --{func=HeroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNear},
+            {func=numberCreeps, condition=enemyNear, weight=geneList.GetWeight, weightName="enemyNear"},
             --{func=heroMana, condition=enemyNear, weight=20},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyPowerful},
+            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=geneList.GetWeight, weightName="EnemyPowerful"},
 
 
-            {func=Fuckem, condition=EnemyWeak, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyWeak},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNearAndNotLevel},
-            {func=HeroHealth, condition=EnemyDisabled, weight=geneList.geneticTree[npcBot:GetUnitName()].EnemyDisabled},
-            {func=HeroHealth, condition=punchBack, weight=geneList.geneticTree[npcBot:GetUnitName()].punchBack},
-            {func=onehundred, condition=allyInFight, weight=geneList.geneticTree[npcBot:GetUnitName()].allyInFight},
+            {func=Fuckem, condition=EnemyWeak, weight=geneList.GetWeight, weightName="EnemyWeak"},
+            {func=heroLevel, condition=enemyNearAndNotLevel, weight=geneList.GetWeight, weightName="enemyNearAndNotLevel"},
+            {func=HeroHealth, condition=EnemyDisabled, weight=geneList.GetWeight, weightName="EnemyDisabled"},
+            {func=HeroHealth, condition=punchBack, weight=geneList.GetWeight, weightName="punchBack"},
+            {func=onehundred, condition=allyInFight, weight=geneList.GetWeight, weightName="allyInFight"}
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
         }

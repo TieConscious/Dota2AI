@@ -60,10 +60,14 @@ local APPicks = {
 
 local TopCarry = {
 	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_tiny",
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_legion_commander"
+	"npc_dota_hero_abyssal_underlord",
+	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_bristleback"
 
+
+
+
+	--"npc_dota_hero_abaddon",
 	--"npc_dota_hero_chaos_knight",
 	--"npc_dota_hero_viper",
 	--"npc_dota_hero_lycan"
@@ -73,14 +77,16 @@ local TopCarry = {
 local BotCarry = {
 	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_juggernaut",
-	"npc_dot_hero_naga_siren"
+	"npc_dota_hero_juggernaut"
+	--"npc_dot_hero_naga_siren"
 
 	--"npc_dota_hero_medusa"
 }
 
 local Mid = {
 	"npc_dota_hero_medusa",
+	--necro
+	--veno
 	--"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_tinker"
@@ -90,8 +96,8 @@ local TopSupport = {
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
 	--"npc_dota_hero_bane",
-	"npc_dota_hero_tidehunter",
-	"npc_dota_hero_riki"
+	"npc_dota_hero_tidehunter"
+	--"npc_dota_hero_riki"
 }
 
 local BotSupport = {

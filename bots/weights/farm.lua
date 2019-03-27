@@ -81,15 +81,15 @@ local farm_weight = {
         name = "farm",
 
         components = {
-            {func=creepsAround, weight=geneList.geneticTree[npcBot:GetUnitName()].creepsAround},
-            {func=calcEnemyCreepHealth, weight=geneList.geneticTree[npcBot:GetUnitName()].calcEnemyCreepHealth},
-            {func=calcEnemyCreepDist, weight=geneList.geneticTree[npcBot:GetUnitName()].calcEnemyCreepDist}
+            {func=creepsAround, weight=geneList.GetWeight, weightName="creepsAround"},
+            {func=calcEnemyCreepHealth, weight=geneList.GetWeight, weightName="calcEnemyCreepHealth"},
+            {func=calcEnemyCreepDist, weight=geneList.GetWeight, weightName="calcEnemyCreepDist"}
         },
 
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=geneList.geneticTree[npcBot:GetUnitName()].enemyNotLevel},
-            {func=moreFarm, condition=alone, weight=geneList.geneticTree[npcBot:GetUnitName()].alone}
+            {func=heroLevel, condition=enemyNotLevel, weight=geneList.GetWeight, weightName="enemyNotLevel"},
+            {func=moreFarm, condition=alone, weight=geneList.GetWeight, weightName="alone"}
         }
     }
 }
