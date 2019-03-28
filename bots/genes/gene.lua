@@ -13,6 +13,7 @@ local geneList = {
 		--['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/genes/gene_tinker"),
 		['npc_dota_hero_skeleton_king'] = require(GetScriptDirectory().."/genes/gene_skeleton_king"),
 		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/genes/gene_jakiro")
+		--['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/genes/gene_abyssal_underlord")
 	}
 }
 

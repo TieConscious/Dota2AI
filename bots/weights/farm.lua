@@ -3,7 +3,6 @@ local geneList = require(GetScriptDirectory().."/genes/gene")
 
 local npcBot = GetBot()
 local searchRadius = 1000
-local hitConsider = 2.5
 local moveDist = 300
 
 function creepsAround(npcBot)
@@ -38,7 +37,7 @@ function calcEnemyCreepHealth(npcBot)
 			targetCount = targetCount + 1
 		end
 	end
-    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * (1 + targetCount * 0.33), 50, 0)
+    return RemapValClamped(eCreepHealth, attackDamage, attackDamage * (1 + targetCount * 0.33), geneList.GetWeight(npcBot:GetUnitName(), "creepHealthMaxClamp"), 0)
 end
 
 function calcEnemyCreepDist(npcBot)
@@ -49,7 +48,7 @@ function calcEnemyCreepDist(npcBot)
 
     --if creeps are dead, they are not close
     if nearbyECreeps == nil or #nearbyECreeps == 0 then
-        eCreepDist = 100000
+        return 0
     end
 
     return RemapValClamped(eCreepDist - attackRange, 0, moveDist, 50, 0)
@@ -88,8 +87,8 @@ local farm_weight = {
 
         conditionals = {
             --{func=calcEnemies, condition=condFunc, weight=3},
-            {func=heroLevel, condition=enemyNotLevel, weight=geneList.GetWeight, weightName="enemyNotLevel"},
-            {func=moreFarm, condition=alone, weight=geneList.GetWeight, weightName="alone"}
+            --{func=heroLevel, condition=enemyNotLevel, weight=geneList.GetWeight, weightName="enemyNotLevel"}
+            --{func=moreFarm, condition=alone, weight=geneList.GetWeight, weightName="alone"}
         }
     }
 }

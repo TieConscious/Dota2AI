@@ -1,35 +1,47 @@
 local gene = {
     ----hunt----
-    enemyHealth = ,
-    enemyDistance = ,
-    isUnderTower = ,
-    weDisabled = ,
-    eUnderTower = ,
-    enemyNear = ,
-    EnemyPowerful = ,
-    EnemyWeak = ,
-    enemyNearAndNotLevel = ,
-    EnemyDisabled = ,
-    punchBack = ,
-    allyInFight = ,
+    enemyHealth = %f,
+    enemyDistance = %f,
+    isUnderTower = %f,
+    weDisabled = %f,
+    eUnderTower = %f,
+    EnemyWeak = %f,
+    EnemyDisabled = %f,
+    allyInFight = %f,
+
+	enemyHealthMax = %f,
+	perfectAttackRange = %f,
+	FuckMinRatio = %f,
+	FuckMaxRatio = %f,
 
     ----retreat----
-    willEnemyTowerTargetMe = ,
-    isEnemyTowerTargetingMeNoAlly = ,
-    hasPassiveEnemyNearby = ,
-    hasAggressiveEnemyNearby = ,
-    hasEnemyCreepsNearby = ,
-    hardRetreat = ,
-    enemyRetreat = ,
-    FountainMana = ,
-    AreThereDangerPings = ,
+    willEnemyTowerTargetMe = %f,
+    isEnemyTowerTargetingMeNoAlly = %f,
+    hasPassiveEnemyNearby = %f,
+    hasAggressiveEnemyNearby = %f,
+    hasEnemyCreepsNearby = %f,
+    hardRetreat = %f,
+    enemyRetreat = %f,
+    FountainMana = %f,
+    AreThereDangerPings = %f,
+
+	creepCount = %f,
+	hardHealth = %f,
+	dangerTime = %f,
+	dangerDistance = %f,
+	powerConsider = %f,
 
     ----farm----
-    creepsAround = ,
-    calcEnemyCreepHealth = ,
-    calcEnemyCreepDist = ,
-    enemyNotLevel = ,
-    alone =
+    creepsAround = %f,
+    calcEnemyCreepHealth = %f,
+    calcEnemyCreepDist = %f,
+
+	creepHealthMaxClamp = %f,
+
+	----finish him----
+	timeToFinish = %f,
+	chaseWeight = %f,
+	chaseDistance = %f,
 }
 
 return gene

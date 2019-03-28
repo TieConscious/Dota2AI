@@ -4,41 +4,45 @@ local geneList = require(GetScriptDirectory().."/genes/gene")
 
 local npcBot = GetBot()
 
-function PowerRatioNoHunt(npcBot)
-    -- local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    -- local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    -- local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- function PowerRatioNoHunt(npcBot)
+--     -- local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     -- local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+--     -- local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 
-    -- return RemapValClamped(powerRatio, 0, 0.8 , 0, 100)
-    return 0
-end
+--     -- return RemapValClamped(powerRatio, 0, 0.8 , 0, 100)
+--     return 0
+-- end
 
-function EnemyPowerful(npcBot)
-    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < 0.6) then --0.8
-        return false
-    end
-    return true
-end
+-- function EnemyPowerful(npcBot)
+--     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+--     local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+--     if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio < geneList.GetWeight(npcBot:GetUnitName(), "highEnemyPowerRatio") / 100) then --0.8
+--         return false
+--     end
+--     return true
+-- end
 
 function Fuckem(npcBot)
     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    return RemapValClamped(powerRatio, 0, -0.5, 10, 100)
+	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+
+	if nearbyEnemy == nil or #nearbyEnemy == 0 then
+		return 0
+	end
+    return RemapValClamped(powerRatio, geneList.GetWeight(npcBot:GetUnitName(), "FuckMinRatio") / 100, geneList.GetWeight(npcBot:GetUnitName(), "FuckMaxRatio") / 100, 0, 100)
 end
 
-function EnemyWeak(npcBot)
-    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-    local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-    if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio >= 0) then
-        return false
-    end
-    return true
-end
+-- function EnemyWeak(npcBot)
+--     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+--     local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+--     if nearbyEnemy == nil or #nearbyEnemy == 0 or (powerRatio >= 0) then
+--         return false
+--     end
+--     return true
+-- end
 
 function CalcHyper(x, max_x, max_y, rate)
 	return rate * (x - max_x)^2 / 2 + max_y
@@ -54,7 +58,7 @@ function enemyDistance(npcBot)
 	if attackRange <= 150 then
 		return RemapValClamped(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), 200, 600 , 100, 0)
 	else
-		local val = 100 * CalcHyper(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), attackRange * 0.8, 100, -0.01)
+		local val = 100 * CalcHyper(GetUnitToUnitDistance(npcBot, nearbyEnemy[1]), attackRange * geneList.GetWeight(npcBot:GetUnitName(), "perfectAttackRange") / 100, 100, -0.01)
 		return Clamp(val, 0, 100)
 	end
     --return RemapValClamped(dist, 200, 600 , 100, 0)
@@ -116,7 +120,7 @@ function enemyHealth(npcBot)
     local enemyPercHealth =  module.CalcPerHealth(lowestEnemy)
 
 
-    return RemapValClamped(enemyPercHealth, 0.1, 0.6, 100, 0)
+    return RemapValClamped(enemyPercHealth, 0.1, geneList.GetWeight(npcBot:GetUnitName(), "enemyHealthMax") / 100, 100, 0)
 end
 
 function numberCreeps(npcBot)
@@ -223,17 +227,17 @@ end
 --    return GetHeroLastSeenInfo()
 --end
 
-function UnseenEnemyHealth(npcBot)
-    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    if nearbyEnemy == nil or #nearbyEnemy == 0 then
-        return 0
-    end
-    local lowestEnemy = module.GetWeakestUnit(nearbyEnemy)
-    local enemyPercHealth =  module.CalcPerHealth(lowestEnemy)
+-- function UnseenEnemyHealth(npcBot)
+--     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     if nearbyEnemy == nil or #nearbyEnemy == 0 then
+--         return 0
+--     end
+--     local lowestEnemy = module.GetWeakestUnit(nearbyEnemy)
+--     local enemyPercHealth =  module.CalcPerHealth(lowestEnemy)
 
 
-    return RemapValClamped(enemyPercHealth, 0.1, 0.6, 100, 0)
-end
+--     return RemapValClamped(enemyPercHealth, 0.1, 0.6, 100, 0)
+-- end
 
 function weDisabled(npcBot)
     if (module.IsDisabled(npcBot)) then
@@ -267,8 +271,10 @@ local hunt_weight = {
 
         components = {
             {func=enemyHealth, weight=geneList.GetWeight, weightName="enemyHealth"},
-            {func=enemyDistance, weight=geneList.GetWeight, weightName="enemyDistance"}
-            --our health
+            {func=enemyDistance, weight=geneList.GetWeight, weightName="enemyDistance"},
+            {func=Fuckem, weight=geneList.GetWeight, weightName="EnemyWeak"}
+
+			--our health
             --our mana
         },
 
@@ -279,15 +285,13 @@ local hunt_weight = {
             {func=HeroHealth, condition=eUnderTower, weight=geneList.GetWeight, weightName="eUnderTower"},
             --{func=HeroHealth, condition=eDissapeared, weight=20},
 
-            {func=numberCreeps, condition=enemyNear, weight=geneList.GetWeight, weightName="enemyNear"},
+            --{func=numberCreeps, condition=enemyNear, weight=geneList.GetWeight, weightName="enemyNear"},
             --{func=heroMana, condition=enemyNear, weight=20},
-            {func=PowerRatioNoHunt, condition=EnemyPowerful, weight=geneList.GetWeight, weightName="EnemyPowerful"},
-
-
-            {func=Fuckem, condition=EnemyWeak, weight=geneList.GetWeight, weightName="EnemyWeak"},
-            {func=heroLevel, condition=enemyNearAndNotLevel, weight=geneList.GetWeight, weightName="enemyNearAndNotLevel"},
+            --{func=PowerRatioNoHunt, condition=EnemyPowerful, weight=geneList.GetWeight, weightName="EnemyPowerful"},
+            --{func=Fuckem, condition=EnemyWeak, weight=geneList.GetWeight, weightName="EnemyWeak"},
+            --{func=heroLevel, condition=enemyNearAndNotLevel, weight=geneList.GetWeight, weightName="enemyNearAndNotLevel"},
             {func=HeroHealth, condition=EnemyDisabled, weight=geneList.GetWeight, weightName="EnemyDisabled"},
-            {func=HeroHealth, condition=punchBack, weight=geneList.GetWeight, weightName="punchBack"},
+            --{func=HeroHealth, condition=punchBack, weight=geneList.GetWeight, weightName="punchBack"},
             {func=onehundred, condition=allyInFight, weight=geneList.GetWeight, weightName="allyInFight"}
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}

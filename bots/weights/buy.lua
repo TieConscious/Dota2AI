@@ -29,7 +29,8 @@ local buy_weight = {
 		['npc_dota_hero_skeleton_king'] = require(GetScriptDirectory().."/item_purchase_skeleton_king"),
 		--['npc_dota_hero_phantom_lancer'] = require(GetScriptDirectory().."/item_purchase_phantom_lancer"),
 		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/item_purchase_ogre_magi")
-		--['npc_dota_hero_ursa'] = require(GetScriptDirectory().."/item_purchase_ursa")
+		--['npc_dota_hero_ursa'] = require(GetScriptDirectory().."/item_purchase_ursa"),
+		--['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord")
 	}
 }
 
@@ -55,7 +56,7 @@ function isPurchaseableFromSecretShop(npcBot)
 end
 
 function secretItemIsPurchaseable(npcBot)
-	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 50, 20)
+	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 5000, 50, 0)
 end
 
 function TowerNearMe(npcBot)
@@ -71,7 +72,7 @@ buy_weight.settings =
 	name = "buy",
 
     components = {
-		{func=zero, condition=TowerNearMe, weight=0}
+		--{func=zero, condition=TowerNearMe, weight=0}
     },
 
     conditionals = {
