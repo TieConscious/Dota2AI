@@ -110,25 +110,25 @@ local Bans = {
 }
 
 
---function GetBotNames ()
---	local bot_names = {}
---	table.insert(bot_names, "@42SiliconValley")
---	table.insert(bot_names, "@QwolfBLG")
---	table.insert(bot_names, "@Lyd")
---	table.insert(bot_names, "@mschroed098")
---	table.insert(bot_names, "@2ne1ugly1")
---	return bot_names
---end
-
 function GetBotNames ()
 	local bot_names = {}
-	table.insert(bot_names, "MidOne.1")
-	table.insert(bot_names, "MidOne.2")
-	table.insert(bot_names, "MidOne.3")
-	table.insert(bot_names, "MidOne.4")
-	table.insert(bot_names, "MidOne.5")
+	table.insert(bot_names, "@ArenWindham")
+	table.insert(bot_names, "@QwolfBLG")
+	table.insert(bot_names, "@Lyd")
+	table.insert(bot_names, "@mschroed098")
+	table.insert(bot_names, "@2ne1ugly1")
 	return bot_names
 end
+
+-- function GetBotNames ()
+-- 	local bot_names = {}
+-- 	table.insert(bot_names, "MidOne.1")
+-- 	table.insert(bot_names, "MidOne.2")
+-- 	table.insert(bot_names, "MidOne.3")
+-- 	table.insert(bot_names, "MidOne.4")
+-- 	table.insert(bot_names, "MidOne.5")
+-- 	return bot_names
+-- end
 
 local picks = {}
 local maxPlayerID = 20
