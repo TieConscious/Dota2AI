@@ -1,6 +1,7 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
+local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")

@@ -199,29 +199,22 @@ local picks = nil
 
 
 local TopCarry = {
-	"npc_dota_hero_tiny",
 	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_abaddon",
-	"npc_dota_hero_legion_commander"
-
-	--"npc_dota_hero_chaos_knight",
-	--"npc_dota_hero_viper",
-	--"npc_dota_hero_lycan"
-	--"npc_dota_hero_sven",
+	"npc_dota_hero_abyssal_underlord",
+	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_bristleback"
 }
 
 local BotCarry = {
 	"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_juggernaut",
-	"npc_dot_hero_naga_siren"
+	"npc_dota_hero_juggernaut"
+	--"npc_dot_hero_naga_siren"
 
-	--"npc_dota_hero_medusa"
 }
 
 local Mid = {
 	"npc_dota_hero_medusa",
-	--"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_tinker"
 }
@@ -229,14 +222,11 @@ local Mid = {
 local TopSupport = {
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_lich",
-	--"npc_dota_hero_bane",
-	"npc_dota_hero_tidehunter",
-	"npc_dota_hero_riki"
+	"npc_dota_hero_tidehunter"
 }
 
 local BotSupport = {
 	"npc_dota_hero_bane",
-	--"npc_dota_hero_lich",
 	"npc_dota_hero_crystal_maiden",
 	"npc_dota_hero_lion"
 }
@@ -389,7 +379,11 @@ local attackType =
 	["npc_dota_hero_crystal_maiden"] = RANGED,
 	["npc_dota_hero_lion"] = RANGED,
 	["npc_dota_hero_skeleton_king"] = MELEE,
-	["npc_dota_hero_jakiro"] = RANGED
+	["npc_dota_hero_jakiro"] = RANGED,
+	["npc_dota_abyssal_underlord"] = MELEE,
+	["npc_dota_hero_bristleback"] = MELEE,
+	["npc_dota_hero_obsidian-destroyer"] = RANGED,
+	["npc_dota_hero_legion_commander"] = MELEE
 }
 
 local turnRate =
@@ -411,7 +405,11 @@ local turnRate =
 	["npc_dota_hero_crystal_maiden"] = 0.5,
 	["npc_dota_hero_lion"] = 0.5,
 	["npc_dota_hero_skeleton_king"] = 0.5,
-	["npc_dota_hero_jakiro"] = 0.5
+	["npc_dota_hero_jakiro"] = 0.5,
+	["npc_dota_hero_abyssal_underlord"] = 0.6,
+	["npc_dota_hero_bristleback"] = 1.0,
+	["npc_dota_hero_obsidian-destroyer"] = 0.5,
+	["npc_dota_hero_legion_commander"] = 0.5
 }
 
 function module.GetTimeToFace(npcBot, unit)

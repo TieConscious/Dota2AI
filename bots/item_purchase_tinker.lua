@@ -2,9 +2,25 @@ local module = require(GetScriptDirectory().."/helpers")
 
 local Items =
 {
+	"item_clarity",
+	"item_clarity",
+	"item_flask",
+	"item_flask",
+
+	----wand----
+	"item_branches",
+	"item_branches",
+	"item_magic_stick",
+	"item_recipe_magic_wand",
+
 	----arcane boots----
 	"item_boots",
 	"item_energy_booster",
+
+	----kaya----
+	"item_staff_of_wizardry",
+	"item_robe",
+	"item_recipe_kaya",
 
 	----aether lens----
 	"item_void_stone",
@@ -22,21 +38,10 @@ local Items =
 	"item_ultimate_orb",
 	"item_void_stone",
 
-	----DAGON----
-	"item_staff_of_wizardry",
-	"item_crown",
-	"item_recipe_dagon",
-
 	----shivas----
 	"item_platemail",
 	"item_mystic_staff",
-	"item_recipe_shivas_guard",
-
-	----DAGON----
-	"item_recipe_dagon_2",
-	"item_recipe_dagon_3",
-	"item_recipe_dagon_4",
-	"item_recipe_dagon_5"
+	"item_recipe_shivas_guard"
 }
 
 return Items

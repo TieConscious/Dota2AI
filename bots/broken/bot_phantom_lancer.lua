@@ -164,55 +164,19 @@
 
 -- -----------------------------------------------------------------------------------------------------
 
--- ----Ability Leveling Modules----
--- function AbilityLevelUp()
--- 	npcBot = GetBot()
-
--- 	if (npcBot:GetAbilityPoints() < 1 or #Ability == 0) then
--- 		print("naw, breh")
--- 		return
--- 	end
-
-
--- 	local ability_name = Ability[increment]
-
--- 	--If level up is "nil", delete nil
--- 	if (ability_name == "nil") then
--- 		--table.remove(Ability, 1)
--- 		--increment = increment + 1
--- 		return
--- 	end
-
--- 	local ability = npcBot:GetAbilityByName(ability_name)
-
--- 	--If ability can be upgraded, upgrade appropriate ability
--- 	if (ability:CanAbilityBeUpgraded() and npcBot:GetAbilityPoints() > 0) then
--- 		print("Skill: "..ability_name.."  upgraded!")
--- 		--increment = increment + 1
--- 		npcBot:ActionImmediate_LevelAbility(ability_name)
--- 		--npcBot:ActionImmediate_Chat("Upgraded Ability", true)
--- 		--table.remove(Ability, 1)
--- 		return
--- 	end
--- end
--- -----------------------------------------------------------------------------------------------------
-
 -- function Think()
 -- 	npcBot = GetBot()
 -- 	local state = stateMachine.calculateState(npcBot)
--- 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
--- 	--print("Skill: "..npcBot:GetAbilityInSlot(0)..)
--- 	--print("Ability: "..npcBot:GetAbilityByName("phantom_lancer_spirit_lance")..)
+-- 	module.DangerPing(npcBot)
 
--- 	if (npcBot:GetAbilityPoints() == 1) then
--- 		AbilityLevelUp()
--- 	end
+-- 	module.AbilityLevelUp(Ability)
 -- 	if state.state == "hunt" then
+-- 		--implement custom hero hunting here
 -- 		Murder()
 -- 	elseif state.state == "retreat" then
 -- 		behavior.generic(npcBot, state)
--- 		if (not npcBot:IsSilenced()) then
+-- 		if (not npcBot:IsSilenced() and not npcBot:IsSilenced()) then
 -- 			SpellRetreat()
 -- 		end
 -- 	elseif state.state == "finishHim" then

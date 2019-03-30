@@ -237,13 +237,29 @@ function Think()
 	local state = stateMachine.calculateState(npcBot)
 
 	local currentMana = npcBot:GetMana()
+	local currentHealth = npcBot:GetHealth()
 	local maxMana = npcBot:GetMaxMana()
+	local maxHealth = npcBot:GetMaxHealth()
 	local arcane = module.ItemSlot(npcBot, "item_arcane_boots")
+	local greaves = module.ItemSlot(npcBot, "item_guardian_greaves")
+	local mek = module.ItemSlot(npcBot, "item_mekansm")
+
+	local manaMek = 225 --halfhealth
 
 	module.DangerPing(npcBot)
 
 	if (not IsBotCasting() and arcane ~= nil and ConsiderCast(arcane) and currentMana <= (maxMana - 180)) then
 		npcBot:Action_UseAbility(arcane)
+		return
+	end
+
+	if (not IsBotCasting() and mek ~= nil and ConsiderCast(mek) and currentMana >= module.CalcManaCombo(manaMek) and currentHealth <= maxHealth / 2) then
+		npcBot:Action_UseAbility(mek)
+		return
+	end
+
+	if not IsBotCasting() and greaves ~= nil and ConsiderCast(greaves) and (currentHealth <= maxHealth / 2 or (currentMana <= (maxMana - 200) and currentHealth <= (maxHealth - 300))) then
+		npcBot:Action_UseAbility(greaves)
 		return
 	end
 

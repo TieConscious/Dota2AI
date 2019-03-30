@@ -1,35 +1,35 @@
 local gene = {
     ----hunt----
-    enemyHealth = 2,
-    enemyDistance = 1.2,
-    isUnderTower = 4,
-    weDisabled = 4,
-    eUnderTower = 2,
-    enemyNear = 0.4,
-    EnemyPowerful = 3,
-    EnemyWeak = 3,
-    enemyNearAndNotLevel = 2,
-    EnemyDisabled = 2,
-    punchBack = 6,
-    allyInFight = 4,
+    enemyHealth = 20.000000,
+    enemyDistance = 13.424850,
+    isUnderTower = 41.938810,
+    weDisabled = 40.000000,
+    eUnderTower = 20.000000,
+    enemyNear = 4.192570,
+    EnemyPowerful = 31.690120,
+    EnemyWeak = 24.522030,
+    enemyNearAndNotLevel = 20.105980,
+    EnemyDisabled = 14.545130,
+    punchBack = 67.957590,
+    allyInFight = 21.314680,
 
     ----retreat----
-    willEnemyTowerTargetMe = 4,
-    isEnemyTowerTargetingMeNoAlly = 5,
-    hasPassiveEnemyNearby = 0.5,
-    hasAggressiveEnemyNearby = 2,
-    hasEnemyCreepsNearby = 3,
-    hardRetreat = 6,
-    enemyRetreat = 6,
-    FountainMana = 3,
-    AreThereDangerPings = 4,
+    willEnemyTowerTargetMe = 40.066030,
+    isEnemyTowerTargetingMeNoAlly = 50.000000,
+    hasPassiveEnemyNearby = 5.000000,
+    hasAggressiveEnemyNearby = 20.000000,
+    hasEnemyCreepsNearby = 30.000000,
+    hardRetreat = 60.000000,
+    enemyRetreat = 73.549010,
+    FountainMana = 30.000000,
+    AreThereDangerPings = 33.098260,
 
     ----farm----
-    creepsAround = 2,
-    calcEnemyCreepHealth = 11,
-    calcEnemyCreepDist = 7,
-    enemyNotLevel = 10,
-    alone = 5
+    creepsAround = 36.456760,
+    calcEnemyCreepHealth = 110.000000,
+    calcEnemyCreepDist = 45.622640,
+    enemyNotLevel = 100.000000,
+    alone = 50.000000
 }
 
 return gene
