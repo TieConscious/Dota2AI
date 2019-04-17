@@ -222,11 +222,11 @@ function SpellRetreat()
 			npcBot:Action_UseAbilityOnEntity(force, npcBot)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaQ) and not module.IsHardCC(target)) then
+				and GetUnitToUnitDistance(npcBot,target) >= abilityQ:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaQ) and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaW)) then
+				and GetUnitToUnitDistance(npcBot,target) >= abilityW:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, target)
 
 		end

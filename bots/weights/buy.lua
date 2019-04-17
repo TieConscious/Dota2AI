@@ -16,18 +16,18 @@ local buy_weight = {
 		['npc_dota_hero_crystal_maiden'] = require(GetScriptDirectory().."/item_purchase_crystal_maiden"),
 		['npc_dota_hero_juggernaut'] = require(GetScriptDirectory().."/item_purchase_juggernaut"),
 		['npc_dota_hero_medusa'] = require(GetScriptDirectory().."/item_purchase_medusa"),
-		['npc_dota_hero_phantom_assassin'] = require(GetScriptDirectory().."/item_purchase_phantom_assassin"),
 		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord"),
 		['npc_dota_hero_pugna'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_lich'] = require(GetScriptDirectory().."/item_purchase_lich"),
+		['npc_dota_hero_lion'] = require(GetScriptDirectory().."/item_purchase_lion"),
 		['npc_dota_hero_sven'] = require(GetScriptDirectory().."/item_purchase_generic"),
-		['npc_dota_hero_shadow_shaman'] = require(GetScriptDirectory().."/item_purchase_shadow_shaman"),
 		['npc_dota_hero_dazzle'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/item_purchase_tinker"),
-		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/item_purchase_generic"),
-		['npc_dota_hero_phantom_lancer'] = require(GetScriptDirectory().."/item_purchase_phantom_lancer"),
-		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/item_purchase_ogre_magi")
-		--['npc_dota_hero_ursa'] = require(GetScriptDirectory().."/item_purchase_ursa")
+		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/item_purchase_jakiro"),
+		['npc_dota_hero_skeleton_king'] = require(GetScriptDirectory().."/item_purchase_skeleton_king"),
+		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/item_purchase_ogre_magi"),
+		['npc_dota_hero_legion_commander'] = require(GetScriptDirectory().."/item_purchase_legion_commander"),
+		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord")
 	}
 }
 
@@ -53,7 +53,7 @@ function isPurchaseableFromSecretShop(npcBot)
 end
 
 function secretItemIsPurchaseable(npcBot)
-	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 3000, 50, 20)
+	return  RemapValClamped(npcBot:DistanceFromSecretShop() , 0, 5000, 50, 0)
 end
 
 function TowerNearMe(npcBot)
@@ -69,7 +69,7 @@ buy_weight.settings =
 	name = "buy",
 
     components = {
-		{func=zero, condition=TowerNearMe, weight=0}
+		--{func=zero, condition=TowerNearMe, weight=0}
     },
 
     conditionals = {

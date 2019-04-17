@@ -1,109 +1,166 @@
 local botPicks = {}
 
--- local BotPicks = {
--- 	'npc_dota_hero_bane',
--- 	'npc_dota_hero_chaos_knight',
--- 	'npc_dota_hero_juggernaut',
--- 	'npc_dota_hero_lich',
--- 	'npc_dota_hero_ogre_magi',
--- 	'npc_dota_hero_tinker',
+local ZeroHeroes = {}
+local ZeroBadGuyPicks = {
+	'npc_dota_hero_drow_ranger',
+	'npc_dota_hero_kunkka',
+	'npc_dota_hero_zuus',
+	'npc_dota_hero_earthshaker',
+	'npc_dota_hero_nevermore',
+	'npc_dota_hero_axe',
+	'npc_dota_hero_bounty_hunter',
+	'npc_dota_hero_bloodseeker',
+	'npc_dota_hero_bristleback',
+	'npc_dota_hero_crystal_maiden',
+	'npc_dota_hero_dazzle',
+	'npc_dota_hero_death_prophet',
+	'npc_dota_hero_dragon_knight',
+	'npc_dota_hero_lina',
+	'npc_dota_hero_lion',
+	'npc_dota_hero_luna',
+	'npc_dota_hero_necrolyte',
+	'npc_dota_hero_omniknight',
+	'npc_dota_hero_oracle',
+	'npc_dota_hero_phantom_assassin',
+	'npc_dota_hero_pudge',
+	'npc_dota_hero_razor',
+	'npc_dota_hero_sand_king',
+	'npc_dota_hero_skywrath_mage',
+	'npc_dota_hero_sven',
+	'npc_dota_hero_tidehunter',
+	'npc_dota_hero_tiny',
+	'npc_dota_hero_vengefulspirit',
+	'npc_dota_hero_viper',
+	'npc_dota_hero_windrunner',
+	'npc_dota_hero_witch_doctor',
+	--'npc_dota_hero_skeleton_king'
+}
 
--- 	'npc_dota_hero_medusa',
-
-
--- 	'npc_dota_hero_crystal_maiden',
-
--- 	'npc_dota_hero_tidehunter',
-
--- 	'npc_dota_hero_ursa', --broken
--- 	'npc_dota_hero_shadow_shaman', --broken
-
--- 	'npc_dota_hero_phantom_assassin',
--- 	'npc_dota_hero_abyssal_underlord',
-
--- 	'npc_dota_hero_pugna',
-
--- 	'npc_dota_hero_sven',
-
--- 	'npc_dota_hero_dazzle',
-
--- 	'npc_dota_hero_jakiro'
--- };
-
+local APPicks = {
+	"npc_dota_hero_legion_commander",
+	'npc_dota_hero_jakiro',
+	'npc_dota_hero_ogre_magi',
+	'npc_dota_hero_lich',
+	'npc_dota_hero_medusa',
+	'npc_dota_hero_bane',
+	'npc_dota_hero_skeleton_king',
+ 	'npc_dota_hero_tinker',
+ 	'npc_dota_hero_crystal_maiden',
+ 	'npc_dota_hero_tidehunter',
+ 	'npc_dota_hero_ursa', --broken
+ 	'npc_dota_hero_shadow_shaman', --broken
+ 	'npc_dota_hero_phantom_assassin',
+ 	'npc_dota_hero_abyssal_underlord',
+ 	'npc_dota_hero_pugna',
+ 	'npc_dota_hero_sven',
+	'npc_dota_hero_dazzle'
+	--'npc_dota_hero_lion',
+	--'npc_dota_hero_chaos_knight',
+ 	--'npc_dota_hero_juggernaut',
+}
 
 local TopCarry = {
-	--'npc_dota_hero_ursa',
-	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_abyssal_underlord",
+	"npc_dota_hero_chaos_knight"
+	--"npc_dota_hero_bristleback"
+	--"npc_dota_hero_abaddon",
+	--"npc_dota_hero_chaos_knight",
+	--"npc_dota_hero_viper",
+	--"npc_dota_hero_lycan"
 	--"npc_dota_hero_sven",
-	--"npc_dota_hero_mars",
-	--"npc_dota_hero_phantom_lancer"
 }
 
 local BotCarry = {
-	--"npc_dota_hero_axe",
-	"npc_dota_hero_juggernaut",
-
-	"npc_dota_hero_medusa"
+	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_skeleton_king",
+	"npc_dota_hero_medusa",
+	"npc_dota_hero_juggernaut"
 }
 
 local Mid = {
-	"npc_dota_hero_ogre_magi",
-	--"npc_dota_hero_obsidian_destroyer",
+	"npc_dota_hero_medusa",
+	"npc_dota_hero_legion_commander",
+	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_tinker"
+	--necro
+	--veno
+	--"npc_dota_hero_ogre_magi",
 }
 
 local TopSupport = {
+	"npc_dota_hero_jakiro",
+	"npc_dota_hero_lich",
 	"npc_dota_hero_bane",
-	"npc_dota_hero_tidehunter",
-	--"npc_dota_hero_abaddon"
+	"npc_dota_hero_tidehunter"
+	--"npc_dota_hero_riki"
 }
 
 local BotSupport = {
 	"npc_dota_hero_lich",
-	"npc_dota_hero_crystal_maiden",
-	"npc_dota_hero_lion"
+	"npc_dota_hero_bane",
+	"npc_dota_hero_lion",
+	"npc_dota_hero_crystal_maiden"
 }
 
 
 
 local Bans = {
+	--'npc_dota_hero_jakiro',
+	'npc_dota_hero_warlock',
+	'npc_dota_hero_phantom_lancer',
 	'npc_dota_hero_sniper',
-	'npc_dota_hero_jakiro',
-	'npc_dota_hero_tusk',
-	'npc_dota_hero_undying',
-    'npc_dota_hero_vengefulspirit',
-	'npc_dota_hero_venomancer',
-    'npc_dota_hero_warlock',
-    'npc_dota_hero_windrunner',
+	'npc_dota_hero_silencer',
+	'npc_dota_hero_tinker',
+    'npc_dota_hero_slark',
+	'npc_dota_hero_riki',
     'npc_dota_hero_witch_doctor',
-	'npc_dota_hero_zuus',
+	'npc_dota_hero_naga_siren',
 	'npc_dota_hero_sven',
-	'npc_dota_hero_slark'
+	'npc_dota_hero_omniknight',
+	'npc_dota_hero_death_prophet',
+	'npc_dota_hero_skywrath_mage',
+	'npc_dota_hero_obsidian_destroyer',
+    'npc_dota_hero_medusa',
+	'npc_dota_hero_winter_wyvern'
 }
 
 
+--function GetBotNames ()
+--	local bot_names = {}
+--	table.insert(bot_names, "@42SiliconValley")
+--	table.insert(bot_names, "@QwolfBLG")
+--	table.insert(bot_names, "@Lyd")
+--	table.insert(bot_names, "@mschroed098")
+--	table.insert(bot_names, "@2ne1ugly1")
+--	return bot_names
+--end
+
 function GetBotNames ()
 	local bot_names = {}
-	table.insert(bot_names, "@42SiliconValley")
-	table.insert(bot_names, "@QwolfBLG")
-	table.insert(bot_names, "@Lyd")
-	table.insert(bot_names, "@mschroed098")
-	table.insert(bot_names, "@2ne1ugly1")
+	table.insert(bot_names, "MidOne.@QwolfBLG")
+	table.insert(bot_names, "MidOne.@Lyd")
+	table.insert(bot_names, "MidOne.@mschroed098")
+	table.insert(bot_names, "MidOne.@ArenWindham")
+	table.insert(bot_names, "MidOne.@2ne1ugly1")
 	return bot_names
 end
 
-local picks = {};
-local maxPlayerID = 20;
+local picks = {}
+local maxPlayerID = 20
 -- CHANGE THESE VALUES IF YOU'RE GETTING BUGS WITH BOTS NOT PICKING (or infinite loops)
+
 -- To find appropriate values, start a game, open a console, and observe which slots are
 -- being used by which players/teams. maxPlayerID shoulud just be the highest-numbered
 -- slot in use.
 
-local slots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 16, 17, 18,19,20}
-local ListPickedHeroes = {};
+local slots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}
+local ListPickedHeroes = {}
 local AllHeroesSelected = false
 local BanCycle = 1
-local NeededTime = 300
+local NeededTime = 25
 
 function Think()
 	if GetGameMode() == GAMEMODE_CM then
@@ -121,37 +178,40 @@ end
 --Picking logic for All Pick Mode Game Mode
 
 function ZeroPickLogic()
-	if ( GetTeam() == TEAM_RADIANT ) then
-		SelectHero( 0, 'npc_dota_hero_bane')
-		SelectHero( 1, 'npc_dota_hero_chaos_knight')
-		SelectHero( 2, 'npc_dota_hero_juggernaut')
-		SelectHero( 3, 'npc_dota_hero_lich')
-		SelectHero( 4, 'npc_dota_hero_ogre_magi')
-	elseif ( GetTeam() == TEAM_DIRE ) then
-		SelectHero( 5, 'npc_dota_hero_drow_ranger')
-		SelectHero( 6, 'npc_dota_hero_kunkka')
-		SelectHero( 7, 'npc_dota_hero_zuus')
-		SelectHero( 8, 'npc_dota_hero_earthshaker')
-		SelectHero( 9, 'npc_dota_hero_nevermore')
+	if (GetTeam() == TEAM_RADIANT) then
+		SelectsHero(APPicks)
+	elseif (GetTeam() == TEAM_DIRE) then
+		for i = 1, 5 do
+			RandomZeroHero()
+		end
+		SelectsHero(ZeroHeroes)
 	end
 end
 
 function AllPickModeLogic()
-	if ( GetTeam() == TEAM_RADIANT ) then
-		print( "selecting radiant" )
-		SelectHero( 2, 'npc_dota_hero_bane')
-		SelectHero( 3, 'npc_dota_hero_chaos_knight')
-		SelectHero( 4, 'npc_dota_hero_juggernaut')
-		SelectHero( 5, 'npc_dota_hero_lich')
-		SelectHero( 6, 'npc_dota_hero_ogre_magi')
-	elseif ( GetTeam() == TEAM_DIRE ) then
-		print( "selecting dire" );
-		SelectHero( 7, 'npc_dota_hero_drow_ranger')
-		SelectHero( 8, 'npc_dota_hero_kunkka')
-		SelectHero( 9, 'npc_dota_hero_zuus')
-		SelectHero( 10, 'npc_dota_hero_earthshaker')
-		SelectHero( 11, 'npc_dota_hero_nevermore')
+	if (GetTeam() == TEAM_RADIANT) then
+		print("selecting radiant")
+		SelectsHero(APPicks)
+	elseif (GetTeam() == TEAM_DIRE) then
+		print("selecting dire")
+		for i = 1, 5 do
+			RandomZeroHero()
+		end
+		SelectsHero(ZeroHeroes)
 	end
+end
+
+local randomSeed = nil
+
+function RandomZeroHero()
+	if randomSeed == nil then
+		math.randomseed(RealTime())
+		randomSeed = true
+	end
+	local number = math.random(1, #ZeroBadGuyPicks)
+	local hero = ZeroBadGuyPicks[number]
+	table.insert(ZeroHeroes, hero)
+	table.remove(ZeroBadGuyPicks, number)
 end
 
 ------------------------------------------CAPTAIN'S MODE GAME MODE-------------------------------------------
@@ -168,8 +228,7 @@ function CaptainModeLogic()
 	elseif GetHeroPickState() >= HEROPICK_STATE_CM_SELECT1 and GetHeroPickState() <= HEROPICK_STATE_CM_SELECT10 and GetCMPhaseTimeRemaining() <= NeededTime then
 		PicksHero()
 	elseif GetHeroPickState() == HEROPICK_STATE_CM_PICK then
-		--SelectsHero()
-		return
+		SelectsHero(ListPickedHeroes)
 	end
 end
 
@@ -297,24 +356,44 @@ function PickBan()
 	return hero
 end
 
+--Get player selected heroes--
+function PlayerSelect(heroTable)
+	local TeamPlayers = GetTeamPlayers(GetTeam())
+
+	for _,pID in pairs(TeamPlayers) do
+		if not IsPlayerBot(pID) then
+			local playerPick = GetSelectedHeroName(pID)
+			if playerPick ~= nil then
+				print(pID.." chose "..playerPick)
+				for i = 1, 5 do
+					if playerPick == heroTable[i] then
+						table.remove(heroTable, i)
+					end
+				end
+			end
+		end
+	end
+end
+
 --Select the rest of the heroes
---function SelectsHero()
---	if not AllHeroesSelected and GetCMPhaseTimeRemaining() < 30  then
---		--local RestBotPlayers = {}
---		local Bots = GetTeam()
---
---		--for i = 1, #RestBotPlayers do
---		if (Bots == TEAM_RADIANT) then
---			for i = 1, 5 do
---				SelectHero(ListPickedHeroes[i])
---			end
---		elseif (Bots == TEAM_DIRE) then
---			for i = 1, 5 do
---
---			SelectHero(ListPickedHeroes[i])
---			end
---		end
---
---		AllHeroesSelected = true
---	end
---end
+function SelectsHero(heroTable)
+	local RestBotPlayers = GetTeamPlayers(GetTeam())
+	PlayerSelect(heroTable)
+	if not AllHeroesSelected then
+		if GetGameMode() == GAMEMODE_CM then
+			if GetCMPhaseTimeRemaining() > 30 then
+				return
+			end
+		end
+		local i = 1
+		for _,pID in pairs(RestBotPlayers) do
+			if IsPlayerBot(pID) then
+				SelectHero(pID, heroTable[i])
+				print(pID.." chose "..heroTable[i])
+				i = i + 1
+			end
+		end
+
+		AllHeroesSelected = true
+	end
+end

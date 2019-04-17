@@ -10,7 +10,7 @@ local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
-local ward_weight = require(GetScriptDirectory().."/weights/ward")
+--local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local globalState = require(GetScriptDirectory().."/global_state")
 
 local stateMachine = {}
@@ -62,8 +62,12 @@ function stateMachine.calcWeight(npcBot, settings)
 
     for _,component in pairs(settings.components) do
         local comp = {}
-        comp.v = component.func(npcBot)
-        comp.w = component.weight
+		comp.v = component.func(npcBot)
+		if (type(component.weight) == "function") then
+			comp.w = component.weight(npcBot:GetUnitName(), component.weightName)
+		else
+			comp.w = component.weight
+		end
         table.insert(computedComps, comp)
     end
 
@@ -71,7 +75,11 @@ function stateMachine.calcWeight(npcBot, settings)
         if conditional.condition(npcBot) then
             local comp = {}
             comp.v = conditional.func(npcBot)
-            comp.w = conditional.weight
+            if (type(conditional.weight) == "function") then
+				comp.w = conditional.weight(npcBot:GetUnitName(), conditional.weightName)
+			else
+				comp.w = conditional.weight
+			end
             table.insert(computedComps, comp)
         end
     end

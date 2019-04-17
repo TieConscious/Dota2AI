@@ -58,7 +58,7 @@ function LanePushedPulledNotHealing(npcBot)
 		lane_state[myLane] = 1
 	end
 	if	((time < 1800 or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
-		(module.GetTower2(npcBot) ~= nil and myFrontAmount < pulledPushed[team][myLane][2]) or 
+		(module.GetTower2(npcBot) ~= nil and myFrontAmount < pulledPushed[team][myLane][2]) or
 		(myFrontAmount < pulledPushed[team][myLane][3]) then
 		lane_state[myLane] = 0
 	end

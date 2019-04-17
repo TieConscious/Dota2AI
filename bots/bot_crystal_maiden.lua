@@ -112,10 +112,12 @@ function Murder()
 		if (not npcBot:IsSilenced()) then
 			if (not IsBotCasting() and ConsiderCast(abilityW, abilityQ) and currentMana >= module.CalcManaCombo(manaQ, manaW)) then
 				if (GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()) then
-					npcBot:ActionPush_UseAbilityOnLocation(abilityQ, target:GetLocation())
+					local smartAOEQ = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), abilityQ:GetCastRange(), abilityQ:GetAOERadius(), 0.9, 1000000)
+					npcBot:ActionPush_UseAbilityOnLocation(abilityQ, smartAOEQ.targetloc)
 					npcBot:ActionPush_UseAbilityOnEntity(abilityW, target)
 				elseif (GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()) then
-					npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
+					local smartAOEQ = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), abilityQ:GetCastRange(), abilityQ:GetAOERadius(), 0.9, 1000000)
+					npcBot:Action_UseAbilityOnLocation(abilityQ, smartAOEQ.targetloc)
 				end
 
 			elseif (not IsBotCasting() and bkb ~= nil and #eHeroList > 1 and ConsiderCast(blink, abilityR, bkb) and currentMana >= module.CalcManaCombo(manaR)
@@ -140,11 +142,12 @@ function Murder()
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaQ) and not module.IsHardCC(target)) then
-				npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
+				local smartAOEQ = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), abilityQ:GetCastRange(), abilityQ:GetAOERadius(), 0.9, 1000000)
+				npcBot:Action_UseAbilityOnLocation(abilityQ, smartAOEQ.targetloc)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaW) and not module.IsHardCC(target)) then
-				npcBot:Action_UseAbilityOnLocation(abilityW, target:GetLocation())
+				npcBot:Action_UseAbilityOnEntity(abilityW, target)
 			end
 		end
 
@@ -160,10 +163,7 @@ function Murder()
 			end
 		end
 
-		if (module.CalcPerHealth(target) <= 0.15) then
-			local ping = target:GetExtrapolatedLocation(1)
-			npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
-		end
+		module.ConsiderKillPing(npcBot, target)
 	end
 
 end
@@ -187,7 +187,8 @@ function SpellRetreat()
 
 		if (not IsBotCasting() and ConsiderCast(abilityQ) and currentMana >= module.CalcManaCombo(manaQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
 			and not module.IsHardCC(target)) then
-			npcBot:Action_UseAbilityOnEntity(abilityQ, target)
+			local smartAOEQ = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), abilityQ:GetCastRange(), abilityQ:GetAOERadius(), 0.9, 1000000)
+			npcBot:Action_UseAbilityOnLocation(abilityQ, smartAOEQ.targetloc)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 			and not module.IsHardCC(target)) then
@@ -200,6 +201,8 @@ end
 function Think()
 	local npcBot = GetBot()
 	local state = stateMachine.calculateState(npcBot)
+
+	module.DangerPing(npcBot)
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)

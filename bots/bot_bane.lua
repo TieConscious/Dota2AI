@@ -89,6 +89,7 @@ function Murder()
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 
+
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
@@ -162,6 +163,7 @@ function SpellRetreat()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAllyTower = npcBot:GetNearbyTowers(450, false)
 
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local abilityE = npcBot:GetAbilityByName(SKILL_E)
@@ -178,10 +180,10 @@ function SpellRetreat()
 			npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
 
 		elseif (not IsBotCasting() and ConsiderCast(abilityE) and GetUnitToUnitDistance(npcBot, target) <= abilityE:GetCastRange()
-				and currentMana >= module.CalcManaCombo(manaE) and target ~= target2 and not module.IsHardCC(target)) then
+				and GetUnitToUnitDistance(npcBot,target) >= abilityE:GetCastRange() - 200 and currentMana >= module.CalcManaCombo(manaE) and not module.IsHardCC(target)) then
 			npcBot:Action_UseAbilityOnEntity(abilityE, target)
 
-		elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target2) <= abilityW:GetCastRange()
+		elseif (not IsBotCasting() and (nearbyAllyTower ~= nil or #nearbyAllyTower > 0) and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 				and currentMana >= module.CalcManaCombo(manaW)) then
 			npcBot:Action_UseAbilityOnEntity(abilityW, target)
 		end

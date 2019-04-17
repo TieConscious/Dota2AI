@@ -164,10 +164,7 @@ function Murder()
 			end
 		end
 
-		if (module.CalcPerHealth(target) <= 0.15) then
-			local ping = target:GetExtrapolatedLocation(1)
-			npcBot:ActionImmediate_Ping(ping.x, ping.y, true)
-		end
+		module.ConsiderKillPing(npcBot, target)
 	end
 
 end
@@ -206,6 +203,8 @@ function Think()
 		npcBot:Action_UseAbility(arcane)
 		return
 	end
+
+	module.DangerPing(npcBot)
 
 	--stateMachine.printState(state)
 	module.AbilityLevelUp(Ability)

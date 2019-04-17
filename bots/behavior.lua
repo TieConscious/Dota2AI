@@ -1,6 +1,7 @@
 local movement = require(GetScriptDirectory().."/movement_util")
 local module = require(GetScriptDirectory().."/helpers")
 local buy_weight = require(GetScriptDirectory().."/weights/buy")
+local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
@@ -187,6 +188,10 @@ function Farm()
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local health = 0
+
+	if npcBot:IsChanneling() then
+		return
+	end
 
 	if npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_ATTACK then
 		return
@@ -393,9 +398,9 @@ function Defend()
 	end
 
 	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
-		npcBot:Action_UseAbilityOnLocation(tpScroll, ancient:GetLocation())
+		npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.1))
 	else
-		npcBot:Action_MoveToLocation(GetLaneFrontLocation(GetTeam(), defendLane, 0.1))
+		npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.15))
 	end
 end
 

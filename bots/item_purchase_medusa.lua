@@ -12,16 +12,27 @@ local Items = {
 	"item_magic_stick",
 	"item_recipe_magic_wand",
 
-	----tranquil boots----
-	"item_wind_lace",
+	----boots of strength----
+	"item_belt_of_strength",
 	"item_boots",
-	"item_ring_of_regen",
-	"item_recipe_tranquil_boots",
+	"item_gloves",
+	"item_recipe_power_treads",
 
-	----mask of madness----
-	"item_lifesteal",
-	"item_quarterstaff",
-	"item_recipe_mask_of_madness",
+	----dragon lance----
+	"item_ogre_axe",
+	"item_boots_of_elves",
+	"item_boots_of_elves",
+	"item_recipe_dragon_lance",
+
+	----maelstrom----
+	"item_javelin",
+	"item_mithril_hammer",
+
+	----eye of skadi----
+	"item_ultimate_orb",
+	"item_ultimate_orb",
+	"item_point_booster",
+	"item_recipe_skadi",
 
 	----manta style----
 	"item_ultimate_orb",
@@ -30,23 +41,22 @@ local Items = {
 	"item_recipe_yasha",
 	"item_recipe_manta",
 
-	----eye of skadi----
-	"item_ultimate_orb",
-	"item_ultimate_orb",
-	"item_point_booster",
-	"item_recipe_skadi",
 
-	----butterfly----
-	"item_eagle",
-	"item_talisman_of_evasion",
-	"item_quarterstaff",
-	"item_recipe_butterfly",
-
-	----dragon lance----
-	"item_boots_of_elves",
-	"item_boots_of_elves",
-	"item_ogre_axe",
-	"item_recipe_dragon_lance"
+	----force staff----
+	"item_staff_of_wizardry",
+	"item_ring_of_regen",
+	"item_recipe_force_staff",
+	"item_recipe_hurricane_pike",
+	
+	----linkens----
+	"item_ultimate_orb",
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_recipe_sphere",
+	
+	----mjollnir----
+	"item_hyperstone",
+	"item_recipe_mjollnir"
 }
 
 return Items

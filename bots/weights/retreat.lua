@@ -1,5 +1,7 @@
 local module = require(GetScriptDirectory().."/helpers")
+local geneList = require(GetScriptDirectory().."/genes/gene")
 
+local npcBot = GetBot()
 --components--
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
@@ -18,7 +20,7 @@ end
 function hardRetreat(npcBot)
 	local percentHealth = module.CalcPerHealth(npcBot)
 	local level = npcBot:GetLevel()
-	return npcBot:DistanceFromFountain() < 4000 or percentHealth < 0.25 or npcBot:GetHealth() < 300
+	return npcBot:DistanceFromFountain() < 4000 or percentHealth < geneList.GetWeight(npcBot:GetUnitName(), "hardHealth") / 100
 end
 
 function lowHealthSoft(npcBot)
@@ -42,7 +44,7 @@ end
 function willEnemyTowerTargetMe(npcBot)
 	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
 	local nearbyEnemyTowers = npcBot:GetNearbyTowers(950, true)
-	if #ACreepsInTowerRange < 3 and
+	if #ACreepsInTowerRange > 0 and #ACreepsInTowerRange <= 2 and
 		not npcBot:WasRecentlyDamagedByTower(0.5) and nearbyEnemyTowers[1] ~= nil and nearbyEnemyTowers[1]:GetAttackTarget() ~= npcBot then
 		return true
 	end
@@ -50,8 +52,9 @@ function willEnemyTowerTargetMe(npcBot)
 end
 
 function enemyTowerShallTargetMe(npcBot)
-	local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
-	return Clamp((3 - #ACreepsInTowerRange) * 60, 0, 100)
+	-- local ACreepsInTowerRange = module.GetAllyCreepInTowerRange(npcBot, 950)
+	-- return Clamp(ACreepsInTowerRange * 60, 100, 0)
+	return 100
 end
 ------------------------------------------------------------------------------------
 function isEnemyTowerTargetingMeNoAlly(npcBot)
@@ -72,7 +75,7 @@ function hasPassiveEnemyNearby(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > 0.6 then --0.8
+	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then --0.8
 		return true
 	end
 	return false
@@ -82,7 +85,7 @@ function hasAggressiveEnemyNearby(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > 0.4  then
+	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then
 		return true
 	end
 	return false
@@ -112,7 +115,7 @@ function considerEnemyCreepHits(npcBot)
 			table.insert(creepsTargetingMe, creep)
 		end
 	end
-	return Clamp(50 * #creepsTargetingMe, 0, 100)
+	return Clamp(geneList.GetWeight(npcBot:GetUnitName(), "creepCount") * #creepsTargetingMe, 0, 100)
 end
 
 function FountainMana(npcBot)
@@ -133,7 +136,9 @@ function AreThereDangerPings(npcBot)
 	for __,aHero in pairs(team) do
 		local recentPing = aHero:GetMostRecentPing()
 		--print(recentPing.time)
-		if (recentPing ~= nil and not recentPing.normal_ping and (time - recentPing.time) <= 6.0 and GetUnitToLocationDistance(npcBot, recentPing.location) <= 2000) then
+		if recentPing ~= nil and not recentPing.normal_ping and
+			(time - recentPing.time) <= geneList.GetWeight(npcBot:GetUnitName(), "dangerTime") / 10 and
+			GetUnitToLocationDistance(npcBot, recentPing.location) <= geneList.GetWeight(npcBot:GetUnitName(), "dangerDistance") then
 			return true
 		end
 	end
@@ -156,15 +161,17 @@ local retreat_weight = {
         },
 
         conditionals = {
-			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=4},
-			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=5},
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=0.5}, --0.5
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby,weight=2}, --2
-			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=3},
-			{func=lowHealth, condition=hardRetreat, weight=6},
-			{func=lowHealthSoft, condition=enemyRetreat, weight=6},
-			{func=FillMana, condition=FountainMana, weight=3},
-			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=4}
+			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=geneList.GetWeight, weightName="willEnemyTowerTargetMe"},
+			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=geneList.GetWeight, weightName="isEnemyTowerTargetingMeNoAlly"},
+
+			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.GetWeight, weightName="hasPassiveEnemyNearby"}, --0.5
+			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby, weight=geneList.GetWeight, weightName="hasAggressiveEnemyNearby"}, --2
+
+			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=geneList.GetWeight, weightName="hasEnemyCreepsNearby"},
+			{func=lowHealth, condition=hardRetreat, weight=geneList.GetWeight, weightName="hardRetreat"},
+			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.GetWeight, weightName="enemyRetreat"},
+			{func=FillMana, condition=FountainMana, weight=20},
+			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.GetWeight, weightName="AreThereDangerPings"}
 		}
     }
 }
