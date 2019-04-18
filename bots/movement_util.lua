@@ -179,14 +179,93 @@ function movement.Retreat(npcBot)
 	end
 end
 
+npc = nil
+waypoints = false
+destination = 0
+function movement.PathFind(npcBot, location)
+	npc = npcBot
+	destination = location
+	if waypoints == false then
+		addAvoidanceZones()
+		waypoints = true
+	end
+	location.z = 50
+	GeneratePath(npcBot:GetLocation(), location, GetAvoidanceZones(), done)
+end
+
 function movement.RetreatToBase(npcBot)
 	local team = npcBot:GetTeam()
 	if (team == 3) then
-		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+		movement.PathFind(npcBot, RADIANT_FOUNTAIN)
 	else
-		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
+		movement.PathFind(npcBot, DIRE_FOUNTAIN)
 	end
 end
+
+
+function isTowerAlive(tower)
+	return function()
+		return not tower:IsNull()
+	end
+end
+
+function addAvoidanceZones()
+	local opp = GetOpposingTeam()
+	local tower = GetTower(opp, TOWER_TOP_1)
+	local loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_TOP_2)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_TOP_3)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_MID_1)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_MID_2)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_MID_3)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_BOT_1)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_BOT_2)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_BOT_3)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_BASE_1)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+	tower = GetTower(opp, TOWER_BASE_2)
+	loc = tower:GetLocation()
+	loc.z = 1000
+	AddConditionalAvoidanceZone(loc, isTowerAlive(tower))
+end
+
+function done(distance, b, waypoint)
+	if distance == 0 or npc == nil then
+		npc:Action_MoveToLocation(destination)
+		print(destination)
+	else
+		npc:Action_MovePath(waypoint)
+	end
+end
+
 
 ----Get ready to end the game----
 -- function MoveToLane_Final()

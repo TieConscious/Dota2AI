@@ -361,11 +361,10 @@ function Gank()
 		else
 			targetLane = LANE_MID
 		end
-		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, 300))
 	else
 		targetLane = globalState.state.furthestLane
-		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false)))
-
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, 0))
 	end
 end
 
