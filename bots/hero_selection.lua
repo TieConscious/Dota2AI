@@ -127,17 +127,6 @@ local Bans = {
 	'npc_dota_hero_winter_wyvern'
 }
 
-
---function GetBotNames ()
---	local bot_names = {}
---	table.insert(bot_names, "@42SiliconValley")
---	table.insert(bot_names, "@QwolfBLG")
---	table.insert(bot_names, "@Lyd")
---	table.insert(bot_names, "@mschroed098")
---	table.insert(bot_names, "@2ne1ugly1")
---	return bot_names
---end
-
 function GetBotNames ()
 	local bot_names = {}
 	table.insert(bot_names, "MidOne.@QwolfBLG")
@@ -188,16 +177,23 @@ function ZeroPickLogic()
 	end
 end
 
+
+local rpicked = false
+local dpicked = false
+
 function AllPickModeLogic()
 	if (GetTeam() == TEAM_RADIANT) then
-		print("selecting radiant")
-		SelectsHero(APPicks)
-	elseif (GetTeam() == TEAM_DIRE) then
-		print("selecting dire")
-		for i = 1, 5 do
-			RandomZeroHero()
+		if rpicked == false then
+			rpicked = true
+			print("selecting radiant")
+			ReconstructPicks()
 		end
-		SelectsHero(ZeroHeroes)
+	elseif (GetTeam() == TEAM_DIRE) then
+		if dpicked == false then
+			dpicked = true
+			print("selecting dire")
+			ReconstructPicks()
+		end
 	end
 end
 
@@ -212,6 +208,60 @@ function RandomZeroHero()
 	local hero = ZeroBadGuyPicks[number]
 	table.insert(ZeroHeroes, hero)
 	table.remove(ZeroBadGuyPicks, number)
+end
+
+function ReconstructPicks()
+	local hero = nil
+
+	local pickedHero = {}
+
+	local teamPlayers = GetTeamPlayers(GetTeam())
+	local enemyPlayers = GetTeamPlayers(GetTeam())
+	for k,v in pairs(teamPlayers) do
+		pickedHero[GetSelectedHeroName(v)] = true
+	end
+	for k,v in pairs(enemyPlayers) do
+		pickedHero[GetSelectedHeroName(v)] = true
+	end
+
+	for i = 1,5 do
+		if i == 1 then
+			hero = TopCarry[1]
+			table.remove(TopCarry, 1)
+		elseif i == 2 then
+			hero = BotCarry[1]
+			table.remove(BotCarry, 1)
+		elseif i == 3 then
+			hero = Mid[1]
+			table.remove(Mid, 1)
+		elseif	i == 4 then
+			hero = TopSupport[1]
+			table.remove(TopSupport, 1)
+		elseif i == 5 then
+			hero = BotSupport[1]
+			table.remove(BotSupport, 1)
+		end
+		while pickedHero[hero] ~= nil do
+			if i == 1 then
+				hero = TopCarry[1]
+				table.remove(TopCarry, 1)
+			elseif i == 2 then
+				hero = BotCarry[1]
+				table.remove(BotCarry, 1)
+			elseif i == 3 then
+				hero = Mid[1]
+				table.remove(Mid, 1)
+			elseif	i == 4 then
+				hero = TopSupport[1]
+				table.remove(TopSupport, 1)
+			elseif i == 5 then
+				hero = BotSupport[1]
+				table.remove(BotSupport, 1)
+			end
+		end
+		SelectHero(teamPlayers[i], hero)
+		pickedHero[hero] = true
+	end
 end
 
 ------------------------------------------CAPTAIN'S MODE GAME MODE-------------------------------------------
