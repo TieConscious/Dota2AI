@@ -100,6 +100,8 @@ function Murder()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -129,6 +131,12 @@ function Murder()
 		return
 	end
 
+	function safeToUlt()
+		if module.ItemSlot(npcBot, "item_ultimate_scepter") ~= nil then return true
+		elseif #eHeroList <= #aHeroList + 1 then return true end
+		return false
+	end
+
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
@@ -141,23 +149,23 @@ function Murder()
 
 			elseif (not IsBotCasting() and bmail ~= nil and ConsiderCast(abilityW, bmail, abilityR) and currentMana >= module.CalcManaCombo(manaW, manaBmail, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt() then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbility(bmail)
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, npcBot)
 
 			elseif (not IsBotCasting() and bmail ~= nil and ConsiderCast(bmail, abilityR) and currentMana >= module.CalcManaCombo(manaBmail, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt() then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbility(bmail)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityR) and currentMana >= module.CalcManaCombo(manaW, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt() then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, npcBot)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:Action_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt() then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
 					and GetUnitToUnitDistance(npcBot, target) <= 250) then
