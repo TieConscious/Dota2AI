@@ -371,6 +371,24 @@ function module.GetTimeToFace(npcBot, unit)
 	return math.acos(module.dot(dirFacing, dirToUnit)) * 0.03 / myTurnRate
 end
 
+function module.findKillableCreep(npcBot, enemyCreepList, allyCreepList, damage)
+	for _,v in pairs(enemyCreepList) do
+		local health = module.PredictTiming(npcBot, v, allyCreepList)
+		if health > 0 and health <= v:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) then
+			return v
+		end
+	end
+	for _,v in pairs(allyCreepList) do
+		if module.CalcPerHealth(v) < 0.5 then
+			local health = module.PredictTiming(npcBot, v, enemyCreepList)
+			if health > 0 and health <= v:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) then
+				return v
+			end
+		end
+	end
+	return nil
+end
+
 function module.PredictTiming(npcBot, weakestCreep, opposingCreepsList)
 	local attackTime =  npcBot:GetSecondsPerAttack() * npcBot:GetAttackPoint() + module.GetTimeToFace(npcBot, weakestCreep)
 	local attackRange = npcBot:GetAttackRange()
@@ -479,6 +497,25 @@ function module.GetWeakestUnit(Enemy)
 	end
 
 	return WeakestUnit,LowestHealth
+end
+
+function module.GetHighestHealth(Enemy)
+	if (Enemy == nil or #Enemy == 0) then
+		return nil, 0
+	end
+
+	local highestUnit = Enemy[1]
+	local highestHealth = Enemy[1]:GetHealth()
+	for _,unit in pairs(Enemy) do
+		if (unit ~= nil and unit:IsAlive()) then
+			if (unit:GetHealth() > highestHealth) then
+				highestHealth = unit:GetHealth()
+				highestUnit = unit
+			end
+		end
+	end
+
+	return highestUnit,highestHealth
 end
 
 ----Find theoretically most powerful unit (ally or enemy)----

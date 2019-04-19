@@ -63,7 +63,7 @@ function LanePushedPulledNotHealing(npcBot)
 		lane_state[myLane] = 0
 	end
 
-	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() == 0 or npcBot:HasModifier("modifier_flask_healing") then
+	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() == 0 or npcBot:HasModifier("modifier_flask_healing") or npcBot:GetLevel() < 8 then
 		return false
 	end
 

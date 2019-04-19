@@ -134,7 +134,7 @@ function Heal()
 			end
 		end
 	end
-	movement.RetreatToBase(npcBot)
+	movement.Retreat(npcBot)
 end
 
 function Hunt()
@@ -184,6 +184,7 @@ function Farm()
 	------Enemy and Creep stats----
 	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(eCreeps)
+	local eHighestCreep,eHighestHealth= module.GetHighestHealth(eCreeps)
 	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -197,30 +198,16 @@ function Farm()
 		return
 	end
 
+	local killableCreep = module.findKillableCreep(npcBot, eCreeps, aCreeps, npcBot:GetAttackDamage())
 	----push when no enemy----
-	if (eCreeps[1] ~= nil and nearbyEnemy ~= nil and #nearbyEnemy == 0) then
-		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
-		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-			npcBot:Action_AttackUnit(eCreeps[1], true)
+	if (#eCreeps ~= 0 and #nearbyEnemy == 0) then
+		if killableCreep ~= nil then
+			npcBot:Action_AttackUnit(killableCreep, true)
 		else
-			npcBot:Action_AttackUnit(eWeakestCreep, true)
+			npcBot:Action_AttackUnit(eHighestCreep, true)
 		end
-	elseif eWeakestCreep ~= nil then
-		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
-		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-			if aWeakestCreep ~= nil then
-				health = module.PredictTiming(npcBot, aWeakestCreep, eCreeps)
-				if health <= 0 or health > aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
-					movement.MTL_Farm(npcBot)
-				else
-					npcBot:Action_AttackUnit(aWeakestCreep, true)
-				end
-			else
-				movement.MTL_Farm(npcBot)
-			end
-		else
-			npcBot:Action_AttackUnit(eWeakestCreep, true)
-		end
+	elseif killableCreep ~= nil then
+		npcBot:Action_AttackUnit(killableCreep, true)
 	else
 		movement.MTL_Farm(npcBot)
 	end
