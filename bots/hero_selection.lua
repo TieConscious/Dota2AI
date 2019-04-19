@@ -1,5 +1,3 @@
-local botPicks = {}
-
 local ZeroHeroes = {}
 local ZeroBadGuyPicks = {
 	'npc_dota_hero_drow_ranger',
@@ -33,79 +31,56 @@ local ZeroBadGuyPicks = {
 	'npc_dota_hero_viper',
 	'npc_dota_hero_windrunner',
 	'npc_dota_hero_witch_doctor',
-	--'npc_dota_hero_skeleton_king'
+	'npc_dota_hero_skeleton_king'
 }
 
-local APPicks = {
-	"npc_dota_hero_legion_commander",
-	'npc_dota_hero_jakiro',
-	'npc_dota_hero_ogre_magi',
-	'npc_dota_hero_lich',
-	'npc_dota_hero_medusa',
-	'npc_dota_hero_bane',
-	'npc_dota_hero_skeleton_king',
- 	'npc_dota_hero_tinker',
- 	'npc_dota_hero_crystal_maiden',
- 	'npc_dota_hero_tidehunter',
- 	'npc_dota_hero_ursa', --broken
- 	'npc_dota_hero_shadow_shaman', --broken
- 	'npc_dota_hero_phantom_assassin',
- 	'npc_dota_hero_abyssal_underlord',
- 	'npc_dota_hero_pugna',
- 	'npc_dota_hero_sven',
-	'npc_dota_hero_dazzle'
-	--'npc_dota_hero_lion',
-	--'npc_dota_hero_chaos_knight',
- 	--'npc_dota_hero_juggernaut',
+local heroSel = {
+	TopCarry = {
+		"npc_dota_hero_ogre_magi",
+		"npc_dota_hero_legion_commander",
+		"npc_dota_hero_abyssal_underlord",
+		"npc_dota_hero_chaos_knight"
+		--"npc_dota_hero_bristleback"
+		--"npc_dota_hero_abaddon",
+		--"npc_dota_hero_chaos_knight",
+		--"npc_dota_hero_viper",
+		--"npc_dota_hero_lycan"
+		--"npc_dota_hero_sven",
+	},
+
+	BotCarry = {
+		"npc_dota_hero_legion_commander",
+		"npc_dota_hero_chaos_knight",
+		"npc_dota_hero_skeleton_king",
+		"npc_dota_hero_medusa",
+		"npc_dota_hero_juggernaut"
+	},
+
+	Mid = {
+		"npc_dota_hero_medusa",
+		"npc_dota_hero_legion_commander",
+		"npc_dota_hero_obsidian_destroyer",
+		"npc_dota_hero_tinker"
+		--necro
+		--veno
+		--"npc_dota_hero_ogre_magi",
+	},
+
+	TopSupport = {
+		"npc_dota_hero_jakiro",
+		"npc_dota_hero_lich",
+		"npc_dota_hero_bane",
+		"npc_dota_hero_tidehunter"
+		--"npc_dota_hero_riki"
+	},
+
+	BotSupport = {
+		"npc_dota_hero_lich",
+		"npc_dota_hero_bane",
+		"npc_dota_hero_lion",
+		"npc_dota_hero_crystal_maiden"
+	}
 }
-
-local TopCarry = {
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_abyssal_underlord",
-	"npc_dota_hero_chaos_knight"
-	--"npc_dota_hero_bristleback"
-	--"npc_dota_hero_abaddon",
-	--"npc_dota_hero_chaos_knight",
-	--"npc_dota_hero_viper",
-	--"npc_dota_hero_lycan"
-	--"npc_dota_hero_sven",
-}
-
-local BotCarry = {
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_skeleton_king",
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_juggernaut"
-}
-
-local Mid = {
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_obsidian_destroyer",
-	"npc_dota_hero_tinker"
-	--necro
-	--veno
-	--"npc_dota_hero_ogre_magi",
-}
-
-local TopSupport = {
-	"npc_dota_hero_jakiro",
-	"npc_dota_hero_lich",
-	"npc_dota_hero_bane",
-	"npc_dota_hero_tidehunter"
-	--"npc_dota_hero_riki"
-}
-
-local BotSupport = {
-	"npc_dota_hero_lich",
-	"npc_dota_hero_bane",
-	"npc_dota_hero_lion",
-	"npc_dota_hero_crystal_maiden"
-}
-
-
 
 local Bans = {
 	--'npc_dota_hero_jakiro',
@@ -166,9 +141,16 @@ end
 ------------------------------------------ALL PICK MODE GAME MODE-------------------------------------------
 --Picking logic for All Pick Mode Game Mode
 
+
+local rpicked = false
+local dpicked = false
+
 function ZeroPickLogic()
 	if (GetTeam() == TEAM_RADIANT) then
-		SelectsHero(APPicks)
+		if rpicked == false then
+			rpicked = true
+			ReconstructPicks()
+		end
 	elseif (GetTeam() == TEAM_DIRE) then
 		for i = 1, 5 do
 			RandomZeroHero()
@@ -176,10 +158,6 @@ function ZeroPickLogic()
 		SelectsHero(ZeroHeroes)
 	end
 end
-
-
-local rpicked = false
-local dpicked = false
 
 function AllPickModeLogic()
 	if (GetTeam() == TEAM_RADIANT) then
@@ -226,37 +204,37 @@ function ReconstructPicks()
 
 	for i = 1,5 do
 		if i == 1 then
-			hero = TopCarry[1]
-			table.remove(TopCarry, 1)
+			hero = heroSel.TopCarry[1]
+			table.remove(heroSel.TopCarry, 1)
 		elseif i == 2 then
-			hero = BotCarry[1]
-			table.remove(BotCarry, 1)
+			hero = heroSel.BotCarry[1]
+			table.remove(heroSel.BotCarry, 1)
 		elseif i == 3 then
-			hero = Mid[1]
-			table.remove(Mid, 1)
+			hero = heroSel.Mid[1]
+			table.remove(heroSel.Mid, 1)
 		elseif	i == 4 then
-			hero = TopSupport[1]
-			table.remove(TopSupport, 1)
+			hero = heroSel.TopSupport[1]
+			table.remove(heroSel.TopSupport, 1)
 		elseif i == 5 then
-			hero = BotSupport[1]
-			table.remove(BotSupport, 1)
+			hero = heroSel.BotSupport[1]
+			table.remove(heroSel.BotSupport, 1)
 		end
 		while pickedHero[hero] ~= nil do
 			if i == 1 then
-				hero = TopCarry[1]
-				table.remove(TopCarry, 1)
+				hero = heroSel.TopCarry[1]
+				table.remove(heroSel.TopCarry, 1)
 			elseif i == 2 then
-				hero = BotCarry[1]
-				table.remove(BotCarry, 1)
+				hero = heroSel.BotCarry[1]
+				table.remove(heroSel.BotCarry, 1)
 			elseif i == 3 then
-				hero = Mid[1]
-				table.remove(Mid, 1)
+				hero = heroSel.Mid[1]
+				table.remove(heroSel.Mid, 1)
 			elseif	i == 4 then
-				hero = TopSupport[1]
-				table.remove(TopSupport, 1)
+				hero = heroSel.TopSupport[1]
+				table.remove(heroSel.TopSupport, 1)
 			elseif i == 5 then
-				hero = BotSupport[1]
-				table.remove(BotSupport, 1)
+				hero = heroSel.BotSupport[1]
+				table.remove(heroSel.BotSupport, 1)
 			end
 		end
 		SelectHero(teamPlayers[i], hero)
@@ -348,51 +326,51 @@ end
 function PickHero()
 	local hero = nil
 	if PickCycle == 1 then
-		hero = TopCarry[1]
-		table.remove(TopCarry, 1)
+		hero = heroSel.TopCarry[1]
+		table.remove(heroSel.TopCarry, 1)
 	elseif PickCycle == 2 then
-		hero = BotCarry[1]
-		table.remove(BotCarry, 1)
+		hero = heroSel.BotCarry[1]
+		table.remove(heroSel.BotCarry, 1)
 	elseif PickCycle == 3 then
-		hero = Mid[1]
-		table.remove(Mid, 1)
+		hero = heroSel.Mid[1]
+		table.remove(heroSel.Mid, 1)
 	elseif	PickCycle == 4 then
-		hero = TopSupport[1]
-		table.remove(TopSupport, 1)
+		hero = heroSel.TopSupport[1]
+		table.remove(heroSel.TopSupport, 1)
 	elseif PickCycle == 5 then
-		hero = BotSupport[1]
-		table.remove(BotSupport, 1)
+		hero = heroSel.BotSupport[1]
+		table.remove(heroSel.BotSupport, 1)
 	end
 	while (IsCMPickedHero(GetTeam(), hero) or IsCMPickedHero(GetOpposingTeam(), hero) or IsCMBannedHero(hero)) do
 		if PickCycle == 1 then
-			hero = TopCarry[1]
-			table.remove(TopCarry, 1)
+			hero = heroSel.TopCarry[1]
+			table.remove(heroSel.TopCarry, 1)
 		elseif PickCycle == 2 then
-			hero = BotCarry[1]
-			table.remove(BotCarry, 1)
+			hero = heroSel.BotCarry[1]
+			table.remove(heroSel.BotCarry, 1)
 		elseif PickCycle == 3 then
-			hero = Mid[1]
-			table.remove(Mid, 1)
+			hero = heroSel.Mid[1]
+			table.remove(heroSel.Mid, 1)
 		elseif	PickCycle == 4 then
-			hero = TopSupport[1]
-			table.remove(TopSupport, 1)
+			hero = heroSel.TopSupport[1]
+			table.remove(heroSel.TopSupport, 1)
 		elseif PickCycle == 5 then
-			hero = BotSupport[1]
-			table.remove(BotSupport, 1)
+			hero = heroSel.BotSupport[1]
+			table.remove(heroSel.BotSupport, 1)
 		end
 	end
-	local heroName = hero
-	if PickCycle == 1 then
-		botPicks[heroName] = 1
-	elseif PickCycle == 2 then
-		botPicks[heroName] = 1
-	elseif PickCycle == 3 then
-		botPicks[heroName] = 1
-	elseif PickCycle == 4 then
-		botPicks[heroName] = 1
-	elseif PickCycle == 5 then
-		botPicks[heroName] = 1
-	end
+	-- local heroName = hero
+	-- if PickCycle == 1 then
+	-- 	botPicks[heroName] = 1
+	-- elseif PickCycle == 2 then
+	-- 	botPicks[heroName] = 1
+	-- elseif PickCycle == 3 then
+	-- 	botPicks[heroName] = 1
+	-- elseif PickCycle == 4 then
+	-- 	botPicks[heroName] = 1
+	-- elseif PickCycle == 5 then
+	-- 	botPicks[heroName] = 1
+	-- end
 	return hero
 end
 
@@ -447,3 +425,5 @@ function SelectsHero(heroTable)
 		AllHeroesSelected = true
 	end
 end
+
+return heroSel

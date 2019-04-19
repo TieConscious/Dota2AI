@@ -1,5 +1,5 @@
 local module = {}
-
+local heroSel = require(GetScriptDirectory().."/hero_selection")
 
 ---- Function Pointers -----
 local npcBot = GetBot()
@@ -197,70 +197,6 @@ end
 
 local picks = nil
 
-
-local TopCarry = {
-	"npc_dota_hero_ogre_magi",
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_abyssal_underlord",
-	"npc_dota_hero_chaos_knight"
-	--"npc_dota_hero_bristleback"
-	--"npc_dota_hero_abaddon",
-	--"npc_dota_hero_chaos_knight",
-	--"npc_dota_hero_viper",
-	--"npc_dota_hero_lycan"
-	--"npc_dota_hero_sven",
-}
-
-local BotCarry = {
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_skeleton_king",
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_juggernaut"
-}
-
-local Mid = {
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_legion_commander",
-	"npc_dota_hero_obsidian_destroyer",
-	"npc_dota_hero_tinker"
-	--necro
-	--veno
-	--"npc_dota_hero_ogre_magi",
-}
-
-local TopSupport = {
-	"npc_dota_hero_jakiro",
-	"npc_dota_hero_lich",
-	--"npc_dota_hero_bane",
-	"npc_dota_hero_tidehunter"
-	--"npc_dota_hero_riki"
-}
-
-local BotSupport = {
-	"npc_dota_hero_bane",
-	"npc_dota_hero_lich",
-
-	"npc_dota_hero_lion",
-	"npc_dota_hero_crystal_maiden"
-}
-
-
-local Bans = {
-	'npc_dota_hero_sniper',
-	--'npc_dota_hero_jakiro',
-	'npc_dota_hero_tusk',
-	'npc_dota_hero_undying',
-    'npc_dota_hero_vengefulspirit',
-	'npc_dota_hero_venomancer',
-    'npc_dota_hero_warlock',
-    'npc_dota_hero_windrunner',
-    'npc_dota_hero_witch_doctor',
-	'npc_dota_hero_zuus',
-	'npc_dota_hero_sven',
-	'npc_dota_hero_slark'
-}
-
 function ReconstructPicks()
 	local hero = nil
 	picks = {}
@@ -273,37 +209,37 @@ function ReconstructPicks()
 
 	for PickCycle=1,5 do
 		if PickCycle == 1 then
-			hero = TopCarry[1]
-			table.remove(TopCarry, 1)
+			hero = heroSel.TopCarry[1]
+			table.remove(heroSel.TopCarry, 1)
 		elseif PickCycle == 2 then
-			hero = BotCarry[1]
-			table.remove(BotCarry, 1)
+			hero = heroSel.BotCarry[1]
+			table.remove(heroSel.BotCarry, 1)
 		elseif PickCycle == 3 then
-			hero = Mid[1]
-			table.remove(Mid, 1)
+			hero = heroSel.Mid[1]
+			table.remove(heroSel.Mid, 1)
 		elseif	PickCycle == 4 then
-			hero = TopSupport[1]
-			table.remove(TopSupport, 1)
+			hero = heroSel.TopSupport[1]
+			table.remove(heroSel.TopSupport, 1)
 		elseif PickCycle == 5 then
-			hero = BotSupport[1]
-			table.remove(BotSupport, 1)
+			hero = heroSel.BotSupport[1]
+			table.remove(heroSel.BotSupport, 1)
 		end
 		while picks[hero] ~= nil or pickedHero[hero] == nil do
 			if PickCycle == 1 then
-				hero = TopCarry[1]
-				table.remove(TopCarry, 1)
+				hero = heroSel.TopCarry[1]
+				table.remove(heroSel.TopCarry, 1)
 			elseif PickCycle == 2 then
-				hero = BotCarry[1]
-				table.remove(BotCarry, 1)
+				hero = heroSel.BotCarry[1]
+				table.remove(heroSel.BotCarry, 1)
 			elseif PickCycle == 3 then
-				hero = Mid[1]
-				table.remove(Mid, 1)
+				hero = heroSel.Mid[1]
+				table.remove(heroSel.Mid, 1)
 			elseif	PickCycle == 4 then
-				hero = TopSupport[1]
-				table.remove(TopSupport, 1)
+				hero = heroSel.TopSupport[1]
+				table.remove(heroSel.TopSupport, 1)
 			elseif PickCycle == 5 then
-				hero = BotSupport[1]
-				table.remove(BotSupport, 1)
+				hero = heroSel.BotSupport[1]
+				table.remove(heroSel.BotSupport, 1)
 			end
 		end
 		if PickCycle == 1 then
