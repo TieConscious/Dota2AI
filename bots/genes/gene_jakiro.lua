@@ -42,6 +42,13 @@ local gene = {
 	timeToFinish = 2.656680,
 	chaseWeight = 36.650160,
 	chaseDistance = 628.955130,
+
+	retreatEarly = 100,
+	retreatLate = 100,
+	farmEarly = 100,
+	farmLate = 100,
+	huntEarly = 100,
+	huntLate = 100
 }
 
 return gene

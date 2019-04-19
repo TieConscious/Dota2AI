@@ -10,6 +10,7 @@ local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
+local geneList = require(GetScriptDirectory().."/genes/gene")
 --local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local globalState = require(GetScriptDirectory().."/global_state")
 
@@ -83,8 +84,12 @@ function stateMachine.calcWeight(npcBot, settings)
             table.insert(computedComps, comp)
         end
     end
-
-    state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
+	state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
+	if geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") ~= nil then
+		state.weights[settings.name] = state.weights[settings.name] * RemapValClamped(npcBot:GetLevel(), 1, 25,
+			geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") / 100.0,
+			geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Late") / 100.0)
+	end
 end
 
 function stateMachine.getState()
