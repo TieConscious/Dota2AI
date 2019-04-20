@@ -17,7 +17,6 @@ local TALENT6 = "special_bonus_unique_legion_commander_3"
 local TALENT7 = "special_bonus_unique_legion_commander"
 local TALENT8 = "special_bonus_unique_legion_commander_5"
 
-
 local Ability = {
 	SKILL_E,
 	SKILL_W,
@@ -65,19 +64,14 @@ function ConsiderCast(...)
 	return true
 end
 
-function module.CanSheKillThem(npcBot, target)
-    if (target == nil) then
-        return false
-	end
-	local ags = module.ItemSlot(npcBot, "item_ultimate_scepter")
-
+function ultDuration()
 	ultTime = {4, 4.75, 5.5}
 	agTime = {6, 7, 8}
 
-	local abilityR = npcBot:GetAbilityByName(SKILL_R)
-	local targetHealth = target:GetHealth()
-	local rLevel = abilityR:GetLevel()
 	local seconds
+	local ags = module.ItemSlot(npcBot, "item_ultimate_scepter")
+	local abilityR = npcBot:GetAbilityByName(SKILL_R)
+	local rLevel = abilityR:GetLevel()
 
 	if ags ~= nil then
 		seconds = agTime[rLevel]
@@ -86,8 +80,17 @@ function module.CanSheKillThem(npcBot, target)
 	end
 
 	seconds = seconds - (npcBot:GetSecondsPerAttack() * npcBot:GetAttackPoint())
+	return seconds
+end
 
-    return npcBot:GetEstimatedDamageToTarget(true, target, seconds, DAMAGE_TYPE_ALL) >= targetHealth
+function module.CanSheKillThem(npcBot, target)
+    if (target == nil) then
+        return false
+	end
+
+	local targetHealth = target:GetHealth()
+
+    return npcBot:GetEstimatedDamageToTarget(true, target, ultDuration(), DAMAGE_TYPE_ALL) >= targetHealth
 end
 
 ----Murder closest enemy hero----
@@ -100,6 +103,8 @@ function Murder()
 	local hRange = npcBot:GetAttackRange() - 25
 
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+
 
 	local abilityQ = npcBot:GetAbilityByName(SKILL_Q)
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
@@ -129,6 +134,33 @@ function Murder()
 		return
 	end
 
+	function estimateIncomingDamage()
+		local potentialDamage = 0
+		if #eHeroList > 0 and eHeroList ~= nil then
+			for i, hero in ipairs(eHeroList) do
+				potentialDamage = potentialDamage + ((hero:GetAttackDamage() / hero:GetSecondsPerAttack()) * ultDuration())
+			end
+		end
+		return potentialDamage
+	end
+
+	function safeToUlt(target, bmail) --if bmail is nil we don't factor that damage in
+		local eFinalHealth = target:GetHealth()
+		local bFinalHealth = npcBot:GetHealth()
+		local agh = module.ItemSlot(npcBot, "item_ultimate_scepter")
+		local enemyTotalDamage = target:GetAttackDamage() / target:GetSecondsPerAttack() * ultDuration()
+		local botTotalDamage = npcBot:GetEstimatedDamageToTarget(true, target, ultDuration(), DAMAGE_TYPE_ALL) 
+		
+		eFinalHealth = eFinalHealth - botTotalDamage
+		if bmail ~= nil then eFinalHealth = eFinalHealth - enemyTotalDamage end
+
+		bFinalHealth = bFinalHealth - enemyTotalDamage
+		if agh == nil then bFinalHealth = bFinalHealth - estimateIncomingDamage()
+		else bFinalHealth = bFinalHealth - enemyTotalDamage end
+
+		return bFinalHealth > eFinalHealth
+	end
+
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
 
@@ -141,23 +173,23 @@ function Murder()
 
 			elseif (not IsBotCasting() and bmail ~= nil and ConsiderCast(abilityW, bmail, abilityR) and currentMana >= module.CalcManaCombo(manaW, manaBmail, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt(target, bmail) then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbility(bmail)
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, npcBot)
 
 			elseif (not IsBotCasting() and bmail ~= nil and ConsiderCast(bmail, abilityR) and currentMana >= module.CalcManaCombo(manaBmail, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt(target, bmail) then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbility(bmail)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW, abilityR) and currentMana >= module.CalcManaCombo(manaW, manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:ActionPush_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt(target, nil) then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 				npcBot:ActionPush_UseAbilityOnEntity(abilityW, npcBot)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityR) and currentMana >= module.CalcManaCombo(manaR)
 					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() + 100 and module.CanSheKillThem(npcBot, target)) then
-				npcBot:Action_UseAbilityOnEntity(abilityR, target)
+				if safeToUlt(target, nil) then npcBot:ActionPush_UseAbilityOnEntity(abilityR, target) end
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
 					and GetUnitToUnitDistance(npcBot, target) <= 250) then

@@ -1,54 +1,47 @@
 local gene = {
     ----hunt----
-    enemyHealth = 22.848560,
-    enemyDistance = 13.708430,
-    isUnderTower = 43.637310,
-    weDisabled = 35.301400,
-    eUnderTower = 5.928930,
-    EnemyWeak = 31.414510,
-    EnemyDisabled = 11.679390,
+    enemyHealth = 28.743770,
+    enemyDistance = 15.355210,
+    isUnderTower = 39.435970,
+    weDisabled = 24.782600,
+    eUnderTower = 5.899690,
+    EnemyWeak = 18.158210,
+    EnemyDisabled = 10.720740,
     allyInFight = 22.535260,
 
-	enemyHealthMax = 73.684910,
+	enemyHealthMax = 61.958690,
 	perfectAttackRange = 93.706330,
-	FuckMinRatio = -46.683850,
-	FuckMaxRatio = 64.859590,
+	FuckMinRatio = -46.530230,
+	FuckMaxRatio = 74.324340,
 
     ----retreat----
-    willEnemyTowerTargetMe = 30.662680,
-    isEnemyTowerTargetingMeNoAlly = 44.304810,
-    hasPassiveEnemyNearby = 4.522910,
-    hasAggressiveEnemyNearby = 18.562630,
-    hasEnemyCreepsNearby = 26.987210,
-    hardRetreat = 45.679560,
-    enemyRetreat = 103.647630,
-    FountainMana = 27.833390,
-    AreThereDangerPings = 16.252940,
+    willEnemyTowerTargetMe = 25.799890,
+    isEnemyTowerTargetingMeNoAlly = 52.005580,
+    hasPassiveEnemyNearby = 5.106770,
+    hasAggressiveEnemyNearby = 16.230890,
+    hasEnemyCreepsNearby = 22.996950,
+    hardRetreat = 46.275620,
+    enemyRetreat = 97.805340,
+    FountainMana = 33.490310,
+    AreThereDangerPings = 15.813460,
 
-	creepCount = 67.453160,
-	hardHealth = 24.042730,
-	dangerTime = 58.791050,
-	dangerDistance = 1287.048280,
+	creepCount = 53.895850,
+	hardHealth = 29.604550,
+	dangerTime = 46.926570,
+	dangerDistance = 1524.101550,
 	powerConsider = 68.495240,
 
     ----farm----
-    creepsAround = 9.453020,
-    calcEnemyCreepHealth = 66.555440,
-    calcEnemyCreepDist = 101.101610,
+    creepsAround = 8.043500,
+    calcEnemyCreepHealth = 70.945000,
+    calcEnemyCreepDist = 85.306640,
 
-	creepHealthMaxClamp = 19.694290,
+	creepHealthMaxClamp = 17.212370,
 
 	----finish him----
-	timeToFinish = 2.252010,
-	chaseWeight = 48.180400,
-	chaseDistance = 403.955270,
-
-	retreatEarly = 100,
-	retreatLate = 100,
-	farmEarly = 100,
-	farmLate = 100,
-	huntEarly = 100,
-	huntLate = 100
+	timeToFinish = 3.339230,
+	chaseWeight = 44.241770,
+	chaseDistance = 507.254980,
 }
 
 return gene

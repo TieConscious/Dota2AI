@@ -40,20 +40,20 @@ function globalState.getEnemyInfo(team)
 	local baseEnemies = 0
 	local ancient = GetAncient(team)
 	local unitList = GetUnitList(UNIT_LIST_ENEMY_HEROES)
-	local visibleEnemy = {}
+	local visibleEnemyLoc = {}
 	for _,unit in pairs(unitList) do
 		if unit:CanBeSeen() then
-			visibleEnemy[unit:GetPlayerID()] = unit:GetLocation()
+			visibleEnemyLoc[unit:GetPlayerID()] = unit:GetLocation()
 		end
 	end
 	--DebugDrawCircle(ancient:GetLocation(), 2500, 0, 255, 0)
 	for _,eID in pairs(enemyIDs) do
 		--living enemies
 		local lsi = {}
-		if visibleEnemy[eID] ~= nil then
+		if visibleEnemyLoc[eID] ~= nil then
 			lsi[1] = {}
 			lsi[1].time_since_seen = 0
-			lsi[1].location = visibleEnemy[eID]
+			lsi[1].location = visibleEnemyLoc[eID]
 		else
 			lsi = GetHeroLastSeenInfo(eID)
 		end
@@ -64,7 +64,7 @@ function globalState.getEnemyInfo(team)
 				missingEnemies = missingEnemies + 1
 			end
 			--enemies in base
-			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) and deadEnemies[eID] == nil then
+			if (visibleEnemyLoc[eID] ~= nil and GetUnitToLocationDistance(ancient, visibleEnemyLoc[eID]) < 2500) and deadEnemies[eID] == nil then
 					baseEnemies = baseEnemies + 1
 					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
 			end
