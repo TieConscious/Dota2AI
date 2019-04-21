@@ -6,6 +6,7 @@ local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
 local buyback_think = require(GetScriptDirectory().."/buyback_think")
+local fortify_think = require(GetScriptDirectory().."/fortify_think")
 local globalState = require(GetScriptDirectory().."/global_state")
 local behavior = {}
 
@@ -13,7 +14,7 @@ function behavior.generic(npcBot, stateMachine)
 	courier_think.Decide()
 	consumable_think.Decide()
 	buyback_think.Decide()
-
+	fortify_think.Decide()
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
