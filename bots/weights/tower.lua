@@ -17,9 +17,8 @@ function towerNearby(npcBot)
     end
 end
 
-function numberEnemyCreeps(npcBot)
-    local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
-    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
+function buildingDesire(npcBot)
+    return geneList.GetWeight(npcBot:GetUnitName(), "buildingWeight")
 end
 
 function buildingNearby(npcBot)
@@ -73,7 +72,7 @@ local tower_weight = {
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
             --{func=ratioEnemy, condition=enemyNearby, weight=1},
-            --{func=numberEnemyCreeps, condition=buildingNearby, weight=1},
+            {func=buildingDesire, condition=buildingNearby, weight=1},
             {func=towerHealth, condition=towerNearby, weight=1}
         }
     }

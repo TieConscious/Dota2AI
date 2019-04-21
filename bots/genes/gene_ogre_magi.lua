@@ -52,7 +52,8 @@ local gene = {
 	huntEarly = 75,
     huntLate = 100,
     
-    towerWeight = 20
+    towerWeight = 20,
+    buildingWeight = 20
 }
 
 return gene
