@@ -29,7 +29,7 @@ local gene = {
     calcEnemyCreepHealth = 11,
     calcEnemyCreepDist = 7,
     enemyNotLevel = 10,
-    alone = 5
+	alone = 5
 }
 
 return gene

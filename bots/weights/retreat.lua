@@ -5,8 +5,8 @@ local npcBot = GetBot()
 --components--
 --count-----------------------------------------------------------------------------
 function numberDifference(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(700, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(700, false, BOT_MODE_NONE)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
 	return  10 * #nearbyEnemy/(#nearbyAlly)
 end
 --conditionals--
