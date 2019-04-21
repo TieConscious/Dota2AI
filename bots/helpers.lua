@@ -587,6 +587,13 @@ function module.SmartTarget(npcBot)
 		end
 
 		for _,unit in pairs(eHeroList) do
+			if (unit:IsChanneling()) then
+				target = unit
+				return target
+			end
+		end
+
+		for _,unit in pairs(eHeroList) do
 			if (module.IsDisabled(unit)) then
 				target = unit
 				return target
