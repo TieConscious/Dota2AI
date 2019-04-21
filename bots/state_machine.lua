@@ -11,6 +11,7 @@ local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
 local geneList = require(GetScriptDirectory().."/genes/gene")
+local module = require(GetScriptDirectory().."/helpers")
 --local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local globalState = require(GetScriptDirectory().."/global_state")
 
@@ -85,6 +86,12 @@ function stateMachine.calcWeight(npcBot, settings)
         end
     end
 	state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
+	if settings.name == "hunt" then
+		local healthPer = module.CalcPerHealth(npcBot)
+		state.weights[settings.name] = state.weights[settings.name] * RemapValClamped(healthPer, 0, 1,
+			geneList.GetWeight(npcBot:GetUnitName(), "huntMinHealth") / 100.0,
+			geneList.GetWeight(npcBot:GetUnitName(), "huntMaxHealth") / 100.0)
+	end
 	if geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") ~= nil then
 		state.weights[settings.name] = state.weights[settings.name] * RemapValClamped(npcBot:GetLevel(), 1, 25,
 			geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") / 100.0,

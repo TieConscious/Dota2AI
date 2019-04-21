@@ -13,6 +13,8 @@ local gene = {
 	perfectAttackRange = 86.102480,
 	FuckMinRatio = -58.024440,
 	FuckMaxRatio = 16.583790,
+	huntMinHealth = 100,
+	huntMaxHealth = 100,
 
     ----retreat----
     willEnemyTowerTargetMe = 25.075410,
