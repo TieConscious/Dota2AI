@@ -41,7 +41,16 @@ local gene = {
 	----finish him----
 	timeToFinish = %f,
 	chaseWeight = %f,
-	chaseDistance = %f,
+    chaseDistance = %f,
+    
+    retreatEarly = %f,
+	retreatLate = %f,
+	farmEarly = %f,
+	farmLate = %f,
+	huntEarly = %f,
+    huntLate = %f,
+    
+    towerWeight = %f
 }
 
 return gene
