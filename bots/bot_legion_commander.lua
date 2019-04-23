@@ -79,7 +79,7 @@ function ultDuration()
 		seconds = ultTime[rLevel]
 	end
 
-	seconds = seconds - (npcBot:GetSecondsPerAttack() * npcBot:GetAttackPoint())
+	seconds = seconds - npcBot:GetSecondsPerAttack()
 	return seconds
 end
 

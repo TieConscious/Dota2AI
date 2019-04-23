@@ -12,7 +12,9 @@ local gene = {
 	enemyHealthMax = %f,
 	perfectAttackRange = %f,
 	FuckMinRatio = %f,
-	FuckMaxRatio = %f,
+    FuckMaxRatio = %f,
+    huntMinHealth = %f,
+	huntMaxHealth = %f,
 
     ----retreat----
     willEnemyTowerTargetMe = %f,

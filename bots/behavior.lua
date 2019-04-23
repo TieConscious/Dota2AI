@@ -240,7 +240,7 @@ function Buy()
 			npcBot:ActionImmediate_PurchaseItem(nextItem)
 			table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 		else
-			npcBot:Action_MoveToLocation(closerSecretShop)
+			movement.MoveToLoc(closerSecretShop)
 		end
 	else
 		npcBot:ActionImmediate_PurchaseItem(nextItem)
@@ -276,7 +276,7 @@ function Rune()
 			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
 				npcBot:Action_PickUpRune(rune)
 			else
-				npcBot:Action_MoveToLocation(runeLoc)
+				movement.MoveToLoc(runeLoc)
 			end
 			return
         end
@@ -285,18 +285,18 @@ function Rune()
 	local myLane = module.GetLane(npcBot)
 	if (team == 3) then
 		if (myLane == LANE_TOP) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4))
+            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_4))
 		elseif (myLane == LANE_BOT) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_2))
 		else
             Farm()
 		end
 	--if Radiant--
 	elseif (team == 2) then
 		if (myLane == LANE_TOP) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
+            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_1))
 		elseif (myLane == LANE_BOT) then
-            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_3))
 		else
 			Farm()
 		end
@@ -349,10 +349,10 @@ function Gank()
 		else
 			targetLane = LANE_MID
 		end
-		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, 300))
+		movement.MoveToLoc(GetLaneFrontLocation(team, targetLane, 300))
 	else
 		targetLane = globalState.state.furthestLane
-		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, 0))
+		movement.MoveToLoc(GetLaneFrontLocation(team, targetLane, 0))
 	end
 end
 
@@ -392,9 +392,9 @@ function Defend()
 		end
 	else
 		if defendLane == LANE_MID then
-			npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.17))
+			movement.MoveToLoc(GetLocationAlongLane(defendLane, 0.17))
 		else
-			npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.15))
+			movement.MoveToLoc(GetLocationAlongLane(defendLane, 0.15))
 		end
 	end
 end
@@ -406,7 +406,7 @@ function FinishHim()
 	local timeNow = GameTime()
 
 	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 2.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
-		npcBot:Action_MoveToLocation(pingLocation)
+		movement.MoveToLoc(pingLocation)
 	end
 end
 
@@ -424,7 +424,7 @@ function Ward()
 					npcBot:Action_UseAbilityOnLocation(ward, loc)
 					ward_weight.wardLocs[loc] = currentTime + 360
 				else
-					npcBot:Action_MoveToLocation(loc)
+					movement.MoveToLoc(loc)
 				end
 				return
 			end
