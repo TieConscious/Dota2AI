@@ -30,6 +30,7 @@ local lane_state = {
 }
 
 local decided = {}
+local targetLane
 
 function LanePushedPulledNotHealing(npcBot)
 	local myLane = module.GetLane(npcBot)
@@ -81,8 +82,28 @@ function LanePushedPulledNotHealing(npcBot)
 			end
 		end
 		decided[pID] = time
+
+		if lane == LANE_MID then
+			local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
+			if  midDist < 2000 then
+				if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
+					midTargetLane = LANE_BOT
+				elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
+					midTargetLane = LANE_TOP
+				else
+					midTargetLane = LANE_BOT
+				end
+			end
+			targetLane = midTargetLane
+		else
+			targetLane = LANE_MID
+		end
+
 		return true
 	end
+
+	targetLane = globalState.state.furthestLane
+
 	return true
 end
 
@@ -95,6 +116,10 @@ end
 --end
 
 function GoGank(npcBot)
+	local myLane = module.GetLane(npcBot)
+	if (myLane ~= targetLane) then
+		return 0
+	end
 	return 25
 end
 
