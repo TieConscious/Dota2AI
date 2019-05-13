@@ -104,11 +104,11 @@ local Bans = {
 
 function GetBotNames ()
 	local bot_names = {}
-	table.insert(bot_names, "MidOne.@2ne1ugly1")
-	table.insert(bot_names, "MidOne.@mschroed098")
-	table.insert(bot_names, "MidOne.@ArenWindham")
-	table.insert(bot_names, "MidOne.@QwolfBLG")
-	table.insert(bot_names, "MidOne.@Lyd")
+	table.insert(bot_names, "@2ne1ugly1")
+	table.insert(bot_names, "@QwolfBLG")
+	table.insert(bot_names, "@ArenWindham")
+	table.insert(bot_names, "@mschroed098")
+	table.insert(bot_names, "@Lyd")
 	return bot_names
 end
 
