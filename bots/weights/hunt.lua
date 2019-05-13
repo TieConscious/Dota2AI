@@ -23,16 +23,16 @@ local npcBot = GetBot()
 --     return true
 -- end
 
-function Fuckem(npcBot)
-    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- function Fuckem(npcBot)
+--     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+-- 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 
-	if nearbyEnemy == nil or #nearbyEnemy == 0 then
-		return 0
-	end
-    return RemapValClamped(powerRatio, geneList.GetWeight(npcBot:GetUnitName(), "FuckMinRatio") / 100, geneList.GetWeight(npcBot:GetUnitName(), "FuckMaxRatio") / 100, 0, 100)
-end
+-- 	if nearbyEnemy == nil or #nearbyEnemy == 0 then
+-- 		return 0
+-- 	end
+--     return RemapValClamped(powerRatio, geneList.GetWeight(npcBot:GetUnitName(), "FuckMinRatio") / 100, geneList.GetWeight(npcBot:GetUnitName(), "FuckMaxRatio") / 100, 0, 100)
+-- end
 
 -- function EnemyWeak(npcBot)
 --     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -277,6 +277,12 @@ function HuntLevel(npcBot)
 		geneList.GetWeight(npcBot:GetUnitName(), "huntLate") / 100.0)
 end
 
+function PowerConsider(npcBot)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), -0.5, 0.5, 1.5, 0.5)
+end
+
 local hunt_weight = {
     settings = {
         name = "hunt",
@@ -284,7 +290,7 @@ local hunt_weight = {
         components = {
             {func=enemyHealth, weight=geneList.GetWeight, weightName="enemyHealth"},
             {func=enemyDistance, weight=geneList.GetWeight, weightName="enemyDistance"},
-            {func=Fuckem, weight=geneList.GetWeight, weightName="EnemyWeak"}
+            --{func=Fuckem, weight=geneList.GetWeight, weightName="EnemyWeak"}
 
 			--our health
             --our mana
@@ -311,7 +317,8 @@ local hunt_weight = {
 	
 		multipliers = {
 			{func=HuntHealth},
-			{func=HuntLevel}
+			{func=HuntLevel},
+			{func=PowerConsider}
 		}
     }
 }
