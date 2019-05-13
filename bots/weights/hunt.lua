@@ -264,6 +264,18 @@ function CanWeKillThem(npcBot)
     local targetHealth = target:GetHealth()
     return npcBot:GetEstimatedDamageToTarget(true, target, 3.0, DAMAGE_TYPE_ALL) >= targetHealth
 end
+---------------------------------
+function HuntHealth(npcBot)
+	return RemapValClamped(module.CalcPerHealth(npcBot), 0, 1,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntMinHealth") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntMaxHealth") / 100.0)
+end
+
+function HuntLevel(npcBot)
+	return RemapValClamped(npcBot:GetLevel(), 1, 25,
+	 	geneList.GetWeight(npcBot:GetUnitName(), "huntEarly") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntLate") / 100.0)
+end
 
 local hunt_weight = {
     settings = {
@@ -295,7 +307,12 @@ local hunt_weight = {
             {func=onehundred, condition=allyInFight, weight=geneList.GetWeight, weightName="allyInFight"}
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
-        }
+        },
+	
+		multipliers = {
+			{func=HuntHealth},
+			{func=HuntLevel}
+		}
     }
 }
 

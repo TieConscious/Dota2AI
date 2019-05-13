@@ -109,7 +109,10 @@ local gank_weight = {
 
         conditionals = {
         	{func=GoGank, condition=LanePushedPulledNotHealing, weight=1}
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 

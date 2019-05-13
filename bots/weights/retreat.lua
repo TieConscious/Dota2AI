@@ -151,6 +151,13 @@ function DistanceFromDangerPing(npcBot)
 end
 
 ------------------------------------------------------------------------------------
+
+function RetreatLevel(npcBot) 
+	return RemapValClamped(npcBot:GetLevel(), 1, 25,
+	 	geneList.GetWeight(npcBot:GetUnitName(), "retreatEarly") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "retreatLate") / 100.0)
+end
+
 local retreat_weight = {
     settings =
     {
@@ -172,6 +179,10 @@ local retreat_weight = {
 			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.GetWeight, weightName="enemyRetreat"},
 			{func=FillMana, condition=FountainMana, weight=20},
 			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.GetWeight, weightName="AreThereDangerPings"}
+		},
+	
+		multipliers = {
+			{func=RetreatLevel}
 		}
     }
 }

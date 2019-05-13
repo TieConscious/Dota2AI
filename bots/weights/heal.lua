@@ -88,7 +88,10 @@ local heal_weight = {
 			-- {func=TangoWeight, condition=isTangoSafe, weight=1},
 			{func=SalveWeight, condition=isSalveSafe, weight=1},
 			{func=ShrineWeight, condition=isShrineSafe, weight=1}
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 
