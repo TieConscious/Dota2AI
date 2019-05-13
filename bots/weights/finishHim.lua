@@ -44,7 +44,10 @@ local finishHim_weight = {
 
         conditionals = {
             {func=ChaseWeight, condition=IsThereAPing, weight=1},
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 

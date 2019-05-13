@@ -16,7 +16,10 @@ local template_weight = {
 
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 

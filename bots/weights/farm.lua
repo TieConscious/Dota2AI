@@ -73,6 +73,12 @@ end
 function moreFarm(npcBot)
     return 100
 end
+----------------------------------------------------------------------
+function FarmLevel(npcBot)
+	return RemapValClamped(npcBot:GetLevel(), 1, 25,
+	 	geneList.GetWeight(npcBot:GetUnitName(), "farmEarly") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "farmLate") / 100.0)
+end
 
 local farm_weight = {
     settings =
@@ -89,7 +95,11 @@ local farm_weight = {
             --{func=calcEnemies, condition=condFunc, weight=3},
             --{func=heroLevel, condition=enemyNotLevel, weight=geneList.GetWeight, weightName="enemyNotLevel"}
             --{func=moreFarm, condition=alone, weight=geneList.GetWeight, weightName="alone"}
-        }
+        },
+	
+		multipliers = {
+			{func=FarmLevel}
+		}
     }
 }
 

@@ -74,7 +74,10 @@ local tower_weight = {
             --{func=ratioEnemy, condition=enemyNearby, weight=1},
             {func=buildingDesire, condition=buildingNearby, weight=1},
             {func=towerHealth, condition=towerNearby, weight=1}
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 
