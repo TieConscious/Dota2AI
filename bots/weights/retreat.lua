@@ -161,7 +161,11 @@ end
 function TimeToFlee(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), 0, 2, 1, 2)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy),
+		0,
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxFlee") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "FleeMinMult") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "FleeMaxMult") / 100.0)
 end
 
 local retreat_weight = {
