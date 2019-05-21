@@ -83,7 +83,7 @@ function CalculateBreath(target, npcBot)
 	-- 	/ (2*(4*(c^2) + 4*(f^2) - 4410000))
 	-- print(x)
 	-- return target:GetExtrapolatedLocation(x), x
-	x = GetUnitToUnitDistance(target, npcBot) / 1050 + 0.45
+	x = GetUnitToUnitDistance(target, npcBot) / 1050 + 0.55
 	return target:GetExtrapolatedLocation(x)
 end
 
@@ -145,12 +145,12 @@ function Murder()
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaW)) then
-				local targetLocation = target:GetExtrapolatedLocation(0.55)
+				local targetLocation = target:GetExtrapolatedLocation(0.65)
 				npcBot:Action_UseAbilityOnLocation(abilityW, targetLocation)
 
 			elseif (not IsBotCasting() and ConsiderCast(abilityR) and  GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaR)) then
-					local targetLocation = target:GetExtrapolatedLocation(0.45)
+					local targetLocation = target:GetExtrapolatedLocation(0.55)
 					npcBot:Action_UseAbilityOnLocation(abilityR, targetLocation)
 
 			end

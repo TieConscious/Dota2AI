@@ -774,6 +774,26 @@ function module.BTFO(npcBot)
 		npcBot:ActionImmediate_Chat("RUN 2!!!", true)
 	end
 end
+
+local arguments =
+{
+	{TEAM_DIRE, TOWER_BOT_2},
+	{TEAM_DIRE, TOWER_MID_2},
+	{TEAM_DIRE, TOWER_TOP_2},
+	{TEAM_RADIANT, TOWER_BOT_2},
+	{TEAM_RADIANT, TOWER_MID_2},
+	{TEAM_RADIANT, TOWER_TOP_2}
+}
+
+function module.Tier2TowerAliveCheck()
+	for _,v in pairs(arguments) do
+		if GetTower(v[1], v[2]) == nil then
+			return false
+		end
+	end
+	return true
+end
 ----End of Functions----
 
 return module
+

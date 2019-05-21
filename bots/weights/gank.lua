@@ -1,12 +1,6 @@
 local module = require(GetScriptDirectory().."/helpers")
 local globalState = require(GetScriptDirectory().."/global_state")
 
--- todo: adjust for dire
---1st tower top 0.42 under == pulled
---
-
---globalState.state.furthestLane = penis
-
 --1, 2, 3, on destroyed state, 4 on pushed
 local pulledPushed = {
 	[TEAM_RADIANT] =
@@ -48,10 +42,10 @@ function LanePushedPulledNotHealing(npcBot)
 
 	gankable[myLane] = nil
 
-	if time < gankTime and myLane == LANE_TOP then
+	if module.Tier2TowerAliveCheck() and myLane == LANE_TOP then
 		gankable[LANE_BOT] = nil
 	end
-	if time < gankTime and myLane == LANE_BOT then
+	if module.Tier2TowerAliveCheck() and myLane == LANE_BOT then
 		gankable[LANE_TOP] = nil
 	end
 
@@ -59,7 +53,7 @@ function LanePushedPulledNotHealing(npcBot)
 	if myFrontAmount > pulledPushed[team][myLane][4] then
 		lane_state[myLane] = 1
 	end
-	if	((time < gankTime or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
+	if	((module.Tier2TowerAliveCheck() or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
 		(module.GetTower2(npcBot) ~= nil and myFrontAmount < pulledPushed[team][myLane][2]) or
 		(myFrontAmount < pulledPushed[team][myLane][3]) then
 		lane_state[myLane] = 0
@@ -69,7 +63,7 @@ function LanePushedPulledNotHealing(npcBot)
 		return false
 	end
 
-	if time < gankTime then
+	if module.Tier2TowerAliveCheck() then
 		if decided[pID] == nil or decided[pID] + 30 < time then
 			local pulledLane = false
 			for lane, exist in pairs(gankable) do

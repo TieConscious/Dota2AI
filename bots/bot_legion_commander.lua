@@ -69,11 +69,10 @@ function ultDuration()
 	agTime = {6, 7, 8}
 
 	local seconds
-	local ags = module.ItemSlot(npcBot, "item_ultimate_scepter")
 	local abilityR = npcBot:GetAbilityByName(SKILL_R)
 	local rLevel = abilityR:GetLevel()
 
-	if ags ~= nil then
+	if npcBot:HasScepter() then
 		seconds = agTime[rLevel]
 	else
 		seconds = ultTime[rLevel]
@@ -147,15 +146,14 @@ function Murder()
 	function safeToUlt(target, bmail) --if bmail is nil we don't factor that damage in
 		local eFinalHealth = target:GetHealth()
 		local bFinalHealth = npcBot:GetHealth()
-		local agh = module.ItemSlot(npcBot, "item_ultimate_scepter")
 		local enemyTotalDamage = target:GetAttackDamage() / target:GetSecondsPerAttack() * ultDuration()
-		local botTotalDamage = npcBot:GetEstimatedDamageToTarget(true, target, ultDuration(), DAMAGE_TYPE_ALL) 
-		
+		local botTotalDamage = npcBot:GetEstimatedDamageToTarget(true, target, ultDuration(), DAMAGE_TYPE_ALL)
+
 		eFinalHealth = eFinalHealth - botTotalDamage
 		if bmail ~= nil then eFinalHealth = eFinalHealth - enemyTotalDamage end
 
 		bFinalHealth = bFinalHealth - enemyTotalDamage
-		if agh == nil then bFinalHealth = bFinalHealth - estimateIncomingDamage()
+		if not npcBot:HasScepter() then bFinalHealth = bFinalHealth - estimateIncomingDamage()
 		else bFinalHealth = bFinalHealth - enemyTotalDamage end
 
 		return bFinalHealth > eFinalHealth
@@ -215,7 +213,6 @@ function Murder()
 end
 
 function SpellRetreat()
-	npcBot = GetBot()
 	local perHealth = module.CalcPerHealth(npcBot)
 	local currentMana = npcBot:GetMana()
 	local manaPer = module.CalcPerMana(npcBot)
