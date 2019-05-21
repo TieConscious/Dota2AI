@@ -50,8 +50,8 @@ function stateMachine.calculateState(npcBot)
 end
 
 local countSelfAsAlly = false
-local allyTeamworkDistance = 600
-local allyTeamworkModifier = 0 --0.2
+local allyTeamworkDistance = 600 --test 1000
+local allyTeamworkModifier = 0.2 --test .25
 local allyTeamworkThreshold = 42
 
 function stateMachine.teamwork(npcBot) 

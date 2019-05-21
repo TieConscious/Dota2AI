@@ -178,7 +178,7 @@ function globalState.calculateState(team)
 	globalState.getEnemyInfo(team)
 	--print(globalState.state.closestLane)
 	--globalState.printState()
-	--globalState.printTeammateInfo()
+	globalState.printTeammateInfo()
 end
 
 function globalState.printLaneInfo(lanename, lane)

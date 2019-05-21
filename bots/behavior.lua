@@ -15,6 +15,7 @@ function behavior.generic(npcBot, stateMachine)
 	consumable_think.Decide()
 	buyback_think.Decide()
 	fortify_think.Decide()
+	
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
