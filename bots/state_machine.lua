@@ -86,16 +86,9 @@ function stateMachine.calcWeight(npcBot, settings)
         end
     end
 	state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
-	if settings.name == "hunt" then
-		local healthPer = module.CalcPerHealth(npcBot)
-		state.weights[settings.name] = state.weights[settings.name] * RemapValClamped(healthPer, 0, 1,
-			geneList.GetWeight(npcBot:GetUnitName(), "huntMinHealth") / 100.0,
-			geneList.GetWeight(npcBot:GetUnitName(), "huntMaxHealth") / 100.0)
-	end
-	if geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") ~= nil then
-		state.weights[settings.name] = state.weights[settings.name] * RemapValClamped(npcBot:GetLevel(), 1, 25,
-			geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Early") / 100.0,
-			geneList.GetWeight(npcBot:GetUnitName(), settings.name.."Late") / 100.0)
+
+	for _,mulitplier in pairs(settings.multipliers) do
+		state.weights[settings.name] = state.weights[settings.name] * mulitplier.func(npcBot)
 	end
 end
 

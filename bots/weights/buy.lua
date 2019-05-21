@@ -75,7 +75,10 @@ buy_weight.settings =
     conditionals = {
 		{func=itemIsPurchaseable, condition=isPurchaseableFromShop,weight=1},
 		{func=secretItemIsPurchaseable, condition=isPurchaseableFromSecretShop, weight=1}
-    }
+	},
+	
+	multipliers = {
+	}
 }
 
 return buy_weight

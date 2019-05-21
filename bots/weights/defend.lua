@@ -41,7 +41,10 @@ local defend_weight = {
         conditionals = {
             {func=EnemiesNearAncient, condition=NoEnemyNearby, weight=2},
             {func=NumberCreeps, condition=NoEnemyNearby, weight=1}
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 

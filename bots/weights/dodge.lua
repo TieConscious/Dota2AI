@@ -29,7 +29,10 @@ local dodge_weight = {
         conditionals = {
 			{func=HeyMove, condition=HasDodgableLinearProj, weight = 1}
 		--{func=<calculate>, condition=<condition>, weight=<n>},
-        }
+        },
+	
+		multipliers = {
+		}
     }
 }
 

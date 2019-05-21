@@ -23,16 +23,16 @@ local npcBot = GetBot()
 --     return true
 -- end
 
-function Fuckem(npcBot)
-    local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-    local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- function Fuckem(npcBot)
+--     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+--     local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+-- 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 
-	if nearbyEnemy == nil or #nearbyEnemy == 0 then
-		return 0
-	end
-    return RemapValClamped(powerRatio, geneList.GetWeight(npcBot:GetUnitName(), "FuckMinRatio") / 100, geneList.GetWeight(npcBot:GetUnitName(), "FuckMaxRatio") / 100, 0, 100)
-end
+-- 	if nearbyEnemy == nil or #nearbyEnemy == 0 then
+-- 		return 0
+-- 	end
+--     return RemapValClamped(powerRatio, geneList.GetWeight(npcBot:GetUnitName(), "FuckMinRatio") / 100, geneList.GetWeight(npcBot:GetUnitName(), "FuckMaxRatio") / 100, 0, 100)
+-- end
 
 -- function EnemyWeak(npcBot)
 --     local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -264,6 +264,28 @@ function CanWeKillThem(npcBot)
     local targetHealth = target:GetHealth()
     return npcBot:GetEstimatedDamageToTarget(true, target, 3.0, DAMAGE_TYPE_ALL) >= targetHealth
 end
+---------------------------------
+function HuntHealth(npcBot)
+	return RemapValClamped(module.CalcPerHealth(npcBot), 0, 1,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntMinHealth") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntMaxHealth") / 100.0)
+end
+
+function HuntLevel(npcBot)
+	return RemapValClamped(npcBot:GetLevel(), 1, 25,
+	 	geneList.GetWeight(npcBot:GetUnitName(), "huntEarly") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "huntLate") / 100.0)
+end
+
+function PowerConsider(npcBot)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy),
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMinConsider") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxConsider") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxMult") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMinMult") / 100.0)
+end
 
 local hunt_weight = {
     settings = {
@@ -272,7 +294,7 @@ local hunt_weight = {
         components = {
             {func=enemyHealth, weight=geneList.GetWeight, weightName="enemyHealth"},
             {func=enemyDistance, weight=geneList.GetWeight, weightName="enemyDistance"},
-            {func=Fuckem, weight=geneList.GetWeight, weightName="EnemyWeak"}
+            --{func=Fuckem, weight=geneList.GetWeight, weightName="EnemyWeak"}
 
 			--our health
             --our mana
@@ -295,7 +317,13 @@ local hunt_weight = {
             {func=onehundred, condition=allyInFight, weight=geneList.GetWeight, weightName="allyInFight"}
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
-        }
+        },
+	
+		multipliers = {
+			{func=HuntHealth},
+			{func=HuntLevel},
+			{func=PowerConsider}
+		}
     }
 }
 

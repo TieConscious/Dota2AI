@@ -126,7 +126,7 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 	if (aHero ~= nil or #aHero ~= 0) then
 		for _,unit in pairs(aHero) do
 			if (unit ~= nil and unit:IsAlive()) then
-				aPower = aPower + unit:GetRawOffensivePower()
+				aPower = aPower + unit:GetOffensivePower()
 			end
 		end
 	end

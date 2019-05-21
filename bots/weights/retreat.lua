@@ -71,33 +71,33 @@ function enemyTowerTargetingMe(npcBot)
 	return 100;
 end
 --powerRatio------------------------------------------------------------------------
-function hasPassiveEnemyNearby(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then --0.8
-		return true
-	end
-	return false
-end
+-- function hasPassiveEnemyNearby(npcBot)
+-- 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+-- 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+-- 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- 	if #nearbyEnemy ~= 0 and not npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then --0.8
+-- 		return true
+-- 	end
+-- 	return false
+-- end
 
-function hasAggressiveEnemyNearby(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
-	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then
-		return true
-	end
-	return false
-end
+-- function hasAggressiveEnemyNearby(npcBot)
+-- 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+-- 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+-- 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- 	if #nearbyEnemy ~= 0 and npcBot:WasRecentlyDamagedByAnyHero(0.5) and powerRatio > geneList.GetWeight(npcBot:GetUnitName(), "powerConsider") / 100 then
+-- 		return true
+-- 	end
+-- 	return false
+-- end
 
-function considerPowerRatio(npcBot)
-	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
+-- function considerPowerRatio(npcBot)
+-- 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+-- 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
+-- 	local powerRatio = module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy)
 
-	return RemapValClamped(powerRatio, 0.2, 1, 0, 100)
-end
+-- 	return RemapValClamped(powerRatio, 0.2, 1, 0, 100)
+-- end
 --enemyCreepsHittingMe--------------------------------------------------------------
 function hasEnemyCreepsNearby(npcBot)
 	local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(800, true)
@@ -151,6 +151,23 @@ function DistanceFromDangerPing(npcBot)
 end
 
 ------------------------------------------------------------------------------------
+
+function RetreatLevel(npcBot) 
+	return RemapValClamped(npcBot:GetLevel(), 1, 25,
+	 	geneList.GetWeight(npcBot:GetUnitName(), "retreatEarly") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "retreatLate") / 100.0)
+end
+
+function TimeToFlee(npcBot)
+	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy),
+		0,
+		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxFlee") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "FleeMinMult") / 100.0,
+		geneList.GetWeight(npcBot:GetUnitName(), "FleeMaxMult") / 100.0)
+end
+
 local retreat_weight = {
     settings =
     {
@@ -164,14 +181,19 @@ local retreat_weight = {
 			{func=enemyTowerShallTargetMe, condition=willEnemyTowerTargetMe, weight=geneList.GetWeight, weightName="willEnemyTowerTargetMe"},
 			{func=enemyTowerTargetingMe, condition=isEnemyTowerTargetingMeNoAlly, weight=geneList.GetWeight, weightName="isEnemyTowerTargetingMeNoAlly"},
 
-			{func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.GetWeight, weightName="hasPassiveEnemyNearby"}, --0.5
-			{func=considerPowerRatio, condition=hasAggressiveEnemyNearby, weight=geneList.GetWeight, weightName="hasAggressiveEnemyNearby"}, --2
+			-- {func=considerPowerRatio, condition=hasPassiveEnemyNearby, weight=geneList.GetWeight, weightName="hasPassiveEnemyNearby"}, --0.5
+			-- {func=considerPowerRatio, condition=hasAggressiveEnemyNearby, weight=geneList.GetWeight, weightName="hasAggressiveEnemyNearby"}, --2
 
 			{func=considerEnemyCreepHits, condition=hasEnemyCreepsNearby, weight=geneList.GetWeight, weightName="hasEnemyCreepsNearby"},
 			{func=lowHealth, condition=hardRetreat, weight=geneList.GetWeight, weightName="hardRetreat"},
 			{func=lowHealthSoft, condition=enemyRetreat, weight=geneList.GetWeight, weightName="enemyRetreat"},
 			{func=FillMana, condition=FountainMana, weight=20},
 			{func=DistanceFromDangerPing, condition=AreThereDangerPings, weight=geneList.GetWeight, weightName="AreThereDangerPings"}
+		},
+	
+		multipliers = {
+			{func=RetreatLevel},
+			{func=TimeToFlee}
 		}
     }
 }
