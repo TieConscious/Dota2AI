@@ -20,6 +20,13 @@ local globalState = {
 			[LANE_TOP] = {numEnemies = 0, numAllies = 0},
 			[LANE_MID] = {numEnemies = 0, numAllies = 0},
 			[LANE_BOT] = {numEnemies = 0, numAllies = 0}
+		},
+		teammates = {
+			--<id> = {
+			--	currentState = "idle"
+			--	stateWeight = 30
+			--	movingTo = <pos>
+			--}
 		}
 	}
 }
@@ -171,6 +178,7 @@ function globalState.calculateState(team)
 	globalState.getEnemyInfo(team)
 	--print(globalState.state.closestLane)
 	--globalState.printState()
+	--globalState.printTeammateInfo()
 end
 
 function globalState.printLaneInfo(lanename, lane)
@@ -181,10 +189,20 @@ function globalState.printLaneInfo(lanename, lane)
 	return str
 end
 
+function globalState.printTeammateInfo()
+	local str = "--Team State Info--\n"
+	for pid,tab in pairs(globalState.state.teammates) do
+		str = str..string.format("%s:\n", GetSelectedHeroName(pid))
+		str = str..string.format("\t%s=%s\n", "state", tab.currentState)
+		str = str..string.format("\t%s=%03d\n", "weight", tab.stateWeight)
+	end
+	print (str)
+end
+
 function globalState.printState()
 	local str = "--Global State Info--\n"
-	for name,value in pairs(state) do
-		if name ~= "laneInfo" then
+	for name,value in pairs(globalState.state) do
+		if name ~= "laneInfo" and name ~= "teammates" then
 			str = str..string.format("%s=%03d\n", name, value)
 		end
 	end
