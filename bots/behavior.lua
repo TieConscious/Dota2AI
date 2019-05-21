@@ -333,7 +333,7 @@ function Gank()
 		return
 	end
 
-	if time < 1800 then
+	if time < 900 then
 		if lane == LANE_MID then
 			local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
 			if  midDist < 2000 then
