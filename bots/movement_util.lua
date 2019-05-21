@@ -1,4 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
+local globalState = require(GetScriptDirectory().."/global_state")
 
 local movement = {}
 
@@ -108,6 +109,7 @@ end
 function movement.MoveToLoc(location)
 	npcBot = GetBot()
 	if GetUnitToLocationDistance(npcBot, location) > 50 then
+		globalState.state.teammates[npcBot:GetPlayerID()].movingTo = location
 		npcBot:Action_MoveToLocation(location)
 	end
 end

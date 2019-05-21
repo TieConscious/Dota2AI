@@ -178,7 +178,7 @@ function globalState.calculateState(team)
 	globalState.getEnemyInfo(team)
 	--print(globalState.state.closestLane)
 	--globalState.printState()
-	globalState.printTeammateInfo()
+	--globalState.printTeammateInfo()
 end
 
 function globalState.printLaneInfo(lanename, lane)
@@ -190,13 +190,16 @@ function globalState.printLaneInfo(lanename, lane)
 end
 
 function globalState.printTeammateInfo()
-	local str = "--Team State Info--\n"
-	for pid,tab in pairs(globalState.state.teammates) do
-		str = str..string.format("%s:\n", GetSelectedHeroName(pid))
-		str = str..string.format("\t%s=%s\n", "state", tab.currentState)
-		str = str..string.format("\t%s=%03d\n", "weight", tab.stateWeight)
+	if globalState.state.teammates ~= nil then
+		local str = "\n--Team State Info--\n"
+		for pid,tab in pairs(globalState.state.teammates) do
+			str = str..string.format("%s:\n", GetSelectedHeroName(pid))
+			str = str..string.format("\t%s= %s\n", "state", tab.currentState)
+			str = str..string.format("\t%s= %03d\n", "weight", tab.stateWeight)
+			str = str..string.format("\t%s= (%03d, %03d)\n", "movingTo", tab.movingTo.x, tab.movingTo.y)
+		end
+		print (str)
 	end
-	print (str)
 end
 
 function globalState.printState()

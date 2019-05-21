@@ -1,5 +1,6 @@
 local module = {}
 local heroSel = require(GetScriptDirectory().."/hero_selection")
+local globalState = require(GetScriptDirectory().."/global_state")
 
 ---- Function Pointers -----
 local npcBot = GetBot()

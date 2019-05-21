@@ -283,6 +283,37 @@ function PowerConsider(npcBot)
 	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), -0.5, 0.5, 1.5, 0.5)
 end
 
+local teammateSearchRange = 1200
+function TeammateComing(npcBot)
+    local myPid = npcBot:GetPlayerID()
+
+    if IsHeroAlive(myPid) == false then
+        return 1
+    end
+
+    local alliesNotNearMe = GetTeamPlayers(npcBot:GetTeam())
+
+    local nearbyAlly = npcBot:GetNearbyHeroes(teammateSearchRange, false, BOT_MODE_NONE)
+    for _,unit in pairs(nearbyAlly) do
+        for index, value in pairs(alliesNotNearMe) do
+            if value == unit:GetPlayerID() then
+                table.remove(alliesNotNearMe, index)
+                break
+            end
+        end
+   end
+
+    for _,pid in pairs(alliesNotNearMe) do
+        if globalState.state.teammates[pid] ~= nil and globalState.state.teammates[pid].movingTo.z >= 0 and IsHeroAlive(pid) and
+         GetUnitToLocationDistance(npcBot, globalState.state.teammates[pid].movingTo) < teammateSearchRange then
+            --print(string.format("%s says: %s is coming!", GetSelectedHeroName(myPid), GetSelectedHeroName(pid)))
+            return 0.9
+         end
+    end
+
+    return 1
+end
+
 local hunt_weight = {
     settings = {
         name = "hunt",
@@ -318,7 +349,8 @@ local hunt_weight = {
 		multipliers = {
 			{func=HuntHealth},
 			{func=HuntLevel},
-			{func=PowerConsider}
+            {func=PowerConsider},
+            {func=TeammateComing}
 		}
     }
 }

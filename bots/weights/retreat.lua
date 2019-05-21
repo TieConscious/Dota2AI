@@ -1,4 +1,5 @@
 local module = require(GetScriptDirectory().."/helpers")
+local globalState = require(GetScriptDirectory().."/global_state")
 local geneList = require(GetScriptDirectory().."/genes/gene")
 
 local npcBot = GetBot()
@@ -164,6 +165,35 @@ function TimeToFlee(npcBot)
 	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), 0, 2, 1, 2)
 end
 
+local teammateSearchRange = 1000
+function TeammateComing(npcBot)
+    local myPid = npcBot:GetPlayerID()
+    local alliesNotNearMe = GetTeamPlayers(npcBot:GetTeam())
+
+	if IsHeroAlive(myPid) == false then
+        return 1
+    end
+
+    local nearbyAlly = npcBot:GetNearbyHeroes(teammateSearchRange, false, BOT_MODE_NONE)
+    for _,unit in pairs(nearbyAlly) do
+        for index, value in pairs(alliesNotNearMe) do
+            if value == unit:GetPlayerID() then
+                table.remove(alliesNotNearMe, index)
+                break
+            end
+        end
+   end
+
+    for _,pid in pairs(alliesNotNearMe) do
+        if globalState.state.teammates[pid] ~= nil and globalState.state.teammates[pid].movingTo.z >= 0 and IsHeroAlive(pid) and
+         GetUnitToLocationDistance(npcBot, globalState.state.teammates[pid].movingTo) < teammateSearchRange then
+            return 1.2
+         end
+    end
+
+    return 1
+end
+
 local retreat_weight = {
     settings =
     {
@@ -189,7 +219,8 @@ local retreat_weight = {
 	
 		multipliers = {
 			{func=RetreatLevel},
-			{func=TimeToFlee}
+			{func=TimeToFlee},
+			{func=TeammateComing}
 		}
     }
 }

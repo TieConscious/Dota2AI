@@ -132,9 +132,13 @@ function stateMachine.getState()
     local pid = GetBot():GetPlayerID()
     if globalState.state.teammates[pid] == nil then
         globalState.state.teammates[pid] = {}
+        globalState.state.teammates[pid].currentState = "";
+        globalState.state.teammates[pid].stateWeight = 0;
+        globalState.state.teammates[pid].movingTo = Vector(0, 0, -1);
     end
 	globalState.state.teammates[pid].currentState = state.state;
-	globalState.state.teammates[pid].stateWeight = maxWeight;
+    globalState.state.teammates[pid].stateWeight = maxWeight;
+    globalState.state.teammates[pid].movingTo.z = -1
 end
 
 function stateMachine.printState(s)
