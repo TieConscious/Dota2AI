@@ -600,9 +600,6 @@ function module.SmartTarget(npcBot)
 			end
 		end
 
-		---percent health
-
-
 		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
 		powHero,powHealth = module.GetStrongestHero(eHeroList)
 		if (lowHero ~= eHeroList[1] and GetUnitToUnitDistance(npcBot, lowHero) > 600 and GetUnitToUnitDistance(npcBot, eHeroList[1]) < 300

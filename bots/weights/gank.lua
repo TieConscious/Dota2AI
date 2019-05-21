@@ -31,7 +31,7 @@ local lane_state = {
 
 local decided = {}
 local targetLane
-local gankTime = 900
+local gankTime = 1800
 
 function LanePushedPulledNotHealing(npcBot)
 	local myLane = module.GetLane(npcBot)
