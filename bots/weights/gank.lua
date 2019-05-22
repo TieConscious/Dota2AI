@@ -99,11 +99,9 @@ function LanePushedPulledNotHealing(npcBot)
 		else
 			targetLane = LANE_MID
 		end
-
-		return true
+	else
+		targetLane = globalState.state.furthestLane
 	end
-
-	targetLane = globalState.state.furthestLane
 
 	return true
 end
