@@ -162,17 +162,13 @@ end
 function TimeToFlee(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy),
-		0,
-		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxFlee") / 100.0,
-		geneList.GetWeight(npcBot:GetUnitName(), "FleeMinMult") / 100.0,
-		geneList.GetWeight(npcBot:GetUnitName(), "FleeMaxMult") / 100.0)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), 0, 2, 1, 2)
 end
 
 local teammateSearchRange = 1000
 function TeammateComing(npcBot)
     if (module.TeammateComing(npcBot, teammateSearchRange)) then
-        return 1.2
+        return geneList.GetWeight(npcBot:GetUnitName(), "retreatTOTWMod") / 100
     else
         return 1
     end

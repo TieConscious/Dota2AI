@@ -5,22 +5,23 @@ local gene = {
     isUnderTower = %f,
     weDisabled = %f,
     eUnderTower = %f,
+    EnemyWeak = %f,
     EnemyDisabled = %f,
     allyInFight = %f,
 
 	enemyHealthMax = %f,
 	perfectAttackRange = %f,
+	FuckMinRatio = %f,
+    FuckMaxRatio = %f,
     huntMinHealth = %f,
 	huntMaxHealth = %f,
-	PowerMinConsider = %f,
-	PowerMaxConsider = %f,
-	PowerMaxMult = %f,
-	PowerMinMult = %f,
 
     ----retreat----
     willEnemyTowerTargetMe = %f,
     isEnemyTowerTargetingMeNoAlly = %f,
     hasPassiveEnemyNearby = %f,
+    hasAggressiveEnemyNearby = %f,
+    hasEnemyCreepsNearby = %f,
     hardRetreat = %f,
     enemyRetreat = %f,
     FountainMana = %f,
@@ -30,9 +31,14 @@ local gene = {
 	hardHealth = %f,
 	dangerTime = %f,
 	dangerDistance = %f,
-	PowerMaxFlee = %f,
-	FleeMinMult = %f,
-	FleeMaxMult = %f,
+	powerConsider = %f,
+
+    --teamwork
+    teamworkDist = %f,
+    teamworkMod = %f,
+    teamworkThreshold = %f,
+    huntTOTWMod = %f,
+    retreatTOTWMod = %f,
 
     ----farm----
     creepsAround = %f,

@@ -5,21 +5,22 @@ local gene = {
     isUnderTower = 27.478020,
     weDisabled = 26.950340,
     eUnderTower = 24.334640,
+    EnemyWeak = 24.906460,
     EnemyDisabled = 25.646110,
     allyInFight = 36.575830,
 
 	enemyHealthMax = 121.710540,
 	perfectAttackRange = 38.620240,
+	FuckMinRatio = -191.170400,
+    FuckMaxRatio = 26.636710,
     huntMinHealth = 109.580190,
 	huntMaxHealth = 117.747610,
-	PowerMinConsider = -50.0,
-	PowerMaxConsider = 50.0,
-	PowerMaxMult = 150.0,
-	PowerMinMult = 50.0,
 
     ----retreat----
     willEnemyTowerTargetMe = 12.951540,
     isEnemyTowerTargetingMeNoAlly = 48.288180,
+    hasPassiveEnemyNearby = 4.022570,
+    hasAggressiveEnemyNearby = 18.298360,
     hasEnemyCreepsNearby = 11.955480,
     hardRetreat = 91.565520,
     enemyRetreat = 125.540520,
@@ -30,9 +31,14 @@ local gene = {
 	hardHealth = 20.202200,
 	dangerTime = 48.869190,
 	dangerDistance = 473.828650,
-	PowerMaxFlee = 200.0,
-	FleeMinMult = 100.0,
-	FleeMaxMult = 200.0,
+	powerConsider = 63.603000,
+
+    --teamwork
+    teamworkDist = 500.0,
+    teamworkMod = 15.0,
+    teamworkThreshold = 30.0,
+    huntTOTWMod = 90.0,
+    retreatTOTWMod = 120.0,
 
     ----farm----
     creepsAround = 21.384390,

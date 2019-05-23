@@ -49,12 +49,11 @@ function stateMachine.calculateState(npcBot)
     return state
 end
 
-local countSelfAsAlly = false
-local allyTeamworkDistance = 600 --test 1000
-local allyTeamworkModifier = 0.2 --test .25
-local allyTeamworkThreshold = 42
-
 function stateMachine.teamwork(npcBot) 
+    local countSelfAsAlly = false
+    local allyTeamworkDistance = geneList.GetWeight(npcBot:GetUnitName(), "teamworkDist") --600 --test 1000
+    local allyTeamworkModifier = geneList.GetWeight(npcBot:GetUnitName(), "teamworkMod") / 100 --.2 (20) --test .25
+    local allyTeamworkThreshold = geneList.GetWeight(npcBot:GetUnitName(), "teamworkThreshold") --42
 
     local nearbyAlly = npcBot:GetNearbyHeroes(allyTeamworkDistance, false, BOT_MODE_NONE)
     if (allyTeamworkModifier ~= 0 and nearbyAlly ~= nil and #nearbyAlly > 0) then

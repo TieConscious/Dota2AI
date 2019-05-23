@@ -280,17 +280,13 @@ end
 function PowerConsider(npcBot)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local nearbyAlly = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
-	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy),
-		geneList.GetWeight(npcBot:GetUnitName(), "PowerMinConsider") / 100.0,
-		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxConsider") / 100.0,
-		geneList.GetWeight(npcBot:GetUnitName(), "PowerMaxMult") / 100.0,
-		geneList.GetWeight(npcBot:GetUnitName(), "PowerMinMult") / 100.0)
+	return RemapValClamped(module.CalcPowerRatio(npcBot, nearbyAlly, nearbyEnemy), -0.5, 0.5, 1.5, 0.5)
 end
 
 local teammateSearchRange = 1200
 function TeammateComing(npcBot)
     if (module.TeammateComing(npcBot, teammateSearchRange)) then
-        return 0.9
+        return geneList.GetWeight(npcBot:GetUnitName(), "huntTOTWMod") / 100
     else
         return 1
     end
