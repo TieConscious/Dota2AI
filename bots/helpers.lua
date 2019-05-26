@@ -112,18 +112,6 @@ function module.UseForceStaff(npcBot)
 	return nil
 end
 
-function module.IsSafeToAttack(target, tower, npcBot)
-	local distRequired = math.min(GetUnitToUnitDistance(target, npcBot), npcBot:GetAttackRange())
-	local distToMove = GetUnitToUnitDistance(npcBot, target) - distRequired
-
-	local calculation = target:GetLocation()
-	local myLocation = npcBot:GetLocation()
-	calculation = calculation - myLocation
-	calculation = calculation / GetUnitToUnitDistance(npcBot, target) * distToMove
-	calculation = calculation + myLocation
-	return PointToLineDistance(npcBot:GetLocation(), calculation, tower:GetLocation()).distance > 1000
-end
-
 --use percent health as another ratio unit
 ----Calculate power ratios----
 function module.CalcPowerRatio(npcBot, aHero, eHero)

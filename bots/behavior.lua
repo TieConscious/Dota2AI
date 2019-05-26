@@ -205,16 +205,7 @@ function Farm()
 		if killableCreep ~= nil then
 			npcBot:Action_AttackUnit(killableCreep, true)
 		else
-			local eTowers = npcBot:GetNearbyTowers(1600, true)
-			if #eTowers == 0 or module.IsSafeToAttack(eCreeps[1], eTowers[1], npcBot) then
-				npcBot:Action_AttackUnit(eCreeps[1], true)
-			end
-			local cr = module.GetAllyCreepInTowerRange(npcBot, 1000) 
-			if #cr ~= 0 then
-				npcBot:Action_AttackUnit(eCreeps[1], true)
-			else
-				movement.MTL_Farm(npcBot)
-			end
+			npcBot:Action_AttackUnit(eHighestCreep, true)
 		end
 	elseif killableCreep ~= nil then
 		npcBot:Action_AttackUnit(killableCreep, true)
