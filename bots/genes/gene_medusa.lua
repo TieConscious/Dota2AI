@@ -41,26 +41,27 @@ local gene = {
     retreatTOTWMod = 120.0,
 
     ----farm----
-    creepsAround = 6.063640,
-    calcEnemyCreepHealth = 58.637560,
-    calcEnemyCreepDist = 105.489170,
+    creepsAround = 4.927660,
+    calcEnemyCreepHealth = 60.422170,
+    calcEnemyCreepDist = 92.011430,
 
-	creepHealthMaxClamp = 14.716870,
+    creepHealthMaxClamp = 12.997530,
 
-	----finish him----
-	timeToFinish = 2.791050,
-	chaseWeight = 53.255240,
-    chaseDistance = 509.824540,
+    ----finish him----
+    timeToFinish = 1.688900,
+    chaseWeight = 53.819410,
+    chaseDistance = 353.189310,
     
-    retreatEarly = 98.998330,
-	retreatLate = 112.104330,
-	farmEarly = 141.209630,
-	farmLate = 79.511630,
-	huntEarly = 91.072500,
-    huntLate = 147.506370,
+    retreatEarly = 129.272180,
+    retreatLate = 117.241500,
+    farmEarly = 103.548300,
+    farmLate = 64.603170,
+    huntEarly = 71.700100,
+    huntLate = 150.438360,
     
-    towerWeight = 10.734390,
-    buildingWeight = 27.788720
+    towerWeight = 12.551280,
+    buildingWeight = 34.111772
 }
 
 return gene
+
