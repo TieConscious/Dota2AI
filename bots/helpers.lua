@@ -636,22 +636,23 @@ end
 function module.DangerPing(npcBot)
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local actualAlly = 0
-	local actualEnemy = 0
+	local actualAlly = {}
+	local actualEnemy = {}
 
 	for _,unit in pairs(aHeroList) do
 		if (unit ~= nil and unit:IsAlive()) then
-			actualAlly = actualAlly + 1
+			table.insert(actualAlly, unit)
 		end
 	end
 
 	for _,unit in pairs(eHeroList) do
 		if (unit ~= nil and unit:IsAlive()) then
-			actualEnemy = actualEnemy + 1
+			table.insert(actualEnemy, unit)
 		end
 	end
 
-	if (eHeroList ~= nil and #eHeroList > 0 and actualEnemy > actualAlly and npcBot:IsAlive()) then
+	if eHeroList ~= nil and #eHeroList > 0 and (#actualEnemy > #actualAlly and npcBot:IsAlive() or
+		module.CalcPowerRatio(npcBot, actualAlly, actualEnemy) > 1) then
 		local dangerPing = eHeroList[1]:GetLocation()
 		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
 	end
