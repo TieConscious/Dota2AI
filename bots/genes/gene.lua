@@ -14,6 +14,7 @@ local geneList = {
 		['npc_dota_hero_skeleton_king'] = require(GetScriptDirectory().."/genes/gene_skeleton_king"),
 		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/genes/gene_jakiro"),
 		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/genes/gene_abyssal_underlord"),
+		['npc_dota_hero_bristleback'] = require(GetScriptDirectory().."/genes/gene_bristleback"),
 		['npc_dota_hero_obsidian_destroyer'] = require(GetScriptDirectory().."/genes/gene_obsidian_destroyer"),
 		['npc_dota_hero_legion_commander'] = require(GetScriptDirectory().."/genes/gene_legion_commander")
 	}

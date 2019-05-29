@@ -16,18 +16,16 @@ local buy_weight = {
 		['npc_dota_hero_crystal_maiden'] = require(GetScriptDirectory().."/item_purchase_crystal_maiden"),
 		['npc_dota_hero_juggernaut'] = require(GetScriptDirectory().."/item_purchase_juggernaut"),
 		['npc_dota_hero_medusa'] = require(GetScriptDirectory().."/item_purchase_medusa"),
-		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord"),
-		['npc_dota_hero_pugna'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_lich'] = require(GetScriptDirectory().."/item_purchase_lich"),
 		['npc_dota_hero_lion'] = require(GetScriptDirectory().."/item_purchase_lion"),
-		['npc_dota_hero_sven'] = require(GetScriptDirectory().."/item_purchase_generic"),
-		['npc_dota_hero_dazzle'] = require(GetScriptDirectory().."/item_purchase_generic"),
 		['npc_dota_hero_tinker'] = require(GetScriptDirectory().."/item_purchase_tinker"),
 		['npc_dota_hero_jakiro'] = require(GetScriptDirectory().."/item_purchase_jakiro"),
 		['npc_dota_hero_skeleton_king'] = require(GetScriptDirectory().."/item_purchase_skeleton_king"),
 		['npc_dota_hero_ogre_magi'] = require(GetScriptDirectory().."/item_purchase_ogre_magi"),
-		['npc_dota_hero_legion_commander'] = require(GetScriptDirectory().."/item_purchase_legion_commander"),
-		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord")
+		['npc_dota_hero_abyssal_underlord'] = require(GetScriptDirectory().."/item_purchase_abyssal_underlord"),
+		['npc_dota_hero_bristleback'] = require(GetScriptDirectory().."/item_purchase_bristleback"),
+		['npc_dota_hero_obsidian_destroyer'] = require(GetScriptDirectory().."/item_purchase_obsidian_destroyer"),
+		['npc_dota_hero_legion_commander'] = require(GetScriptDirectory().."/item_purchase_legion_commander")
 	}
 }
 
@@ -75,10 +73,7 @@ buy_weight.settings =
     conditionals = {
 		{func=itemIsPurchaseable, condition=isPurchaseableFromShop,weight=1},
 		{func=secretItemIsPurchaseable, condition=isPurchaseableFromSecretShop, weight=1}
-	},
-	
-	multipliers = {
-	}
+    }
 }
 
 return buy_weight

@@ -1,5 +1,4 @@
 local module = require(GetScriptDirectory().."/helpers")
-local globalState = require(GetScriptDirectory().."/global_state")
 
 local movement = {}
 
@@ -85,33 +84,25 @@ function movement.MTL_Start(npcBot)
 	--if Dire--
 	if (team == 3) then
 		if (myLane == LANE_TOP) then
-            movement.MoveToLoc(DIRE_TTOWER1)
+            npcBot:Action_MoveToLocation(DIRE_TTOWER1)
 		elseif (myLane == LANE_BOT) then
-            movement.MoveToLoc(DIRE_BTOWER1)
+            npcBot:Action_MoveToLocation(DIRE_BTOWER1)
 		else
-            movement.MoveToLoc(DIRE_MTOWER1)
+            npcBot:Action_MoveToLocation(DIRE_MTOWER1)
 		end
 	--if Radiant--
 	elseif (team == 2) then
 		if (myLane == LANE_TOP) then
-            movement.MoveToLoc(RADIANT_TTOWER1)
+            npcBot:Action_MoveToLocation(RADIANT_TTOWER1)
 		elseif (myLane == LANE_BOT) then
-            movement.MoveToLoc(RADIANT_BTOWER1)
+            npcBot:Action_MoveToLocation(RADIANT_BTOWER1)
 		else
-            movement.MoveToLoc(RADIANT_MTOWER1)
+            npcBot:Action_MoveToLocation(RADIANT_MTOWER1)
 		end
 	else
-		movement.MoveToLoc(MIDDLE_COORDS)
+		npcBot:Action_MoveToLocation(MIDDLE_COORDS)
     end
     return
-end
-
-function movement.MoveToLoc(location)
-	npcBot = GetBot()
-	if GetUnitToLocationDistance(npcBot, location) > 50 then
-		globalState.state.teammates[npcBot:GetPlayerID()].movingTo = location
-		npcBot:Action_MoveToLocation(location)
-	end
 end
 
 ----Move to lane to farm----
@@ -131,33 +122,33 @@ function movement.MTL_Farm(npcBot)
 	-- if DotaTime() > 1024 then
 	-- 	--if Dire--
 	-- 	if (team == 3) then
-	-- 		movement.MoveToLoc(DIRE_MTOWER_FRONT)
+	-- 		npcBot:Action_MoveToLocation(DIRE_MTOWER_FRONT)
 	-- 	--if Radiant--
 	-- 	elseif (team == 2) then
-	-- 		movement.MoveToLoc(RADIANT_MTOWER_FRONT)
+	-- 		npcBot:Action_MoveToLocation(RADIANT_MTOWER_FRONT)
 	-- 	end
 	-- 	return
 	-- end
 	--if Dire--
 	if (team == 3) then
 		if (myLane == LANE_TOP) then
-			movement.MoveToLoc(DIRE_TTOWER_FRONT)
+            npcBot:Action_MoveToLocation(DIRE_TTOWER_FRONT)
 		elseif (myLane == LANE_BOT) then
-			movement.MoveToLoc(DIRE_BTOWER_FRONT)
+            npcBot:Action_MoveToLocation(DIRE_BTOWER_FRONT)
 		else
-			movement.MoveToLoc(DIRE_MTOWER_FRONT)
+            npcBot:Action_MoveToLocation(DIRE_MTOWER_FRONT)
 		end
 	--if Radiant--
 	elseif (team == 2) then
 		if (myLane == LANE_TOP) then
-			movement.MoveToLoc(RADIANT_TTOWER_FRONT)
+            npcBot:Action_MoveToLocation(RADIANT_TTOWER_FRONT)
 		elseif (myLane == LANE_BOT) then
-			movement.MoveToLoc(RADIANT_BTOWER_FRONT)
+            npcBot:Action_MoveToLocation(RADIANT_BTOWER_FRONT)
 		else
-			movement.MoveToLoc(RADIANT_MTOWER_FRONT)
+            npcBot:Action_MoveToLocation(RADIANT_MTOWER_FRONT)
 		end
 	else
-		movement.MoveToLoc(MIDDLE_COORDS)
+		npcBot:Action_MoveToLocation(MIDDLE_COORDS)
     end
     return
 end
@@ -168,23 +159,32 @@ function movement.Retreat(npcBot)
 	if (team == 3) then
 		--if bottom lane, bottom leg
 		if loc.x < 5400 and loc.y < -5650 then
-			movement.MoveToLoc(BCORNER)
+			npcBot:Action_MoveToLocation(BCORNER)
 		--if top lane, left leg
 		elseif loc.x < -6700 and loc.y < 5300 then
-			movement.MoveToLoc(TCORNER)
+			npcBot:Action_MoveToLocation(TCORNER)
 		else
-			movement.MoveToLoc(DIRE_FOUNTAIN)
+			npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
 		end
 	else
 		--if bottom lane, right leg
 		if loc.x > 5700 and loc.y > -5500 then
-			movement.MoveToLoc(BCORNER)
+			npcBot:Action_MoveToLocation(BCORNER)
 		--if top lane, top leg
 		elseif loc.x > -5200 and loc.y > 5500 then
-			movement.MoveToLoc(TCORNER)
+			npcBot:Action_MoveToLocation(TCORNER)
 		else
-			movement.MoveToLoc(RADIANT_FOUNTAIN)
+			npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
 		end
+	end
+end
+
+function movement.RetreatToBase(npcBot)
+	local team = npcBot:GetTeam()
+	if (team == 3) then
+		npcBot:Action_MoveToLocation(DIRE_FOUNTAIN)
+	else
+		npcBot:Action_MoveToLocation(RADIANT_FOUNTAIN)
 	end
 end
 

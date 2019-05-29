@@ -12,7 +12,6 @@
 
 local module = require(GetScriptDirectory().."/helpers")
 local globalState = require(GetScriptDirectory().."/global_state")
-local geneList = require(GetScriptDirectory().."/genes/gene")
 
 function IsThereAPing(npcBot)
 	local pingLocation = npcBot:GetMostRecentPing().location
@@ -21,16 +20,15 @@ function IsThereAPing(npcBot)
 
 	--print(timeNow)
 	--print(timeSince)
-	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= geneList.GetWeight(npcBot:GetUnitName(), "timeToFinish")
-		and GetUnitToLocationDistance(npcBot, pingLocation) <= geneList.GetWeight(npcBot:GetUnitName(), "chaseDistance")) then
+	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 4.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
 		return true
 	end
 
 	return false
 end
 
-function ChaseWeight(npcBot)
-    return geneList.GetWeight(npcBot:GetUnitName(), "chaseWeight")
+function Forty(npcBot)
+    return 40
 end
 
 local finishHim_weight = {
@@ -43,11 +41,8 @@ local finishHim_weight = {
         },
 
         conditionals = {
-            {func=ChaseWeight, condition=IsThereAPing, weight=1},
-        },
-	
-		multipliers = {
-		}
+            {func=Forty, condition=IsThereAPing, weight=1},
+        }
     }
 }
 

@@ -60,10 +60,7 @@ local rune_weight = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
             {func=firstRunes, condition=isEarlyGame, weight=1},
             {func=distToRune, condition=nextToRune, weight=1}
-        },
-	
-		multipliers = {
-		}
+        }
     }
 }
 

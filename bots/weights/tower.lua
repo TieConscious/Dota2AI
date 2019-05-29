@@ -1,12 +1,11 @@
 local module = require(GetScriptDirectory().."/helpers")
-local geneList = require(GetScriptDirectory().."/genes/gene")
 
 local searchRange = 1200
 
 function towerHealth(npcBot)
     local eTower = npcBot:GetNearbyTowers(searchRange, true)
     local towerHealth = module.CalcPerHealth(eTower[1])
-    return RemapValClamped(towerHealth, 0.12, 0, geneList.GetWeight(npcBot:GetUnitName(), "towerWeight"), 100)
+    return RemapValClamped(towerHealth, 0.1, 0, 20, 100)
 end
 
 function towerNearby(npcBot)
@@ -17,8 +16,9 @@ function towerNearby(npcBot)
     end
 end
 
-function buildingDesire(npcBot)
-    return geneList.GetWeight(npcBot:GetUnitName(), "buildingWeight")
+function numberEnemyCreeps(npcBot)
+    local nearbyEnemyCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
+    return RemapValClamped(#nearbyEnemyCreeps, 3, 0, 0, 40)
 end
 
 function buildingNearby(npcBot)
@@ -72,12 +72,9 @@ local tower_weight = {
         conditionals = {
             --{func=<calculate>, condition=<condition>, weight=<n>},
             --{func=ratioEnemy, condition=enemyNearby, weight=1},
-            {func=buildingDesire, condition=buildingNearby, weight=1},
+            {func=numberEnemyCreeps, condition=buildingNearby, weight=1},
             {func=towerHealth, condition=towerNearby, weight=1}
-        },
-	
-		multipliers = {
-		}
+        }
     }
 }
 

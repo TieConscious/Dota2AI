@@ -10,8 +10,6 @@ local gank_weight = require(GetScriptDirectory().."/weights/gank")
 local dodge_weight = require(GetScriptDirectory().."/weights/dodge")
 local defend_weight = require(GetScriptDirectory().."/weights/defend")
 local finishHim_weight = require(GetScriptDirectory().."/weights/finishHim")
-local geneList = require(GetScriptDirectory().."/genes/gene")
-local module = require(GetScriptDirectory().."/helpers")
 --local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local globalState = require(GetScriptDirectory().."/global_state")
 
@@ -42,34 +40,8 @@ function stateMachine.calculateState(npcBot)
 
     --more weights
 
-    --get teammate states
-    stateMachine.teamwork(npcBot)
-
     stateMachine.getState()
     return state
-end
-
-function stateMachine.teamwork(npcBot) 
-    local countSelfAsAlly = false
-    local allyTeamworkDistance = geneList.GetWeight(npcBot:GetUnitName(), "teamworkDist") --600 --test 1000
-    local allyTeamworkModifier = geneList.GetWeight(npcBot:GetUnitName(), "teamworkMod") / 100 --.2 (20) --test .25
-    local allyTeamworkThreshold = geneList.GetWeight(npcBot:GetUnitName(), "teamworkThreshold") --42
-
-    local nearbyAlly = npcBot:GetNearbyHeroes(allyTeamworkDistance, false, BOT_MODE_NONE)
-    if (allyTeamworkModifier ~= 0 and nearbyAlly ~= nil and #nearbyAlly > 0) then
-        for _,unit in pairs(nearbyAlly) do
-            local pid = unit:GetPlayerID()
-            if (unit ~= nil and unit:IsAlive() and (countSelfAsAlly or pid ~= npcBot:GetPlayerID()) and globalState.state.teammates[pid] ~= nil) then
-                local allyStateName = globalState.state.teammates[pid].currentState
-                local allyStateWeight = globalState.state.teammates[pid].stateWeight
-
-                --if we are above the state threshold, then apply teammate's state to us
-                if state.weights[allyStateName] ~= nil and state.weights[allyStateName] > allyTeamworkThreshold then
-                    state.weights[allyStateName] = state.weights[allyStateName] + (allyStateWeight * allyTeamworkModifier)
-                end
-            end
-        end
-    end
 end
 
 function stateMachine.calcWeightedAvg(table)
@@ -111,11 +83,8 @@ function stateMachine.calcWeight(npcBot, settings)
             table.insert(computedComps, comp)
         end
     end
-	state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
 
-	for _,mulitplier in pairs(settings.multipliers) do
-		state.weights[settings.name] = state.weights[settings.name] * mulitplier.func(npcBot)
-	end
+    state.weights[settings.name] = stateMachine.calcWeightedAvg(computedComps)
 end
 
 function stateMachine.getState()
@@ -127,17 +96,6 @@ function stateMachine.getState()
             state.state = name
         end
     end
-    --log current state info
-    local pid = GetBot():GetPlayerID()
-    if globalState.state.teammates[pid] == nil then
-        globalState.state.teammates[pid] = {}
-        globalState.state.teammates[pid].currentState = "";
-        globalState.state.teammates[pid].stateWeight = 0;
-        globalState.state.teammates[pid].movingTo = Vector(0, 0, -1);
-    end
-	globalState.state.teammates[pid].currentState = state.state;
-    globalState.state.teammates[pid].stateWeight = maxWeight;
-    globalState.state.teammates[pid].movingTo.z = -1
 end
 
 function stateMachine.printState(s)

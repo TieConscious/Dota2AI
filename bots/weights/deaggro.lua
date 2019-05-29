@@ -25,10 +25,7 @@ local deaggro_weight = {
     
         conditionals = {
 			{func=possibleDeaggro, condition=willEnemyTowerTargetMeWithAlly, weight=1},	
-        },
-	
-		multipliers = {
-		}
+        }
     }
 }
 

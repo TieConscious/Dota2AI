@@ -12,8 +12,8 @@ local Items = {
 	"item_recipe_magic_wand",
 
 	----boots of strength----
-	"item_boots",
 	"item_belt_of_strength",
+	"item_boots",
 	"item_gloves",
 	"item_recipe_power_treads",
 

@@ -20,13 +20,6 @@ local globalState = {
 			[LANE_TOP] = {numEnemies = 0, numAllies = 0},
 			[LANE_MID] = {numEnemies = 0, numAllies = 0},
 			[LANE_BOT] = {numEnemies = 0, numAllies = 0}
-		},
-		teammates = {
-			--<id> = {
-			--	currentState = "idle"
-			--	stateWeight = 30
-			--	movingTo = <pos>
-			--}
 		}
 	}
 }
@@ -47,20 +40,20 @@ function globalState.getEnemyInfo(team)
 	local baseEnemies = 0
 	local ancient = GetAncient(team)
 	local unitList = GetUnitList(UNIT_LIST_ENEMY_HEROES)
-	local visibleEnemyLoc = {}
+	local visibleEnemy = {}
 	for _,unit in pairs(unitList) do
 		if unit:CanBeSeen() then
-			visibleEnemyLoc[unit:GetPlayerID()] = unit:GetLocation()
+			visibleEnemy[unit:GetPlayerID()] = unit:GetLocation()
 		end
 	end
 	--DebugDrawCircle(ancient:GetLocation(), 2500, 0, 255, 0)
 	for _,eID in pairs(enemyIDs) do
 		--living enemies
 		local lsi = {}
-		if visibleEnemyLoc[eID] ~= nil then
+		if visibleEnemy[eID] ~= nil then
 			lsi[1] = {}
 			lsi[1].time_since_seen = 0
-			lsi[1].location = visibleEnemyLoc[eID]
+			lsi[1].location = visibleEnemy[eID]
 		else
 			lsi = GetHeroLastSeenInfo(eID)
 		end
@@ -71,7 +64,7 @@ function globalState.getEnemyInfo(team)
 				missingEnemies = missingEnemies + 1
 			end
 			--enemies in base
-			if (visibleEnemyLoc[eID] ~= nil and GetUnitToLocationDistance(ancient, visibleEnemyLoc[eID]) < 2500) and deadEnemies[eID] == nil then
+			if (lsi[1].time_since_seen < 2 and GetUnitToLocationDistance(ancient, lsi[1].location) < 2500) and deadEnemies[eID] == nil then
 					baseEnemies = baseEnemies + 1
 					--DebugDrawCircle(lsi[1].location, 100, 255, 0, 0)
 			end
@@ -178,7 +171,6 @@ function globalState.calculateState(team)
 	globalState.getEnemyInfo(team)
 	--print(globalState.state.closestLane)
 	--globalState.printState()
-	--globalState.printTeammateInfo()
 end
 
 function globalState.printLaneInfo(lanename, lane)
@@ -189,23 +181,10 @@ function globalState.printLaneInfo(lanename, lane)
 	return str
 end
 
-function globalState.printTeammateInfo()
-	if globalState.state.teammates ~= nil then
-		local str = "\n--Team State Info--\n"
-		for pid,tab in pairs(globalState.state.teammates) do
-			str = str..string.format("%s:\n", GetSelectedHeroName(pid))
-			str = str..string.format("\t%s= %s\n", "state", tab.currentState)
-			str = str..string.format("\t%s= %03d\n", "weight", tab.stateWeight)
-			str = str..string.format("\t%s= (%03d, %03d)\n", "movingTo", tab.movingTo.x, tab.movingTo.y)
-		end
-		print (str)
-	end
-end
-
 function globalState.printState()
 	local str = "--Global State Info--\n"
-	for name,value in pairs(globalState.state) do
-		if name ~= "laneInfo" and name ~= "teammates" then
+	for name,value in pairs(state) do
+		if name ~= "laneInfo" then
 			str = str..string.format("%s=%03d\n", name, value)
 		end
 	end

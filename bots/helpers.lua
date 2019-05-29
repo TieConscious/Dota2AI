@@ -1,6 +1,5 @@
 local module = {}
-local heroSel = require(GetScriptDirectory().."/hero_selection")
-local globalState = require(GetScriptDirectory().."/global_state")
+
 
 ---- Function Pointers -----
 local npcBot = GetBot()
@@ -127,7 +126,7 @@ function module.CalcPowerRatio(npcBot, aHero, eHero)
 	if (aHero ~= nil or #aHero ~= 0) then
 		for _,unit in pairs(aHero) do
 			if (unit ~= nil and unit:IsAlive()) then
-				aPower = aPower + unit:GetOffensivePower()
+				aPower = aPower + unit:GetRawOffensivePower()
 			end
 		end
 	end
@@ -198,6 +197,83 @@ end
 
 local picks = nil
 
+
+local TopCarry = {
+	--"npc_dota_hero_abyssal_underlord",
+	"npc_dota_hero_juggernaut",
+	'npc_dota_hero_skeleton_king',
+	"npc_dota_hero_ogre_magi",
+	'npc_dota_hero_tidehunter',
+	'npc_dota_hero_tinker'
+
+	--"npc_dota_hero_tiny",
+	--"npc_dota_hero_legion_commander"
+	--"npc_dota_hero_chaos_knight",
+	--"npc_dota_hero_viper",
+	--"npc_dota_hero_lycan"
+	--"npc_dota_hero_sven",
+}
+
+
+local BotCarry = {
+	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_skeleton_king",
+	"npc_dota_hero_juggernaut",
+	"npc_dota_hero_abyssal_underlord",
+	'npc_dota_hero_skeleton_king',
+	'npc_dota_hero_tidehunter',
+	'npc_dota_hero_tinker'
+
+	--"npc_dota_hero_tiny"
+	--"npc_dot_hero_naga_siren"
+	--"npc_dota_hero_medusa"
+}
+
+local Mid = {
+	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_obsidian_destroyer",
+	"npc_dota_hero_tinker",
+	"npc_dota_hero_medusa",
+	"npc_dota_hero_legion_commander"
+}
+
+local TopSupport = {
+	--"npc_dota_hero_bane",
+	"npc_dota_hero_lich",
+	"npc_dota_hero_jakiro",
+	"npc_dota_hero_tidehunter",
+	"npc_dota_hero_riki"
+}
+
+local BotSupport = {
+	--"npc_dota_hero_lich",
+	--"npc_dota_hero_crystal_maiden",
+	"npc_dota_hero_bane",
+	"npc_dota_hero_lion",
+	"npc_dota_hero_tidehunter",
+	"npc_dota_hero_riki"
+}
+
+local Bans = {
+	--'npc_dota_hero_jakiro',
+	'npc_dota_hero_warlock',
+	'npc_dota_hero_phantom_lancer',
+	'npc_dota_hero_sniper',
+	'npc_dota_hero_silencer',
+	'npc_dota_hero_death_prophet',
+	'npc_dota_hero_skywrath_mage',
+	'npc_dota_hero_winter_wyvern',
+    'npc_dota_hero_slark',
+	'npc_dota_hero_riki',
+	'npc_dota_hero_witch_doctor',
+	'npc_dota_hero_tinker',
+	'npc_dota_hero_naga_siren',
+	'npc_dota_hero_sven',
+	'npc_dota_hero_obsidian_destroyer',
+	'npc_dota_hero_omniknight',
+	'npc_dota_hero_medusa'
+}
+
 function ReconstructPicks()
 	local hero = nil
 	picks = {}
@@ -209,49 +285,49 @@ function ReconstructPicks()
 	end
 
 	for PickCycle=1,5 do
-		if PickCycle == 1 then
-			hero = heroSel.TopCarry[1]
-			table.remove(heroSel.TopCarry, 1)
-		elseif PickCycle == 2 then
-			hero = heroSel.BotCarry[1]
-			table.remove(heroSel.BotCarry, 1)
+		if PickCycle == 5 then
+			hero = TopCarry[1]
+			table.remove(TopCarry, 1)
+		elseif PickCycle == 4 then
+			hero = BotCarry[1]
+			table.remove(BotCarry, 1)
 		elseif PickCycle == 3 then
-			hero = heroSel.Mid[1]
-			table.remove(heroSel.Mid, 1)
-		elseif	PickCycle == 4 then
-			hero = heroSel.TopSupport[1]
-			table.remove(heroSel.TopSupport, 1)
-		elseif PickCycle == 5 then
-			hero = heroSel.BotSupport[1]
-			table.remove(heroSel.BotSupport, 1)
+			hero = Mid[1]
+			table.remove(Mid, 1)
+		elseif	PickCycle == 2 then
+			hero = TopSupport[1]
+			table.remove(TopSupport, 1)
+		elseif PickCycle == 1 then
+			hero = BotSupport[1]
+			table.remove(BotSupport, 1)
 		end
 		while picks[hero] ~= nil or pickedHero[hero] == nil do
-			if PickCycle == 1 then
-				hero = heroSel.TopCarry[1]
-				table.remove(heroSel.TopCarry, 1)
-			elseif PickCycle == 2 then
-				hero = heroSel.BotCarry[1]
-				table.remove(heroSel.BotCarry, 1)
+			if PickCycle == 5 then
+				hero = TopCarry[1]
+				table.remove(TopCarry, 1)
+			elseif PickCycle == 4 then
+				hero = BotCarry[1]
+				table.remove(BotCarry, 1)
 			elseif PickCycle == 3 then
-				hero = heroSel.Mid[1]
-				table.remove(heroSel.Mid, 1)
-			elseif	PickCycle == 4 then
-				hero = heroSel.TopSupport[1]
-				table.remove(heroSel.TopSupport, 1)
-			elseif PickCycle == 5 then
-				hero = heroSel.BotSupport[1]
-				table.remove(heroSel.BotSupport, 1)
+				hero = Mid[1]
+				table.remove(Mid, 1)
+			elseif	PickCycle == 2 then
+				hero = TopSupport[1]
+				table.remove(TopSupport, 1)
+			elseif PickCycle == 1 then
+				hero = BotSupport[1]
+				table.remove(BotSupport, 1)
 			end
 		end
-		if PickCycle == 1 then
+		if PickCycle == 5 then
 			picks[hero] = LANE_TOP
-		elseif PickCycle == 2 then
+		elseif PickCycle == 4 then
 			picks[hero] = LANE_BOT
 		elseif PickCycle == 3 then
 			picks[hero] = LANE_MID
-		elseif PickCycle == 4 then
+		elseif PickCycle == 2 then
 			picks[hero] = LANE_TOP
-		elseif PickCycle == 5 then
+		elseif PickCycle == 1 then
 			picks[hero] = LANE_BOT
 		end
 	end
@@ -332,7 +408,7 @@ local attackType =
 	["npc_dota_hero_skeleton_king"] = MELEE,
 	["npc_dota_hero_jakiro"] = RANGED,
 	["npc_dota_hero_legion_commander"] = MELEE,
-	["npc_dota_abyssal_underlord"] = MELEE
+	["npc_dota_hero_abyssal_underlord"] = MELEE
 }
 
 local turnRate =
@@ -370,24 +446,6 @@ function module.GetTimeToFace(npcBot, unit)
 	dirToUnit = dirToUnit / math.sqrt(dirToUnit.x^2 + dirToUnit.y^2)
 	local myTurnRate = turnRate[npcBot:GetUnitName()]
 	return math.acos(module.dot(dirFacing, dirToUnit)) * 0.03 / myTurnRate
-end
-
-function module.findKillableCreep(npcBot, enemyCreepList, allyCreepList, damage)
-	for _,v in pairs(enemyCreepList) do
-		local health = module.PredictTiming(npcBot, v, allyCreepList)
-		if health > 0 and health <= v:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) then
-			return v
-		end
-	end
-	for _,v in pairs(allyCreepList) do
-		if module.CalcPerHealth(v) < 0.5 then
-			local health = module.PredictTiming(npcBot, v, enemyCreepList)
-			if health > 0 and health <= v:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) then
-				return v
-			end
-		end
-	end
-	return nil
 end
 
 function module.PredictTiming(npcBot, weakestCreep, opposingCreepsList)
@@ -500,25 +558,6 @@ function module.GetWeakestUnit(Enemy)
 	return WeakestUnit,LowestHealth
 end
 
-function module.GetHighestHealth(Enemy)
-	if (Enemy == nil or #Enemy == 0) then
-		return nil, 0
-	end
-
-	local highestUnit = Enemy[1]
-	local highestHealth = Enemy[1]:GetHealth()
-	for _,unit in pairs(Enemy) do
-		if (unit ~= nil and unit:IsAlive()) then
-			if (unit:GetHealth() > highestHealth) then
-				highestHealth = unit:GetHealth()
-				highestUnit = unit
-			end
-		end
-	end
-
-	return highestUnit,highestHealth
-end
-
 ----Find theoretically most powerful unit (ally or enemy)----
 function module.GetStrongestHero(Hero)
 	if (Hero == nil or #Hero == 0) then
@@ -527,13 +566,13 @@ function module.GetStrongestHero(Hero)
 
 	local PowUnit = nil
 	local PowHealth = 1
-	local Power = -999999999999999.0
-	for _,unit in pairs(Hero) do
-		if unit:IsAlive() then
+	local Power = 0.0
+	for _,unit in pairs(Hero)
+	do
+		if (unit ~= nil and unit:IsAlive()) then
 			if (unit:GetRawOffensivePower() > Power) then
 				PowHealth = unit:GetHealth()
 				PowUnit = unit
-				Power = unit:GetRawOffensivePower()
 			end
 		end
 	end
@@ -588,13 +627,6 @@ function module.SmartTarget(npcBot)
 		end
 
 		for _,unit in pairs(eHeroList) do
-			if (unit:IsChanneling()) then
-				target = unit
-				return target
-			end
-		end
-
-		for _,unit in pairs(eHeroList) do
 			if (module.IsDisabled(unit)) then
 				target = unit
 				return target
@@ -604,17 +636,17 @@ function module.SmartTarget(npcBot)
 		---percent health
 
 
-		local lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
-		local powHero,powHealth = module.GetStrongestHero(eHeroList)
+		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
+		powHero,powHealth = module.GetStrongestHero(eHeroList)
 		if (lowHero ~= eHeroList[1] and GetUnitToUnitDistance(npcBot, lowHero) > 600 and GetUnitToUnitDistance(npcBot, eHeroList[1]) < 300
 				and not eHeroList[1]:IsNightmared()) then
 			target = eHeroList[1]
 			return target
-		elseif (powHero ~= nil and not powHero:IsNightmared()) then
-			target = powHero
-			return target
-		elseif (lowHero ~= nil and not lowHero:IsNightmared()) then
+		elseif (lowHealth <= powHealth and not lowHero:IsNightmared()) then
 			target = lowHero
+			return target
+		elseif (not powHero:IsNightmared()) then
+			target = powHero
 			return target
 		end
 
@@ -636,23 +668,22 @@ end
 function module.DangerPing(npcBot)
 	local eHeroList = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
 	local aHeroList = npcBot:GetNearbyHeroes(1600, false, BOT_MODE_NONE)
-	local actualAlly = {}
-	local actualEnemy = {}
+	local actualAlly = 0
+	local actualEnemy = 0
 
 	for _,unit in pairs(aHeroList) do
 		if (unit ~= nil and unit:IsAlive()) then
-			table.insert(actualAlly, unit)
+			actualAlly = actualAlly + 1
 		end
 	end
 
 	for _,unit in pairs(eHeroList) do
 		if (unit ~= nil and unit:IsAlive()) then
-			table.insert(actualEnemy, unit)
+			actualEnemy = actualEnemy + 1
 		end
 	end
 
-	if eHeroList ~= nil and #eHeroList > 0 and (#actualEnemy > #actualAlly and npcBot:IsAlive() or
-		module.CalcPowerRatio(npcBot, actualAlly, actualEnemy) > 1) then
+	if (eHeroList ~= nil and #eHeroList > 0 and actualEnemy > actualAlly and npcBot:IsAlive()) then
 		local dangerPing = eHeroList[1]:GetLocation()
 		npcBot:ActionImmediate_Ping(dangerPing.x, dangerPing.y, false)
 	end
@@ -691,36 +722,6 @@ function module.lastHit(WeakestCreep, CreepHealth, npcBot)
 			end
 		end
 	end
-end
-
-function module.TeammateComing(npcBot, teammateSearchRange)
-    local myPid = npcBot:GetPlayerID()
-
-    if IsHeroAlive(myPid) == false then
-        return false
-    end
-
-    local alliesNotNearMe = GetTeamPlayers(npcBot:GetTeam())
-
-    local nearbyAlly = npcBot:GetNearbyHeroes(teammateSearchRange, false, BOT_MODE_NONE)
-    for _,unit in pairs(nearbyAlly) do
-        for index, value in pairs(alliesNotNearMe) do
-            if value == unit:GetPlayerID() then
-                table.remove(alliesNotNearMe, index)
-                break
-            end
-        end
-   end
-
-    for _,pid in pairs(alliesNotNearMe) do
-        if globalState.state.teammates[pid] ~= nil and globalState.state.teammates[pid].movingTo.z >= 0 and IsHeroAlive(pid) and
-         GetUnitToLocationDistance(npcBot, globalState.state.teammates[pid].movingTo) < teammateSearchRange then
-            --print(string.format("%s says: %s is coming!", GetSelectedHeroName(myPid), GetSelectedHeroName(pid)))
-            return true
-         end
-    end
-
-	return false
 end
 
 function module.dot(vec1, vec2)

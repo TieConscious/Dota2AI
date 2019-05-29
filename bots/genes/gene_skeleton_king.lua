@@ -1,59 +1,35 @@
 local gene = {
     ----hunt----
-    enemyHealth = 23.052500,
-    enemyDistance = 11.098880,
-    isUnderTower = 63.821040,
-    weDisabled = 35.023000,
-    eUnderTower = 12.435050,
-    EnemyWeak = 35.537690,
-    EnemyDisabled = 14.140900,
-    allyInFight = 43.456040,
-
-	enemyHealthMax = 59.280620,
-	perfectAttackRange = 89.939590,
-	FuckMinRatio = -61.366940,
-    FuckMaxRatio = 14.997690,
-    huntMinHealth = 100.000000,
-	huntMaxHealth = 100.000000,
+    enemyHealth = 2,
+    enemyDistance = 1.2,
+    isUnderTower = 4,
+    weDisabled = 4,
+    eUnderTower = 2,
+    enemyNear = 0.4,
+    EnemyPowerful = 3,
+    EnemyWeak = 3,
+    enemyNearAndNotLevel = 2,
+    EnemyDisabled = 2,
+    punchBack = 6,
+    allyInFight = 4,
 
     ----retreat----
-    willEnemyTowerTargetMe = 42.534620,
-    isEnemyTowerTargetingMeNoAlly = 47.850300,
-    hasPassiveEnemyNearby = 3.111040,
-    hasAggressiveEnemyNearby = 21.248760,
-    hasEnemyCreepsNearby = 35.750200,
-    hardRetreat = 65.817210,
-    enemyRetreat = 57.473390,
-    FountainMana = 35.932210,
-    AreThereDangerPings = 12.292840,
-
-	creepCount = 31.894550,
-	hardHealth = 23.205260,
-	dangerTime = 49.987830,
-	dangerDistance = 966.361860,
-	powerConsider = 45.483160,
+    willEnemyTowerTargetMe = 4,
+    isEnemyTowerTargetingMeNoAlly = 5,
+    hasPassiveEnemyNearby = 0.5,
+    hasAggressiveEnemyNearby = 2,
+    hasEnemyCreepsNearby = 3,
+    hardRetreat = 6,
+    enemyRetreat = 6,
+    FountainMana = 3,
+    AreThereDangerPings = 4,
 
     ----farm----
-    creepsAround = 23.986250,
-    calcEnemyCreepHealth = 202.452190,
-    calcEnemyCreepDist = 144.730460,
-
-	creepHealthMaxClamp = 69.895180,
-
-	----finish him----
-	timeToFinish = 1.921020,
-	chaseWeight = 29.620990,
-    chaseDistance = 1452.271480,
-    
-    retreatEarly = 110,
-	retreatLate = 100,
-	farmEarly = 125,
-	farmLate = 100,
-	huntEarly = 75,
-    huntLate = 100,
-    
-    towerWeight = 20,
-    buildingWeight = 20
+    creepsAround = 2,
+    calcEnemyCreepHealth = 11,
+    calcEnemyCreepDist = 7,
+    enemyNotLevel = 10,
+    alone = 5
 }
 
 return gene

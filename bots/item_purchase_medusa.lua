@@ -19,20 +19,15 @@ local Items = {
 	"item_recipe_power_treads",
 
 	----dragon lance----
+	"item_boots_of_elves",
+	"item_boots_of_elves",
 	"item_ogre_axe",
-	"item_boots_of_elves",
-	"item_boots_of_elves",
 	"item_recipe_dragon_lance",
 
 	----maelstrom----
 	"item_javelin",
 	"item_mithril_hammer",
 
-	----eye of skadi----
-	"item_ultimate_orb",
-	"item_ultimate_orb",
-	"item_point_booster",
-	"item_recipe_skadi",
 
 	----manta style----
 	"item_ultimate_orb",
@@ -41,19 +36,24 @@ local Items = {
 	"item_recipe_yasha",
 	"item_recipe_manta",
 
+	----eye of skadi----
+	"item_ultimate_orb",
+	"item_ultimate_orb",
+	"item_point_booster",
+	"item_recipe_skadi",
 
 	----force staff----
 	"item_staff_of_wizardry",
 	"item_ring_of_regen",
 	"item_recipe_force_staff",
 	"item_recipe_hurricane_pike",
-	
+
 	----linkens----
 	"item_ultimate_orb",
 	"item_ring_of_health",
 	"item_void_stone",
 	"item_recipe_sphere",
-	
+
 	----mjollnir----
 	"item_hyperstone",
 	"item_recipe_mjollnir"

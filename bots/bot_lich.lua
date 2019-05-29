@@ -110,7 +110,7 @@ function Murder()
 		local forceTarget = module.UseForceStaff(npcBot)
 
 		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
-			if (not IsBotCasting() and #eHeroList > 2 and #eCreepList < 2 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
+			if (not IsBotCasting() and #eHeroList > 1 and #eCreepList < 2 and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot,eHeroList[1]) <= abilityR:GetCastRange()
 				and bounce > 0 and currentMana >= module.CalcManaCombo(manaR)) then
 				npcBot:Action_UseAbilityOnEntity(abilityR, eHeroList[1])
 

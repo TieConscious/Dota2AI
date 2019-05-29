@@ -30,8 +30,6 @@ local lane_state = {
 }
 
 local decided = {}
-local targetLane
-local gankTime = 1800
 
 function LanePushedPulledNotHealing(npcBot)
 	local myLane = module.GetLane(npcBot)
@@ -48,10 +46,10 @@ function LanePushedPulledNotHealing(npcBot)
 
 	gankable[myLane] = nil
 
-	if time < gankTime and myLane == LANE_TOP then
+	if time < 1800 and myLane == LANE_TOP then
 		gankable[LANE_BOT] = nil
 	end
-	if time < gankTime and myLane == LANE_BOT then
+	if time < 1800 and myLane == LANE_BOT then
 		gankable[LANE_TOP] = nil
 	end
 
@@ -59,17 +57,17 @@ function LanePushedPulledNotHealing(npcBot)
 	if myFrontAmount > pulledPushed[team][myLane][4] then
 		lane_state[myLane] = 1
 	end
-	if	((time < gankTime or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
+	if	((time < 1800 or module.GetTower1(npcBot)) ~= nil and myFrontAmount < pulledPushed[team][myLane][1]) or
 		(module.GetTower2(npcBot) ~= nil and myFrontAmount < pulledPushed[team][myLane][2]) or
 		(myFrontAmount < pulledPushed[team][myLane][3]) then
 		lane_state[myLane] = 0
 	end
 
-	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() == 0 or npcBot:HasModifier("modifier_flask_healing") or npcBot:GetLevel() < 8 then
+	if lane_state[myLane] == 0 or percentHealth < 0.5 or npcBot:DistanceFromFountain() == 0 or npcBot:HasModifier("modifier_flask_healing") then
 		return false
 	end
 
-	if time < gankTime then
+	if time < 1800 then
 		if decided[pID] == nil or decided[pID] + 30 < time then
 			local pulledLane = false
 			for lane, exist in pairs(gankable) do
@@ -83,26 +81,8 @@ function LanePushedPulledNotHealing(npcBot)
 			end
 		end
 		decided[pID] = time
-
-		if lane == LANE_MID then
-			local midDist = GetUnitToLocationDistance(npcBot, GetLaneFrontLocation(team, LANE_MID, 0))
-			if  midDist < 2000 then
-				if pulledPushed[team][LANE_BOT][1] < GetLaneFrontAmount(team, LANE_BOT, false) then
-					midTargetLane = LANE_BOT
-				elseif pulledPushed[team][LANE_TOP][1] < GetLaneFrontAmount(team, LANE_TOP, false) then
-					midTargetLane = LANE_TOP
-				else
-					midTargetLane = LANE_BOT
-				end
-			end
-			targetLane = midTargetLane
-		else
-			targetLane = LANE_MID
-		end
-	else
-		targetLane = globalState.state.furthestLane
+		return true
 	end
-
 	return true
 end
 
@@ -115,11 +95,6 @@ end
 --end
 
 function GoGank(npcBot)
-	local myLane = module.GetLane(npcBot)
-	local targetLaneFront = GetLaneFrontLocation(npcBot:GetTeam(), targetLane, 0)
-	if (GetUnitToLocationDistance(npcBot, targetLaneFront) < 1000) then
-		return 0
-	end
 	return 25
 end
 
@@ -134,10 +109,7 @@ local gank_weight = {
 
         conditionals = {
         	{func=GoGank, condition=LanePushedPulledNotHealing, weight=1}
-        },
-
-		multipliers = {
-		}
+        }
     }
 }
 

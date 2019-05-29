@@ -6,7 +6,6 @@ local ward_weight = require(GetScriptDirectory().."/weights/ward")
 local courier_think = require(GetScriptDirectory().."/courier_think")
 local consumable_think = require(GetScriptDirectory().."/consumable_think")
 local buyback_think = require(GetScriptDirectory().."/buyback_think")
-local fortify_think = require(GetScriptDirectory().."/fortify_think")
 local globalState = require(GetScriptDirectory().."/global_state")
 local behavior = {}
 
@@ -14,8 +13,7 @@ function behavior.generic(npcBot, stateMachine)
 	courier_think.Decide()
 	consumable_think.Decide()
 	buyback_think.Decide()
-	fortify_think.Decide()
-	
+
 	--run generic behavior based on state
 	if stateMachine.state == "retreat" then
 		Retreat()
@@ -136,7 +134,7 @@ function Heal()
 			end
 		end
 	end
-	movement.Retreat(npcBot)
+	movement.RetreatToBase(npcBot)
 end
 
 function Hunt()
@@ -186,7 +184,6 @@ function Farm()
 	------Enemy and Creep stats----
 	local eCreeps = npcBot:GetNearbyLaneCreeps(1600, true)
 	local eWeakestCreep,eCreepHealth = module.GetWeakestUnit(eCreeps)
-	local eHighestCreep,eHighestHealth= module.GetHighestHealth(eCreeps)
 	local aCreeps = npcBot:GetNearbyLaneCreeps(1600, false)
 	local aWeakestCreep,aCreepHealth = module.GetWeakestUnit(aCreeps)
 	local nearbyEnemy = npcBot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
@@ -200,16 +197,30 @@ function Farm()
 		return
 	end
 
-	local killableCreep = module.findKillableCreep(npcBot, eCreeps, aCreeps, npcBot:GetAttackDamage())
 	----push when no enemy----
-	if (#eCreeps ~= 0 and #nearbyEnemy == 0) then
-		if killableCreep ~= nil then
-			npcBot:Action_AttackUnit(killableCreep, true)
+	if (eCreeps[1] ~= nil and nearbyEnemy ~= nil and #nearbyEnemy == 0) then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			npcBot:Action_AttackUnit(eCreeps[1], true)
 		else
-			npcBot:Action_AttackUnit(eHighestCreep, true)
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
 		end
-	elseif killableCreep ~= nil then
-		npcBot:Action_AttackUnit(killableCreep, true)
+	elseif eWeakestCreep ~= nil then
+		health = module.PredictTiming(npcBot, eWeakestCreep, aCreeps)
+		if health <= 0 or health > eWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+			if aWeakestCreep ~= nil then
+				health = module.PredictTiming(npcBot, aWeakestCreep, eCreeps)
+				if health <= 0 or health > aWeakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) then
+					movement.MTL_Farm(npcBot)
+				else
+					npcBot:Action_AttackUnit(aWeakestCreep, true)
+				end
+			else
+				movement.MTL_Farm(npcBot)
+			end
+		else
+			npcBot:Action_AttackUnit(eWeakestCreep, true)
+		end
 	else
 		movement.MTL_Farm(npcBot)
 	end
@@ -241,7 +252,7 @@ function Buy()
 			npcBot:ActionImmediate_PurchaseItem(nextItem)
 			table.remove(buy_weight.itemTree[npcBot:GetUnitName()], 1)
 		else
-			movement.MoveToLoc(closerSecretShop)
+			npcBot:Action_MoveToLocation(closerSecretShop)
 		end
 	else
 		npcBot:ActionImmediate_PurchaseItem(nextItem)
@@ -277,7 +288,7 @@ function Rune()
 			if GetUnitToLocationDistance(npcBot, runeLoc) < 120 then
 				npcBot:Action_PickUpRune(rune)
 			else
-				movement.MoveToLoc(runeLoc)
+				npcBot:Action_MoveToLocation(runeLoc)
 			end
 			return
         end
@@ -286,18 +297,18 @@ function Rune()
 	local myLane = module.GetLane(npcBot)
 	if (team == 3) then
 		if (myLane == LANE_TOP) then
-            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_4))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4))
 		elseif (myLane == LANE_BOT) then
-            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_2))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2))
 		else
             Farm()
 		end
 	--if Radiant--
 	elseif (team == 2) then
 		if (myLane == LANE_TOP) then
-            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_1))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1))
 		elseif (myLane == LANE_BOT) then
-            movement.MoveToLoc(GetRuneSpawnLocation(RUNE_BOUNTY_3))
+            npcBot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3))
 		else
 			Farm()
 		end
@@ -350,10 +361,11 @@ function Gank()
 		else
 			targetLane = LANE_MID
 		end
-		movement.MoveToLoc(GetLaneFrontLocation(team, targetLane, 300))
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false) + 0.15))
 	else
 		targetLane = globalState.state.furthestLane
-		movement.MoveToLoc(GetLaneFrontLocation(team, targetLane, 0))
+		npcBot:Action_MoveToLocation(GetLaneFrontLocation(team, targetLane, GetLaneFrontAmount(team, targetLane, false)))
+
 	end
 end
 
@@ -386,17 +398,9 @@ function Defend()
 	end
 
 	if ancient ~= nil and #eHeros == 0 and npcBot:DistanceFromFountain() >= 5000 and tpScroll ~= nil and tpScroll:IsCooldownReady() then
-		if defendLane == LANE_MID then
-			npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.15))
-		else
-			npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.1))
-		end
+		npcBot:Action_UseAbilityOnLocation(tpScroll, GetLocationAlongLane(defendLane, 0.1))
 	else
-		if defendLane == LANE_MID then
-			movement.MoveToLoc(GetLocationAlongLane(defendLane, 0.17))
-		else
-			movement.MoveToLoc(GetLocationAlongLane(defendLane, 0.15))
-		end
+		npcBot:Action_MoveToLocation(GetLocationAlongLane(defendLane, 0.15))
 	end
 end
 
@@ -407,7 +411,7 @@ function FinishHim()
 	local timeNow = GameTime()
 
 	if (pingLocation ~= nil and timeSince ~= nil and (timeNow - timeSince) <= 2.0 and GetUnitToLocationDistance(npcBot, pingLocation) <= 1000) then
-		movement.MoveToLoc(pingLocation)
+		npcBot:Action_MoveToLocation(pingLocation)
 	end
 end
 
@@ -425,7 +429,7 @@ function Ward()
 					npcBot:Action_UseAbilityOnLocation(ward, loc)
 					ward_weight.wardLocs[loc] = currentTime + 360
 				else
-					movement.MoveToLoc(loc)
+					npcBot:Action_MoveToLocation(loc)
 				end
 				return
 			end
