@@ -1,67 +1,67 @@
 local gene = {
     --tune this
-    teamworkDist = 500.0,
-    teamworkMod = 15.0,
-    teamworkThreshold = 30.0,
-    huntTOTWMod = 80.0,
-    retreatTOTWMod = 120.0,
-    PowerMinConsider = -50.000000,
+    teamworkDist = 565.290100,
+    teamworkMod = 15.636530,
+    teamworkThreshold = 24.768310,
+    huntTOTWMod = 83.053680,
+    retreatTOTWMod = 142.054970,
+    PowerMinConsider = -32.643370,
     PowerMaxConsider = 60.403930,
     PowerMaxMult = 154.600780,
-    PowerMinMult = 50.000000,
-    PowerMaxFlee = 179.646370,
-    FleeMinMult = 100.000000,
-    FleeMaxMult = 174.375560,
+    PowerMinMult = 48.710540,
+    PowerMaxFlee = 222.815630,
+    FleeMinMult = 97.766160,
+    FleeMaxMult = 154.574690,
 
     ----hunt----
     enemyHealth = 40.372420,
-    enemyDistance = 10.191350,
+    enemyDistance = 10.773350,
     isUnderTower = 25.748390,
-    weDisabled = 33.034770,
+    weDisabled = 27.746440,
     eUnderTower = 37.318380,
     EnemyDisabled = 26.965860,
-    allyInFight = 41.149950,
+    allyInFight = 49.452950,
 
-    enemyHealthMax = 149.039330,
-    perfectAttackRange = 36.361580,
-    huntMinHealth = 108.556740,
-    huntMaxHealth = 85.144690,
+    enemyHealthMax = 126.981070,
+    perfectAttackRange = 37.787010,
+    huntMinHealth = 115.674510,
+    huntMaxHealth = 92.478790,
 
     ----retreat----
-    willEnemyTowerTargetMe = 15.576260,
-    isEnemyTowerTargetingMeNoAlly = 59.621880,
-    hasEnemyCreepsNearby = 11.144080,
-    hardRetreat = 74.212990,
-    enemyRetreat = 113.440350,
-    FountainMana = 29.577580,
-    AreThereDangerPings = 14.233790,
+    willEnemyTowerTargetMe = 11.813910,
+    isEnemyTowerTargetingMeNoAlly = 59.786090,
+    hasEnemyCreepsNearby = 9.643280,
+    hardRetreat = 81.797680,
+    enemyRetreat = 97.037020,
+    FountainMana = 23.502000,
+    AreThereDangerPings = 11.446560,
 
-    creepCount = 35.427680,
-    hardHealth = 25.636790,
-    dangerTime = 55.341650,
-    dangerDistance = 474.061050,
+    creepCount = 36.840200,
+    hardHealth = 22.479990,
+    dangerTime = 62.722010,
+    dangerDistance = 392.598780,
 
     ----farm----
-    creepsAround = 21.384390,
-    calcEnemyCreepHealth = 83.319900,
+    creepsAround = 16.631190,
+    calcEnemyCreepHealth = 66.194350,
     calcEnemyCreepDist = 39.227860,
 
-    creepHealthMaxClamp = 23.148140,
+    creepHealthMaxClamp = 17.738950,
 
     ----finish him----
-    timeToFinish = 1.489210,
-    chaseWeight = 23.510640,
-    chaseDistance = 1611.966540,
+    timeToFinish = 1.314180,
+    chaseWeight = 14.186560,
+    chaseDistance = 1034.351410,
     
-    retreatEarly = 147.661880,
+    retreatEarly = 157.265780,
     retreatLate = 137.375760,
-    farmEarly = 128.369730,
-    farmLate = 59.950720,
-    huntEarly = 101.754440,
-    huntLate = 111.452140,
+    farmEarly = 96.925680,
+    farmLate = 60.683650,
+    huntEarly = 77.615280,
+    huntLate = 137.208740,
     
-    towerWeight = 15.720640,
-    buildingWeight = 37.909101
+    towerWeight = 14.591460,
+    buildingWeight = 46.279359
 }
 
 return gene
