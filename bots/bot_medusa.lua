@@ -131,8 +131,12 @@ function Murder(eHero)
 			elseif (ConsiderCast(abilityE) and not abilityE:GetToggleState()) then
 				npcBot:Action_UseAbility(abilityE)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityR) and #eHeroList > #aHeroList and #eHeroList + #aHeroList > 4 and currentMana >= module.CalcManaCombo(manaR)
-					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() and target:IsFacingLocation(npcBot:GetLocation(), 50)) then
+			-- elseif (not IsBotCasting() and ConsiderCast(abilityR) and #eHeroList > #aHeroList and #eHeroList + #aHeroList > 4 and currentMana >= module.CalcManaCombo(manaR)
+			-- 		and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() and target:IsFacingLocation(npcBot:GetLocation(), 50)) then
+			-- 	npcBot:Action_UseAbility(abilityR)
+
+			elseif (not IsBotCasting() and ConsiderCast(abilityR) and #eHeroList > 1 and currentMana >= module.CalcManaCombo(manaR)
+					and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange() and target:IsFacingLocation(npcBot:GetLocation(), 140)) then
 				npcBot:Action_UseAbility(abilityR)
 
 			elseif (not IsBotCasting() and wTarget ~= nil and ConsiderCast(abilityW) and currentMana >= module.CalcManaCombo(manaW)
