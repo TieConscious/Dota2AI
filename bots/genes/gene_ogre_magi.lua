@@ -39,7 +39,7 @@ local gene = {
     creepCount = 44.600300,
     hardHealth = 29.738350,
     dangerTime = 55.341650,
-    dangerDistance = 1000.598780,
+    dangerDistance = 392.598780,
 
     ----farm----
     creepsAround = 19.666730,
@@ -53,9 +53,9 @@ local gene = {
     chaseWeight = 23.510640,
     chaseDistance = 1412.332770,
     
-    retreatEarly = 109.754110,
+    retreatEarly = 89.754110,
     retreatLate = 137.375760,
-    farmEarly = 87.715610,
+    farmEarly = 77.715610,
     farmLate = 74.558810,
     huntEarly = 89.299000,
     huntLate = 143.983200,
