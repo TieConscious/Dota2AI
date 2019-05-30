@@ -325,7 +325,7 @@ local hunt_weight = {
         },
 
 		multipliers = {
-			--{func=HuntHealth},
+			{func=HuntHealth},
 			{func=HuntLevel},
             {func=PowerConsider},
             {func=TeammateComing}
