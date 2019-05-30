@@ -48,7 +48,16 @@ local Items =
 	"item_point_booster",
 	"item_energy_booster",
 	"item_vitality_booster",
-	"item_mystic_staff"
+	"item_mystic_staff",
+
+	----kaya----
+	"item_staff_of_wizardry",
+	"item_robe",
+	"item_recipe_kaya",
+	----kaya and sange----
+	"item_ogre_axe",
+	"item_belt_of_strength",
+	"item_recipe_sange"
 }
 
 return Items

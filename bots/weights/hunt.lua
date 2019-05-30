@@ -323,9 +323,9 @@ local hunt_weight = {
             --{func=heroMana, condition=under50ManaAndEnemyNear, weight=10}
             --{func=HeroHealth, condition=CanWeKillThem, weight=80}
         },
-	
+
 		multipliers = {
-			{func=HuntHealth},
+			--{func=HuntHealth},
 			{func=HuntLevel},
             {func=PowerConsider},
             {func=TeammateComing}
