@@ -135,23 +135,37 @@ function Murder()
 		if (not npcBot:IsSilenced() and not target:IsMagicImmune()) then
 			----Try various combos on weakened enemy unit----
 			local extraLocation = CalculateBreath(target, npcBot)
-			if (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
-					and currentMana >= module.CalcManaCombo(manaQ)) then
+			local wLocation = target:GetExtrapolatedLocation(0.65)
+			local rLocation = target:GetExtrapolatedLocation(0.55)
+
+			if (not IsBotCasting() and ConsiderCast(abilityW, abilityR) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+					and currentMana >= module.CalcManaCombo(manaW) and not module.IsHardCC(target)) then
+				npcBot:Action_UseAbilityOnLocation(abilityR, rLocation)
+				npcBot:Action_UseAbilityOnLocation(abilityW, wLocation)
+
+			elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+					and currentMana >= module.CalcManaCombo(manaQ) and not module.IsHardCC(target)) then
 				npcBot:Action_UseAbilityOnLocation(abilityQ, extraLocation)
+
+			elseif (not IsBotCasting() and ConsiderCast(abilityQ) and GetUnitToUnitDistance(npcBot, target) <= abilityQ:GetCastRange()
+					and currentMana >= module.CalcManaCombo(manaQ)) then
+				npcBot:Action_UseAbilityOnLocation(abilityQ, target:GetLocation())
 
 			elseif (not IsBotCasting() and sheepStick ~= nil and ConsiderCast(sheepStick) and GetUnitToUnitDistance(npcBot, target) <= sheepStick:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaSheepStick) and not module.IsHardCC(target)) then
 				npcBot:Action_UseAbilityOnEntity(sheepStick, target)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityW) and  GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
-					and currentMana >= module.CalcManaCombo(manaW)) then
-				local targetLocation = target:GetExtrapolatedLocation(0.65)
-				npcBot:Action_UseAbilityOnLocation(abilityW, targetLocation)
+			elseif (not IsBotCasting() and ConsiderCast(abilityW) and GetUnitToUnitDistance(npcBot, target) <= abilityW:GetCastRange()
+					and currentMana >= module.CalcManaCombo(manaW) and not module.IsHardCC(target)) then
+				npcBot:Action_UseAbilityOnLocation(abilityW, wLocation)
 
-			elseif (not IsBotCasting() and ConsiderCast(abilityR) and  GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()
+			elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()
+					and currentMana >= module.CalcManaCombo(manaR) and not module.IsHardCC(target)) then
+				npcBot:Action_UseAbilityOnLocation(abilityR, rLocation)
+
+			elseif (not IsBotCasting() and ConsiderCast(abilityR) and GetUnitToUnitDistance(npcBot, target) <= abilityR:GetCastRange()
 					and currentMana >= module.CalcManaCombo(manaR)) then
-					local targetLocation = target:GetExtrapolatedLocation(0.55)
-					npcBot:Action_UseAbilityOnLocation(abilityR, targetLocation)
+				npcBot:Action_UseAbilityOnLocation(abilityR, target:GetLocation())
 
 			end
 		end

@@ -69,9 +69,10 @@ function ConsiderW()
 	local abilityW = npcBot:GetAbilityByName(SKILL_W)
 	local considerW = nil
 	if abilityW:GetLevel() >= 1 and eHeroList ~= nil and #eHeroList > 0 then
-		if #eHeroList > 2 then
+		if #eHeroList > 2 and GetUnitToUnitDistance(eHeroList[1], eHeroList[2]) < 450 then
 			considerW = eHeroList[1]
-		elseif eCreepList ~= nil and #eCreepList > 0 and #eCreepList - 2 < abilityW:GetLevel() then
+		elseif eCreepList ~= nil and #eCreepList > 0 and #eCreepList - 2 < abilityW:GetLevel()
+			and GetUnitToUnitDistance(eHeroList[1], eCreepList[1]) < (abilityW:GetLevel() + 1) * 400 then
 			considerW = eCreepList[1]
 		end
 
@@ -120,7 +121,6 @@ function Murder(eHero)
 
 	if (eHeroList ~= nil and #eHeroList > 0) then
 		local target = module.SmartTarget(npcBot)
-		local bounce = module.BounceSpells(npcBot, 475)
 		local wTarget = ConsiderW()
 
 		if (not npcBot:IsSilenced()) then
