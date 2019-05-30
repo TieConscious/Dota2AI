@@ -53,9 +53,9 @@ local gene = {
     chaseWeight = 45.346190,
     chaseDistance = 411.726590,
     
-    retreatEarly = 165.903870,
+    retreatEarly = 185.903870,
     retreatLate = 117.241500,
-    farmEarly = 177.989800,
+    farmEarly = 187.989800,
     farmLate = 33.649440,
     huntEarly = 47.843820,
     huntLate = 138.027540,
