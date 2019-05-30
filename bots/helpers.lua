@@ -199,6 +199,7 @@ local picks = nil
 
 
 local TopCarry = {
+	"npc_dota_hero_chaos_knight",
 	--"npc_dota_hero_abyssal_underlord",
 	"npc_dota_hero_juggernaut",
 	'npc_dota_hero_skeleton_king',
@@ -216,8 +217,8 @@ local TopCarry = {
 
 
 local BotCarry = {
-	"npc_dota_hero_chaos_knight",
-	"npc_dota_hero_skeleton_king",
+	--"npc_dota_hero_chaos_knight",
+	--"npc_dota_hero_skeleton_king",
 	"npc_dota_hero_juggernaut",
 	"npc_dota_hero_abyssal_underlord",
 	'npc_dota_hero_skeleton_king',
@@ -238,7 +239,7 @@ local Mid = {
 }
 
 local TopSupport = {
-	--"npc_dota_hero_bane",
+	"npc_dota_hero_bane",
 	"npc_dota_hero_lich",
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_tidehunter",
@@ -246,7 +247,7 @@ local TopSupport = {
 }
 
 local BotSupport = {
-	--"npc_dota_hero_lich",
+	"npc_dota_hero_lich",
 	--"npc_dota_hero_crystal_maiden",
 	"npc_dota_hero_bane",
 	"npc_dota_hero_lion",
