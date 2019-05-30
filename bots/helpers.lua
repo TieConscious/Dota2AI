@@ -604,17 +604,17 @@ function module.SmartTarget(npcBot)
 		---percent health
 
 
-		local lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
-		local powHero,powHealth = module.GetStrongestHero(eHeroList)
+		lowHero,lowHealth = module.GetWeakestUnit(eHeroList)
+		powHero,powHealth = module.GetStrongestHero(eHeroList)
 		if (lowHero ~= eHeroList[1] and GetUnitToUnitDistance(npcBot, lowHero) > 600 and GetUnitToUnitDistance(npcBot, eHeroList[1]) < 300
 				and not eHeroList[1]:IsNightmared()) then
 			target = eHeroList[1]
 			return target
-		elseif (powHero ~= nil and not powHero:IsNightmared()) then
-			target = powHero
-			return target
-		elseif (lowHero ~= nil and not lowHero:IsNightmared()) then
+		elseif (lowHealth <= powHealth and not lowHero:IsNightmared()) then
 			target = lowHero
+			return target
+		elseif (not powHero:IsNightmared()) then
+			target = powHero
 			return target
 		end
 
